@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  asterisk:
+    image: asterisk:latest
+    container_name: webrtc-asterisk
+    hostname: asterisk
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ./asterisk/etc:/etc/asterisk
+      - ./asterisk/sounds:/var/lib/asterisk/sounds
+      - ./asterisk/keys:/etc/asterisk/keys
+      - ./asterisk/logs:/var/log/asterisk
+      - ./certs:/etc/certs:ro
+    environment:
+      - ASTERISK_UID=1000
+      - ASTERISK_GID=1000
+    cap_add:
+      - NET_ADMIN
+      - SYS_NICE
+    depends_on:
+      - kamailio
+      - coturn
+
+  kamailio:
+    image: kamailio/kamailio:latest
+    container_name: webrtc-kamailio
+    hostname: kamailio
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ./kamailio/kamailio.cfg:/etc/kamailio/kamailio.cfg
+      - ./kamailio/kamctlrc:/etc/kamailio/kamctlrc
+      - ./certs:/etc/certs:ro
+    environment:
+      - KAMAILIO_SIP_DOMAIN=localhost
+      - KAMAILIO_DBENGINE=MYSQL
+    cap_add:
+      - NET_ADMIN
+
+  coturn:
+    image: coturn/coturn:latest
+    container_name: webrtc-coturn
+    hostname: coturn
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ./coturn/turnserver.conf:/etc/turnserver.conf:ro
+      - ./certs:/etc/certs:ro
+    command:
+      - "-c"
+      - "/etc/turnserver.conf"
+
+  nginx:
+    image: nginx:alpine
+    container_name: webrtc-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: unless-stopped
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/html:/usr/share/nginx/html:ro
+      - ./certs:/etc/certs:ro
+    depends_on:
+      - asterisk
+
+  mysql:
+    image: mysql:8.0
+    container_name: webrtc-mysql
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=kamailio
+      - MYSQL_USER=kamailio
+      - MYSQL_PASSWORD=kamailiopass
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./kamailio/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    ports:
+      - "3306:3306"
+
+volumes:
+  mysql-data:
+    driver: local
+
+
+
+

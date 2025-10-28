@@ -1,0 +1,25 @@
+# Kamailio Control Configuration
+
+# Database settings
+DBENGINE=MYSQL
+DBHOST=mysql
+DBNAME=kamailio
+DBRWUSER="kamailio"
+DBRWPW="kamailiopass"
+DBROUSER="kamailio"
+DBROPW="kamailiopass"
+DBROOTUSER="root"
+DBROOTPW="rootpassword"
+
+# SIP domain
+SIP_DOMAIN=your-domain.com
+
+# Aliases
+ALIASES_TYPE="DB"
+
+# Server location
+SERCTL_PATH="/usr/sbin"
+
+
+
+

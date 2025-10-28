@@ -1,0 +1,84 @@
+# Environment files with sensitive data
+.env
+*.env
+
+# SSL Certificates and Keys
+certs/
+*.pem
+*.crt
+*.key
+*.p12
+*.pfx
+
+# Logs
+*.log
+asterisk/logs/
+kamailio/logs/
+nginx/logs/
+
+# Database
+*.sql
+mysql-data/
+*.db
+
+# Asterisk generated files
+asterisk/keys/
+asterisk/sounds/custom/
+asterisk/voicemail/
+
+# Backups
+backups/
+*.tar.gz
+*.zip
+*.bak
+
+# Docker volumes
+volumes/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Node modules (if using any)
+node_modules/
+
+# Python (if using any)
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+env/
+
+# Compiled files
+*.o
+*.so
+*.dll
+*.exe
+
+# PDF documentation (large files)
+*.pdf
+
+# Private configuration
+*-private.conf
+*-secret.*
+credentials.txt
+
+# Test files
+test-calls/
+recordings-test/

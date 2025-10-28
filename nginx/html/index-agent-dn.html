@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genesys Agent WebRTC Client</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌐 Genesys Agent WebRTC Client</h1>
+            <p class="subtitle">SIP Endpoint for Genesys Workspace Web Edition</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Agent Information -->
+            <section class="card">
+                <h2>👤 Agent Information</h2>
+                <div class="info-box">
+                    <p><strong>Important:</strong> This is your audio endpoint only.</p>
+                    <p>Use <strong>Genesys Workspace</strong> for all call controls:</p>
+                    <ul>
+                        <li>✓ Answer/Hangup calls</li>
+                        <li>✓ Transfer/Conference</li>
+                        <li>✓ Hold/Resume</li>
+                        <li>✓ View customer information</li>
+                        <li>✓ Set Ready/Not Ready</li>
+                    </ul>
+                </div>
+                
+                <div class="workspace-link">
+                    <button id="openWorkspaceBtn" class="btn btn-primary">
+                        🖥️ Open Genesys Workspace
+                    </button>
+                </div>
+            </section>
+
+            <!-- Connection Section -->
+            <section class="card">
+                <h2>📡 SIP Endpoint Registration</h2>
+                <div class="form-group">
+                    <label for="sipServer">WebRTC Gateway:</label>
+                    <input type="text" id="sipServer" value="wss://192.168.77.131:8089/ws" placeholder="wss://your-server.com/ws">
+                </div>
+                <div class="form-group">
+                    <label for="agentDN">Agent DN (from Genesys):</label>
+                    <input type="text" id="agentDN" value="5001" placeholder="5001">
+                    <small>Enter the DN assigned to you in Genesys Configuration</small>
+                </div>
+                <div class="form-group">
+                    <label for="agentPassword">SIP Password:</label>
+                    <input type="password" id="agentPassword" value="GenesysAgent5001!" placeholder="Password">
+                    <small>Password configured in Asterisk for your DN</small>
+                </div>
+                <div class="button-group">
+                    <button id="connectBtn" class="btn btn-success">✓ Register Endpoint</button>
+                    <button id="disconnectBtn" class="btn btn-secondary" disabled>✗ Unregister</button>
+                </div>
+                <div id="connectionStatus" class="status-indicator">
+                    <span class="status-dot disconnected"></span>
+                    <span class="status-text">Not Registered</span>
+                </div>
+            </section>
+
+            <!-- Audio Controls Section -->
+            <section class="card">
+                <h2>🔊 Audio Settings</h2>
+                <div class="info-box warning">
+                    <strong>Note:</strong> Call control is in Genesys Workspace.<br>
+                    Use these controls only for local audio adjustments.
+                </div>
+                
+                <div class="volume-control">
+                    <label for="volumeSlider">Speaker Volume:</label>
+                    <input type="range" id="volumeSlider" min="0" max="100" value="75">
+                    <span id="volumeValue">75%</span>
+                </div>
+                
+                <div class="audio-test">
+                    <button id="testAudioBtn" class="btn btn-control">🔊 Test Audio</button>
+                    <button id="selectMicBtn" class="btn btn-control">🎤 Select Microphone</button>
+                </div>
+            </section>
+
+            <!-- Call Status Section -->
+            <section class="card">
+                <h2>📞 Call Status</h2>
+                <div id="callStatus" class="call-status-display">
+                    <div class="status-row">
+                        <span class="label">Registration:</span>
+                        <span id="regStatus" class="value">Not Registered</span>
+                    </div>
+                    <div class="status-row">
+                        <span class="label">Call State:</span>
+                        <span id="callState" class="value">Idle</span>
+                    </div>
+                    <div class="status-row">
+                        <span class="label">Current Call:</span>
+                        <span id="currentCall" class="value">None</span>
+                    </div>
+                    <div class="status-row">
+                        <span class="label">Call Duration:</span>
+                        <span id="callDuration" class="value">00:00:00</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Instructions Section -->
+            <section class="card">
+                <h2>📋 Quick Start Guide</h2>
+                <div class="instructions">
+                    <h3>Step 1: Open Genesys Workspace</h3>
+                    <ol>
+                        <li>Click "Open Genesys Workspace" button above</li>
+                        <li>Login with your Genesys credentials</li>
+                        <li>Note your assigned Agent DN (e.g., 5001)</li>
+                    </ol>
+
+                    <h3>Step 2: Register SIP Endpoint</h3>
+                    <ol>
+                        <li>Enter your Agent DN in the field above</li>
+                        <li>Enter your SIP password</li>
+                        <li>Click "Register Endpoint"</li>
+                        <li>Wait for "Registered" status</li>
+                    </ol>
+
+                    <h3>Step 3: Set Ready</h3>
+                    <ol>
+                        <li>In Genesys Workspace, set your status to "Ready"</li>
+                        <li>You are now available for calls</li>
+                    </ol>
+
+                    <h3>Step 4: Handle Calls</h3>
+                    <ol>
+                        <li>When a call arrives, you'll hear ringing</li>
+                        <li>Answer the call in Genesys Workspace (not here!)</li>
+                        <li>Use Workspace for all call controls</li>
+                        <li>Audio flows through this WebRTC client</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Debug Console -->
+            <section class="card debug-section">
+                <h2>🔍 Debug Console</h2>
+                <div class="debug-controls">
+                    <button id="clearDebugBtn" class="btn btn-small">Clear</button>
+                    <label>
+                        <input type="checkbox" id="autoScrollDebug" checked>
+                        Auto-scroll
+                    </label>
+                </div>
+                <div id="debugConsole" class="debug-console"></div>
+            </section>
+        </div>
+
+        <!-- Audio Elements -->
+        <audio id="remoteAudio" autoplay playsinline></audio>
+        <audio id="localAudio" muted autoplay playsinline></audio>
+        <audio id="ringbackTone" loop>
+            <source src="sounds/ringback.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="testTone">
+            <source src="sounds/test-tone.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jssip/3.10.1/jssip.min.js"></script>
+    <script src="app-agent-dn.js"></script>
+</body>
+</html>
+
+
+
+

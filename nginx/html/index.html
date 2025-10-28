@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC SIP Client - Asterisk + Kamailio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌐 WebRTC SIP Client</h1>
+            <p class="subtitle">Asterisk + Kamailio + Genesys Integration</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Connection Section -->
+            <section class="card">
+                <h2>📡 Connection Settings</h2>
+                <div class="form-group">
+                    <label for="sipServer">SIP Server:</label>
+                    <input type="text" id="sipServer" value="wss://your-domain.com/ws" placeholder="wss://your-domain.com/ws">
+                </div>
+                <div class="form-group">
+                    <label for="sipUsername">Username:</label>
+                    <input type="text" id="sipUsername" value="1000" placeholder="1000">
+                </div>
+                <div class="form-group">
+                    <label for="sipPassword">Password:</label>
+                    <input type="password" id="sipPassword" value="webrtc1000pass" placeholder="Password">
+                </div>
+                <div class="button-group">
+                    <button id="connectBtn" class="btn btn-primary">Connect</button>
+                    <button id="disconnectBtn" class="btn btn-secondary" disabled>Disconnect</button>
+                </div>
+                <div id="connectionStatus" class="status-indicator">
+                    <span class="status-dot disconnected"></span>
+                    <span class="status-text">Disconnected</span>
+                </div>
+            </section>
+
+            <!-- Call Controls Section -->
+            <section class="card">
+                <h2>📞 Call Controls</h2>
+                <div class="form-group">
+                    <label for="phoneNumber">Dial Number:</label>
+                    <input type="text" id="phoneNumber" placeholder="Enter phone number or extension">
+                </div>
+                <div class="dialpad">
+                    <button class="dialpad-btn" data-digit="1">1</button>
+                    <button class="dialpad-btn" data-digit="2">2<span>ABC</span></button>
+                    <button class="dialpad-btn" data-digit="3">3<span>DEF</span></button>
+                    <button class="dialpad-btn" data-digit="4">4<span>GHI</span></button>
+                    <button class="dialpad-btn" data-digit="5">5<span>JKL</span></button>
+                    <button class="dialpad-btn" data-digit="6">6<span>MNO</span></button>
+                    <button class="dialpad-btn" data-digit="7">7<span>PQRS</span></button>
+                    <button class="dialpad-btn" data-digit="8">8<span>TUV</span></button>
+                    <button class="dialpad-btn" data-digit="9">9<span>WXYZ</span></button>
+                    <button class="dialpad-btn" data-digit="*">*</button>
+                    <button class="dialpad-btn" data-digit="0">0<span>+</span></button>
+                    <button class="dialpad-btn" data-digit="#">#</button>
+                </div>
+                <div class="button-group">
+                    <button id="callBtn" class="btn btn-success" disabled>📞 Call</button>
+                    <button id="hangupBtn" class="btn btn-danger" disabled>📴 Hang Up</button>
+                </div>
+                <div id="callStatus" class="status-info"></div>
+            </section>
+
+            <!-- Audio Controls Section -->
+            <section class="card">
+                <h2>🔊 Audio Controls</h2>
+                <div class="audio-controls">
+                    <button id="muteBtn" class="btn btn-control" disabled>🎤 Mute</button>
+                    <button id="holdBtn" class="btn btn-control" disabled>⏸️ Hold</button>
+                    <button id="transferBtn" class="btn btn-control" disabled>📲 Transfer</button>
+                </div>
+                <div class="volume-control">
+                    <label for="volumeSlider">Volume:</label>
+                    <input type="range" id="volumeSlider" min="0" max="100" value="75">
+                    <span id="volumeValue">75%</span>
+                </div>
+            </section>
+
+            <!-- Call Log Section -->
+            <section class="card">
+                <h2>📋 Call Log</h2>
+                <div id="callLog" class="call-log">
+                    <p class="empty-state">No calls yet</p>
+                </div>
+            </section>
+
+            <!-- Debug Console -->
+            <section class="card debug-section">
+                <h2>🔍 Debug Console</h2>
+                <div class="debug-controls">
+                    <button id="clearDebugBtn" class="btn btn-small">Clear</button>
+                    <label>
+                        <input type="checkbox" id="autoScrollDebug" checked>
+                        Auto-scroll
+                    </label>
+                </div>
+                <div id="debugConsole" class="debug-console"></div>
+            </section>
+        </div>
+
+        <!-- Audio Elements -->
+        <audio id="remoteAudio" autoplay playsinline></audio>
+        <audio id="localAudio" muted autoplay playsinline></audio>
+        <audio id="ringbackTone" loop>
+            <source src="sounds/ringback.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jssip/3.10.1/jssip.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+
+
+
+
