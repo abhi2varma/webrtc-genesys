@@ -6,6 +6,8 @@ class WebRTCClient {
         this.isMuted = false;
         this.isOnHold = false;
         this.callLog = [];
+        this.cometd = null;
+        this.gwsConnected = false;
         
         this.initializeElements();
         this.attachEventListeners();
@@ -46,6 +48,16 @@ class WebRTCClient {
 
         // Call log
         this.callLogElement = document.getElementById('callLog');
+
+        // GWS elements
+        this.gwsUrl = document.getElementById('gwsUrl');
+        this.gwsUsername = document.getElementById('gwsUsername');
+        this.gwsPassword = document.getElementById('gwsPassword');
+        this.gwsChannel = document.getElementById('gwsChannel');
+        this.useGwsForDial = document.getElementById('useGwsForDial');
+        this.gwsConnectBtn = document.getElementById('gwsConnectBtn');
+        this.gwsDisconnectBtn = document.getElementById('gwsDisconnectBtn');
+        this.gwsStatus = document.getElementById('gwsStatus');
     }
 
     attachEventListeners() {
@@ -89,6 +101,10 @@ class WebRTCClient {
 
         // Debug console controls
         this.clearDebugBtn.addEventListener('click', () => this.clearDebug());
+
+        // GWS buttons
+        this.gwsConnectBtn.addEventListener('click', () => this.connectGws());
+        this.gwsDisconnectBtn.addEventListener('click', () => this.disconnectGws());
     }
 
     connect() {
@@ -180,6 +196,14 @@ class WebRTCClient {
             return;
         }
 
+        if (this.useGwsForDial && this.useGwsForDial.checked && this.gwsConnected) {
+            this.addDebugMessage(`Requesting GWS to make call to ${number}...`, 'info');
+            this.gwsMakeCall(number).catch(err => {
+                this.addDebugMessage(`GWS dial failed: ${err}`, 'error');
+            });
+            return;
+        }
+
         const eventHandlers = {
             'progress': (e) => {
                 this.addDebugMessage('Call is in progress...', 'info');
@@ -262,6 +286,132 @@ class WebRTCClient {
             this.addDebugMessage('Call terminated', 'info');
             this.updateCallStatus('Call ended');
             this.resetCallButtons();
+        }
+    }
+
+    // =========================
+    // GWS (CometD/REST) section
+    // =========================
+    connectGws() {
+        const baseUrl = (this.gwsUrl?.value || '').replace(/\/$/, '');
+        if (!baseUrl) {
+            this.addDebugMessage('GWS URL is required', 'error');
+            return;
+        }
+
+        if (typeof org === 'undefined' || !org.cometd || !org.cometd.CometD) {
+            this.addDebugMessage('CometD library not loaded', 'error');
+            return;
+        }
+
+        const cometd = new org.cometd.CometD();
+        const headers = {};
+        const user = this.gwsUsername?.value || '';
+        const pass = this.gwsPassword?.value || '';
+        if (user && pass) {
+            const token = btoa(`${user}:${pass}`);
+            headers['Authorization'] = `Basic ${token}`;
+        }
+
+        cometd.configure({
+            url: baseUrl + '/cometd',
+            logLevel: 'warn',
+            requestHeaders: headers
+        });
+
+        cometd.handshake((h) => {
+            if (h.successful) {
+                this.addDebugMessage('GWS CometD connected', 'success');
+                this.updateGwsStatus('connected');
+                this.cometd = cometd;
+                this.gwsConnected = true;
+                this.gwsConnectBtn.disabled = true;
+                this.gwsDisconnectBtn.disabled = false;
+                // Subscribe to configured channel
+                const channel = this.gwsChannel?.value || '/user/agent/events';
+                cometd.subscribe(channel, (message) => this.handleGwsEvent(message));
+            } else {
+                this.addDebugMessage('GWS CometD handshake failed', 'error');
+                this.updateGwsStatus('disconnected');
+            }
+        });
+    }
+
+    disconnectGws() {
+        if (this.cometd) {
+            this.cometd.disconnect();
+            this.cometd = null;
+        }
+        this.gwsConnected = false;
+        this.gwsConnectBtn.disabled = false;
+        this.gwsDisconnectBtn.disabled = true;
+        this.updateGwsStatus('disconnected');
+        this.addDebugMessage('Disconnected from GWS', 'info');
+    }
+
+    updateGwsStatus(status) {
+        if (!this.gwsStatus) return;
+        const statusDot = this.gwsStatus.querySelector('.status-dot');
+        const statusText = this.gwsStatus.querySelector('.status-text');
+        statusDot.className = 'status-dot ' + status;
+        statusText.textContent = status === 'connected' ? 'Connected' : 'Disconnected';
+    }
+
+    async gwsMakeCall(number) {
+        const baseUrl = (this.gwsUrl?.value || '').replace(/\/$/, '');
+        const url = baseUrl + '/api/v2/me/calls';
+        const user = this.gwsUsername?.value || '';
+        const pass = this.gwsPassword?.value || '';
+        const headers = { 'Content-Type': 'application/json' };
+        if (user && pass) {
+            headers['Authorization'] = `Basic ${btoa(`${user}:${pass}`)}`;
+        }
+        const res = await fetch(url, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ destination: number })
+        });
+        if (!res.ok) throw `HTTP ${res.status}`;
+        this.addDebugMessage('GWS accepted dial request', 'success');
+    }
+
+    handleGwsEvent(message) {
+        try {
+            const data = message.data || {};
+            const type = (data.type || data.eventType || '').toUpperCase();
+            this.addDebugMessage(`GWS event: ${type}`, 'info');
+
+            switch (type) {
+                case 'RINGING':
+                case 'EVENTRINGING':
+                    // Let SIP incoming handler prompt user; nothing to do here
+                    break;
+                case 'ANSWER':
+                case 'EVENTESTABLISHED':
+                    // If we have a pending session and it's not confirmed yet, nothing to force here
+                    break;
+                case 'HOLD':
+                    if (this.session && !this.isOnHold) this.toggleHold();
+                    break;
+                case 'RESUME':
+                    if (this.session && this.isOnHold) this.toggleHold();
+                    break;
+                case 'TRANSFER':
+                    if (this.session && data.target) {
+                        this.session.refer(`sip:${data.target}@${this.sipServer.value.replace(/^wss?:\/\//, '').split('/')[0]}`);
+                        this.addDebugMessage(`GWS requested transfer to ${data.target}`, 'info');
+                    }
+                    break;
+                case 'RELEASE':
+                case 'HANGUP':
+                    if (this.session) this.hangUp();
+                    break;
+                default:
+                    // Unhandled event types are logged only
+                    break;
+            }
+        } catch (e) {
+            this.addDebugMessage(`Error handling GWS event: ${e}`, 'error');
         }
     }
 

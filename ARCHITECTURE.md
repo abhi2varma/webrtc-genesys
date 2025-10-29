@@ -1,6 +1,6 @@
-# WebRTC System Architecture Overview
+# GWS + WebRTC Architecture Overview
 
-Complete architectural documentation for the Asterisk WebRTC system with Genesys Engage integration.
+Complete architectural documentation for the Genesys Workspace Web Edition (GWS) with WebRTC SIP endpoint integration.
 
 ---
 
@@ -8,85 +8,86 @@ Complete architectural documentation for the Asterisk WebRTC system with Genesys
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                          CLIENT LAYER (Browser)                          │
+│                    AGENT WORKSTATION (Browser)                           │
 │                                                                           │
-│  ┌──────────────────────────────────────────────────────────────┐       │
-│  │  WebRTC Client (HTML5/JavaScript)                            │       │
-│  │  - JsSIP Library                                              │       │
-│  │  - SIP over WebSocket                                         │       │
-│  │  - SRTP/DTLS Media Encryption                                 │       │
-│  │  - ICE/STUN/TURN for NAT Traversal                           │       │
-│  └──────────────────────────────────────────────────────────────┘       │
-│                               │                                           │
-│                               │ HTTPS/WSS                                 │
-│                               ▼                                           │
-└─────────────────────────────────────────────────────────────────────────┘
-                                │
-                                │
-┌─────────────────────────────────────────────────────────────────────────┐
-│                     WEB/PROXY LAYER (Your CentOS VM)                     │
-│                          192.168.77.131                                  │
-│                                                                           │
-│  ┌────────────────────────────────────────────────────────┐             │
-│  │  Nginx (Reverse Proxy & Web Server)                    │             │
-│  │  Port 80/443                                            │             │
-│  │  - Serves WebRTC client (HTML/CSS/JS)                  │             │
-│  │  - SSL/TLS termination                                  │             │
-│  │  - WebSocket proxy to Asterisk                         │             │
-│  └────────────────────────────────────────────────────────┘             │
-│                        │            │                                     │
-│                        │ WSS Proxy  │ Static Files                       │
-│                        ▼            ▼                                     │
-└─────────────────────────────────────────────────────────────────────────┘
-                        │
-                        │
-┌─────────────────────────────────────────────────────────────────────────┐
-│                   SIP/MEDIA LAYER (Your CentOS VM)                       │
+│  ┌────────────────────────────┐   ┌──────────────────────────────┐     │
+│  │ GWS Agent Desktop          │   │ WebRTC SIP Client            │     │
+│  │ (Call Control & UI)        │   │ (Audio Only)                 │     │
+│  │                             │   │                               │     │
+│  │ - Agent Login               │   │ - SIP Registration (DN)      │     │
+│  │ - Call Controls             │   │ - Audio Interface            │     │
+│  │ - Screen Pops               │   │ - Media Handling             │     │
+│  │ - Agent States              │   │ - DTLS-SRTP Encryption       │     │
+│  └────────────┬───────────────┘   └────────┬─────────────────────┘     │
+│               │                              │                            │
+│               │ REST API / CometD            │ WSS (SIP)                 │
+│               │ HTTPS                        │ SRTP (Media)              │
+└───────────────┼──────────────────────────────┼──────────────────────────┘
+                │                              │
+                │                              │
+┌───────────────▼──────────────────────────────▼──────────────────────────┐
+│                     APPLICATION LAYER                                    │
 │                                                                           │
 │  ┌─────────────────────────────────────────────────────────┐            │
-│  │  Asterisk PBX (SIP/WebRTC Server)                       │            │
+│  │  GWS Application (localhost:8080)                       │            │
+│  │  Spring Boot | Genesys PSDK | CometD                   │            │
+│  │                                                          │            │
+│  │  - REST API (call control, agent state)                │            │
+│  │  - CometD Server (real-time push to browser)           │            │
+│  │  - T-Server Client (call orchestration)                │            │
+│  │  - Config Server Client (agent configuration)          │            │
+│  │  - Session Management                                   │            │
+│  └─────────────────────────────────────────────────────────┘            │
+│                                                                           │
+│  ┌─────────────────────────────────────────────────────────┐            │
+│  │  Nginx (Web Server & Proxy)                             │            │
+│  │  Port 443                                               │            │
+│  │                                                          │            │
+│  │  - Serves WebRTC SIP client (HTML/CSS/JS)              │            │
+│  │  - SSL/TLS termination                                  │            │
+│  │  - WebSocket proxy to Asterisk                         │            │
+│  └─────────────────────────────────────────────────────────┘            │
+└───────────────────────────────────────────────────────────────────────────┘
+                │                              │
+                │                              │
+┌───────────────▼──────────────────────────────▼──────────────────────────┐
+│                   SIP/MEDIA GATEWAY LAYER                                 │
+│                   192.168.210.54                                          │
+│                                                                           │
+│  ┌─────────────────────────────────────────────────────────┐            │
+│  │  Asterisk (WebRTC ↔ SIP Gateway ONLY)                  │            │
 │  │  Ports: 5060 (SIP), 8089 (WSS), 10000-20000 (RTP)      │            │
 │  │                                                          │            │
-│  │  Components:                                             │            │
+│  │  Role: Translation Gateway (No Call Logic)              │            │
 │  │  ┌────────────────────────────────────────────────┐    │            │
 │  │  │  PJSIP (SIP Stack)                              │    │            │
 │  │  │  - WebSocket Transport (WSS)                    │    │            │
-│  │  │  - UDP/TCP Transport (SIP)                      │    │            │
-│  │  │  - WebRTC Endpoints (1000-1999)                 │    │            │
-│  │  │  - Genesys Trunk Configuration                  │    │            │
+│  │  │  - Agent DN Endpoints (5001-5999)               │    │            │
+│  │  │  - Genesys SIP Trunk                            │    │            │
 │  │  └────────────────────────────────────────────────┘    │            │
 │  │                                                          │            │
 │  │  ┌────────────────────────────────────────────────┐    │            │
-│  │  │  Dialplan (extensions.conf)                     │    │            │
-│  │  │  - Call routing logic                           │    │            │
-│  │  │  - IVR menus                                    │    │            │
-│  │  │  - Feature codes (600, 601, 700, etc.)         │    │            │
-│  │  │  - Genesys integration routing                  │    │            │
+│  │  │  Dialplan (Minimal - Proxy Only)                │    │            │
+│  │  │  - Forward all to Genesys SIP Server            │    │            │
+│  │  │  - No routing logic                             │    │            │
+│  │  │  - No IVR/features                              │    │            │
 │  │  └────────────────────────────────────────────────┘    │            │
 │  │                                                          │            │
 │  │  ┌────────────────────────────────────────────────┐    │            │
-│  │  │  RTP Engine                                     │    │            │
-│  │  │  - Audio/Video streaming                        │    │            │
-│  │  │  - SRTP encryption for WebRTC                   │    │            │
-│  │  │  - Codec transcoding (Opus, G.711, G.729)      │    │            │
-│  │  └────────────────────────────────────────────────┘    │            │
-│  │                                                          │            │
-│  │  ┌────────────────────────────────────────────────┐    │            │
-│  │  │  Applications                                   │    │            │
-│  │  │  - Voicemail                                    │    │            │
-│  │  │  - Conference Bridge                            │    │            │
-│  │  │  - Call Recording                               │    │            │
-│  │  │  - Echo Test                                    │    │            │
+│  │  │  Media Engine                                   │    │            │
+│  │  │  - WebRTC ↔ RTP translation                     │    │            │
+│  │  │  - SRTP ↔ RTP conversion                        │    │            │
+│  │  │  - Codec transcoding (Opus ↔ G.711)            │    │            │
 │  │  └────────────────────────────────────────────────┘    │            │
 │  └─────────────────────────────────────────────────────────┘            │
 │                        │                        │                         │
-│                        │ SIP                    │                         │
+│                        │ SIP Trunk              │                         │
 │                        ▼                        │                         │
 │  ┌─────────────────────────────────────────┐   │                         │
-│  │  Coturn (TURN Server)                   │   │                         │
+│  │  Coturn (TURN/STUN Server)              │   │                         │
 │  │  Ports: 3478, 5349                      │   │                         │
-│  │  - NAT traversal                        │   │                         │
-│  │  - Relay media when direct fails        │   │                         │
+│  │  - NAT traversal for WebRTC             │   │                         │
+│  │  - Media relay when needed              │   │                         │
 │  └─────────────────────────────────────────┘   │                         │
 │                                                  │                         │
 └──────────────────────────────────────────────────┼─────────────────────────┘
@@ -94,28 +95,45 @@ Complete architectural documentation for the Asterisk WebRTC system with Genesys
                                                    │
                                                    ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│              GENESYS ENGAGE LAYER (Your Network)                         │
+│              GENESYS ENGAGE PLATFORM (Corporate Network)                 │
+│              192.168.210.81                                              │
 │                                                                           │
 │  ┌─────────────────────────────────────────────────────────┐            │
-│  │  Genesys SIP Server                                      │            │
-│  │  Port: 5060                                              │            │
-│  │  - SIP trunk endpoint                                    │            │
-│  │  - Route Points / DNs                                    │            │
-│  │  - Inbound/Outbound call routing                        │            │
-│  └─────────────────────────────────────────────────────────┘            │
-│                        │                                                  │
-│                        │                                                  │
-│                        ▼                                                  │
+│  │  Configuration Server                                    │            │
+│  │  192.168.210.81:5000                                     │            │
+│  │  - Agent configuration                                   │            │
+│  │  - DN management (Agent DNs 5001-5999)                  │            │
+│  │  - Skills & routing rules                               │            │
+│  │  - Switch objects                                        │            │
+│  └────────────────────────┬────────────────────────────────┘            │
+│                            │ Internal Genesys Protocol                   │
+│                            ▼                                              │
 │  ┌─────────────────────────────────────────────────────────┐            │
-│  │  Genesys Platform                                        │            │
-│  │  - Configuration Server                                  │            │
-│  │  - T-Server (Telephony)                                  │            │
-│  │  - Stat Server                                           │            │
-│  │  - Universal Routing Server                              │            │
-│  └─────────────────────────────────────────────────────────┘            │
-│                        │                                                  │
-│                        │                                                  │
-│                        ▼                                                  │
+│  │  T-Server (Telephony Control)                            │            │
+│  │  192.168.210.81:5025                                     │            │
+│  │  - Call orchestration & state management                │            │
+│  │  - Agent state management (Ready/Not Ready)             │            │
+│  │  - CTI events to GWS                                    │            │
+│  │  - Call control commands from GWS                       │            │
+│  └────────────────────────┬────────────────────────────────┘            │
+│                            │ SIP Control                                  │
+│                            ▼                                              │
+│  ┌─────────────────────────────────────────────────────────┐            │
+│  │  Genesys SIP Server                                      │            │
+│  │  192.168.210.81:5060                                     │            │
+│  │  - Agent DN registration (5001-5999)                    │            │
+│  │  - SIP trunk from Asterisk (192.168.210.54)             │            │
+│  │  - Call signaling & media control                       │            │
+│  └────────────────────────┬────────────────────────────────┘            │
+│                            │                                              │
+│  ┌────────────────────────┴────────────────────────────────┐            │
+│  │  Universal Routing Server (URS)                          │            │
+│  │  - Skills-based routing                                  │            │
+│  │  - Queue management                                      │            │
+│  │  - Business rules & strategies                           │            │
+│  └──────────────────────────────────────────────────────────┘            │
+│                            │                                              │
+│                            ▼                                              │
 │  ┌─────────────────────────────────────────────────────────┐            │
 │  │  PSTN Gateway / Carrier                                  │            │
 │  │  - External call connectivity                            │            │
@@ -127,31 +145,91 @@ Complete architectural documentation for the Asterisk WebRTC system with Genesys
 
 ## 📊 Component Details
 
-### 1. **WebRTC Client (Browser)**
+### 1. **GWS Agent Desktop (Browser)**
 
-**Location:** Runs in user's browser  
-**Technology:** HTML5, JavaScript, JsSIP library  
-**Port:** Accesses via HTTPS (443)
+**Location:** Runs in agent's browser  
+**URL:** http://localhost:8080/ui/ad/v1/  
+**Technology:** HTML5, JavaScript, CometD client  
+**Port:** 8080 (HTTP) or 443 (HTTPS)
 
 **Responsibilities:**
-- User interface for making/receiving calls
-- SIP signaling over WebSocket Secure (WSS)
+- Agent login and authentication
+- Call control interface (answer, hold, transfer, release)
+- Agent state management (Ready, Not Ready, ACW)
+- Screen pops with customer data
+- Real-time call notifications via CometD
+- Disposition codes and wrap-up
+- Interaction history
+
+**Key Features:**
+- Unified agent interface
+- CTI screen pops
+- Click-to-dial
+- Call controls (all via T-Server)
+- Agent statistics
+- Queue status
+- Customer data integration
+
+---
+
+### 2. **WebRTC SIP Client (Browser)**
+
+**Location:** Runs in agent's browser (separate tab)  
+**URL:** https://webrtc-server/index-agent-dn.html  
+**Technology:** HTML5, JavaScript, JsSIP library  
+**Port:** Accesses via HTTPS/WSS (443)
+
+**Responsibilities:**
+- SIP registration with Agent DN (5001-5999)
+- Audio interface only (no call control)
 - Media handling with WebRTC APIs
 - ICE negotiation for NAT traversal
 - DTLS-SRTP for encrypted media
 
 **Key Features:**
-- Dial pad for DTMF
-- Call controls (mute, hold, transfer)
-- Audio volume control
-- Call logging
-- Real-time status display
+- Microphone/speaker controls
+- Volume control
+- Mute button (local)
+- Audio quality indicator
+- SIP registration status
+- **Note:** All call control done via GWS, not this client
 
 ---
 
-### 2. **Nginx (Web Server & Reverse Proxy)**
+### 3. **GWS Application Server**
+
+**Location:** localhost or application server  
+**Technology:** Spring Boot, Java 8, Genesys PSDK  
+**Port:** 8080  
+**Files:** h:\Abhishek\gws-main\
+
+**Responsibilities:**
+- REST API for agent actions
+- CometD server for real-time push
+- Connection to Genesys Config Server
+- Connection to Genesys T-Server
+- Session management
+- Authentication/authorization
+- Event transformation (T-Server → Browser)
+
+**Key Integrations:**
+- **Config Server (192.168.210.81:5000):** Agent configuration
+- **T-Server (192.168.210.81:5025):** Call control & CTI events
+- **CometD (WebSocket):** Real-time push to browser
+
+**API Endpoints:**
+- `POST /api/v2/auth/login` - Agent login
+- `POST /api/v2/me/state` - Set agent state
+- `POST /api/v2/me/calls` - Make call
+- `PUT /api/v2/me/calls/{id}` - Answer/Hold/etc.
+- `POST /api/v2/me/calls/{id}/transfer` - Transfer call
+
+---
+
+### 4. **Nginx (Web Server & Reverse Proxy)**
 
 **Location:** Docker container on CentOS VM  
+**IP Address:** 192.168.210.54  
 **Ports:** 80 (HTTP), 443 (HTTPS)  
 **Image:** `nginx:alpine`
 
@@ -179,9 +257,10 @@ location /ws {
 
 ---
 
-### 3. **Asterisk PBX**
+### 5. **Asterisk (WebRTC ↔ SIP Gateway)**
 
 **Location:** Docker container on CentOS VM  
+**IP Address:** 192.168.210.54  
 **Ports:**
 - 5060 (SIP UDP/TCP)
 - 8089 (WebSocket Secure)
@@ -200,15 +279,17 @@ location /ws {
 ```
 
 **Endpoints:**
-- **WebRTC Users (1000-1999):**
+- **Agent DNs (5001-5999):**
   - WebRTC-enabled (ICE, DTLS-SRTP)
   - Opus codec support
-  - Browser-based clients
+  - Browser-based registration
+  - Each agent has unique DN matching Genesys
 
-- **Genesys Trunk:**
+- **Genesys SIP Trunk:**
   - SIP connection to Genesys SIP Server
   - G.711 (ulaw/alaw) codecs
-  - Authentication (username/password or IP-based)
+  - Forwards all calls to/from Genesys
+  - No call routing logic in Asterisk
 
 **Key Settings for WebRTC:**
 ```ini
@@ -226,51 +307,53 @@ rtp_symmetric=yes
 force_rport=yes
 ```
 
-#### 3b. Dialplan (Call Routing)
+#### 5b. Dialplan (Minimal - Proxy Only)
 
-**Configuration File:** `asterisk/etc/extensions.conf`
+**Configuration File:** `asterisk/etc/extensions-sip-endpoint.conf`
+
+**Role:** Asterisk acts as a simple gateway with NO routing logic
 
 **Contexts:**
 
-1. **[from-internal]** - WebRTC users
-   - Internal extensions (1000-1999)
-   - Feature codes (600, 601, 700)
-   - Outbound to Genesys (9 + number)
+1. **[genesys-agent]** - Agent DN context
+   - All calls forwarded to Genesys SIP Server
+   - No local routing decisions
+   - Simple proxy behavior
 
-2. **[from-genesys-engage]** - Incoming from Genesys
-   - Route by DNIS (Dialed Number)
-   - Direct to extensions
-   - IVR menus
-   - Queue routing
+2. **[from-genesys]** - Incoming from Genesys
+   - Forward to registered agent DN
+   - No IVR or queue logic
+   - T-Server handles all routing
 
-3. **[ivr]** - Interactive Voice Response
-   - Menu prompts
-   - Digit collection
-   - Routing logic
+**Example Configuration:**
+```ini
+[genesys-agent]
+; All outbound - forward to Genesys (192.168.210.81)
+exten => _X.,1,NoOp(Forward to Genesys)
+ same => n,Dial(PJSIP/${EXTEN}@genesys_sip_server)
+ same => n,Hangup()
 
-**Call Flow Example - Outbound:**
-```
-WebRTC User (1000)
-    ↓ Dial: 95551234567
-Asterisk Dialplan
-    ↓ Strip 9, dial via Genesys trunk
-Genesys SIP Server
-    ↓ Route through platform
-PSTN
-```
+[from-genesys]
+; All inbound - deliver to agent DN
+exten => _X.,1,NoOp(From Genesys to DN ${EXTEN})
+ same => n,Dial(PJSIP/${EXTEN})
+ same => n,Hangup()
 
-**Call Flow Example - Inbound:**
-```
-PSTN
-    ↓ DID: +15551234567
-Genesys Platform
-    ↓ Route Point: 5000
-Asterisk (DNIS=5000)
-    ↓ Dialplan routing
-WebRTC User (1000) or IVR
+; genesys_sip_server endpoint points to 192.168.210.81:5060
 ```
 
-#### 3c. RTP Engine
+**Call Flow - GWS Controlled:**
+```
+GWS makes call request
+    ↓ REST API
+T-Server orchestrates
+    ↓ Dials agent DN + customer
+Genesys SIP Server → Asterisk → Agent (DN 5001)
+    ↓ SIP signaling
+Audio path established
+```
+
+#### 5c. Media Engine
 
 **Configuration File:** `asterisk/etc/rtp.conf`
 
@@ -289,26 +372,9 @@ WebRTC User (1000) or IVR
 - **G.722** - Wideband audio
 - **G.729** - Low bandwidth (license required)
 
-#### 3d. Applications
-
-**Voicemail:**
-- Mailbox per user
-- Email notifications
-- Web access
-
-**Conference Bridge:**
-- Multi-party conferences
-- Admin controls
-- Recording capability
-
-**Call Recording:**
-- MixMonitor application
-- WAV format
-- Storage management
-
 ---
 
-### 4. **Coturn (TURN Server)**
+### 6. **Coturn (TURN Server)**
 
 **Location:** Docker container on CentOS VM  
 **Ports:** 3478 (TURN), 5349 (TURN/TLS)  
@@ -337,14 +403,16 @@ Asterisk RTP
 
 ---
 
-### 5. **Genesys Engage Platform**
+### 7. **Genesys Engage Platform**
 
-**Location:** Your corporate network  
-**Connection:** SIP trunk from Asterisk
+**Location:** Corporate network  
+**IP Address:** 192.168.210.81  
+**Connection:** SIP trunk from Asterisk (192.168.210.54)
 
-#### 5a. Genesys SIP Server
+#### 7a. Genesys SIP Server
 
-**Port:** 5060 (UDP/TCP) or 5061 (TLS)
+**IP Address:** 192.168.210.81  
+**Port:** 5060 (UDP/TCP)
 
 **Responsibilities:**
 - SIP endpoint for Asterisk
@@ -387,84 +455,99 @@ Asterisk RTP
 
 ## 🔄 Call Flow Scenarios
 
-### Scenario 1: WebRTC to External Number
+### Scenario 1: Inbound Call with Screen Pop
 
 ```
-1. Browser (192.168.1.100)
-   ↓ User dials: 95551234567
-   ↓ SIP INVITE over WSS
+1. PSTN Customer calls
+   ↓ +15551234567 dials company number
    
-2. Nginx (192.168.77.131:443)
-   ↓ Proxy WebSocket
+2. Genesys Platform
+   ↓ URS applies routing strategy
+   ↓ Skills-based routing selects agent
+   ↓ Agent DN 5001 selected (Ready state)
    
-3. Asterisk (192.168.77.131:8089)
-   ↓ Receive WSS connection
-   ↓ Authenticate user 1000
-   ↓ Dialplan: Strip 9, route to Genesys
-   ↓ SIP INVITE to Genesys
+3. DUAL PATH:
    
-4. Genesys SIP Server (10.x.x.x:5060)
-   ↓ Accept call
-   ↓ Route through platform
+   PATH A (CTI - Screen Pop):
+   T-Server → GWS Application
+       ↓ EventRinging with customer data
+       ↓ CometD push to browser
+   GWS UI → Screen pop appears
+       ↓ Customer name, account, history
    
-5. PSTN Gateway
-   ↓ Connect to +15551234567
+   PATH B (Audio):
+   Genesys SIP Server → Asterisk
+       ↓ SIP INVITE to DN 5001
+       ↓ WSS to WebRTC client
+   Browser → Rings
    
-6. Media Path:
-   Browser ←SRTP→ Asterisk ←RTP→ Genesys ←→ PSTN
+4. Agent answers in GWS
+   ↓ Click "Answer" button
+   ↓ REST API → GWS → T-Server
+   ↓ T-Server confirms answer
+   ↓ SIP 200 OK flows through
+   
+5. Media Path:
+   PSTN ←→ Genesys ←RTP→ Asterisk ←SRTP→ Browser
+   
+6. Call control via GWS:
+   - Hold, Transfer, Conference → all via T-Server
 ```
 
-### Scenario 2: Inbound from PSTN to WebRTC
+### Scenario 2: Outbound Call (Click-to-Dial from GWS)
 
 ```
-1. PSTN
-   ↓ Incoming call to +15551234000
+1. Agent in GWS
+   ↓ Clicks phone number in CRM
+   ↓ REST API: POST /api/v2/me/calls
    
-2. PSTN Gateway
-   ↓ Forward to Genesys
+2. GWS Application
+   ↓ PSDK RequestMakeCall to T-Server
    
-3. Genesys Platform
-   ↓ Routing strategy
-   ↓ Route Point: 5000
-   ↓ SIP INVITE to Asterisk
+3. T-Server orchestrates
+   ↓ Two-party call initiation
+   ↓ Call agent DN + dial customer
    
-4. Asterisk
-   ↓ Receive on trunk
-   ↓ Context: from-genesys-engage
-   ↓ DNIS = 5000
-   ↓ Dialplan: Route to extension 1000
-   ↓ SIP INVITE over WSS
+4. Agent leg:
+   Genesys SIP Server → Asterisk → Agent DN 5001
+   ↓ WebRTC client rings/auto-answers
    
-5. Nginx
-   ↓ Proxy WebSocket
+5. Customer leg:
+   T-Server → Genesys → PSTN → Customer
+   ↓ Customer answers
    
-6. Browser
-   ↓ Incoming call alert
-   ↓ User answers
+6. Call connected
+   ↓ GWS receives EventEstablished
+   ↓ CometD push updates UI
+   ↓ Call timer starts
    
 7. Media Path:
-   PSTN ←→ Genesys ←RTP→ Asterisk ←SRTP→ Browser
+   Agent Browser ←SRTP→ Asterisk ←RTP→ Genesys ←→ PSTN Customer
 ```
 
-### Scenario 3: WebRTC to WebRTC (Internal)
+### Scenario 3: Call Transfer
 
 ```
-1. User 1000 (Browser A)
-   ↓ Dial: 1001
-   ↓ WSS to Asterisk
+1. Agent in active call
+   ↓ Clicks "Transfer" in GWS
+   ↓ Selects target: Agent DN 5002
    
-2. Asterisk
-   ↓ Dialplan: Internal extension
-   ↓ Lookup AOR for 1001
-   ↓ WSS to User 1001
+2. GWS Application
+   ↓ REST API: POST /api/v2/me/calls/{id}/transfer
+   ↓ PSDK RequestTransfer to T-Server
    
-3. User 1001 (Browser B)
-   ↓ Incoming call
-   ↓ Answer
+3. T-Server handles transfer
+   ↓ Blind or Consultative transfer
+   ↓ No Asterisk dialplan involved
+   ↓ All logic in Genesys
    
-4. Media Path:
-   Browser A ←SRTP→ Asterisk ←SRTP→ Browser B
-   (Asterisk in media path for recording/monitoring)
+4. Target agent rings
+   ↓ Genesys → Asterisk → DN 5002
+   ↓ Target agent's GWS shows screen pop
+   
+5. Original agent released
+   ↓ Call transferred successfully
+   ↓ All via T-Server control
 ```
 
 ---
@@ -568,12 +651,19 @@ Asterisk Cluster
 
 | File | Purpose | Key Settings |
 |------|---------|--------------|
-| `pjsip.conf` | SIP endpoints & transports | WebRTC users, Genesys trunk |
-| `extensions.conf` | Call routing logic | Dialplan, IVR, features |
+| **GWS Application** | | |
+| `application.yml` | GWS configuration | Genesys servers, ports, CometD settings |
+| `start-gws.ps1` | Startup script | Java options, configuration path |
+| **Asterisk** | | |
+| `pjsip-sip-endpoint.conf` | Agent DNs & trunk | Agent DNs (5001-5999), Genesys trunk |
+| `extensions-sip-endpoint.conf` | Minimal dialplan | Forward to Genesys (no logic) |
 | `rtp.conf` | Media settings | Port range, STUN, codecs |
 | `http.conf` | WebSocket server | WSS port, SSL certs |
+| **Nginx** | | |
 | `nginx.conf` | Web server & proxy | HTTPS, WebSocket proxy |
-| `.env` | Environment variables | IPs, domains, credentials |
+| **WebRTC Client** | | |
+| `app-agent-dn.js` | Agent SIP client | DN registration, audio only |
+| `index-agent-dn.html` | Agent UI | WebRTC interface |
 
 ---
 
@@ -618,14 +708,23 @@ Nginx Logs:
 
 | Component | Port | Protocol | Purpose |
 |-----------|------|----------|---------|
-| Nginx | 80 | TCP | HTTP (redirect to HTTPS) |
+| **Agent Workstation** | | | |
+| GWS UI | 8080 | HTTP/HTTPS | Agent desktop interface |
+| WebRTC Client | 443 | WSS | SIP signaling |
+| **Application Layer** | | | |
+| GWS Application | 8080 | HTTP | REST API & CometD |
+| Nginx | 80 | TCP | HTTP (redirect) |
 | Nginx | 443 | TCP | HTTPS / WSS |
-| Asterisk | 5060 | UDP/TCP | SIP signaling |
-| Asterisk | 8089 | TCP | WebSocket Secure |
+| **Gateway Layer** | | | |
+| Asterisk | 5060 | UDP/TCP | SIP trunk to Genesys |
+| Asterisk | 8089 | TCP | WebSocket from browser |
 | Asterisk | 10000-20000 | UDP | RTP/SRTP media |
-| Coturn | 3478 | UDP/TCP | TURN |
+| Coturn | 3478 | UDP/TCP | TURN/STUN |
 | Coturn | 5349 | TCP | TURN over TLS |
-| Genesys | 5060 | UDP/TCP | SIP trunk |
+| **Genesys Platform** | | | |
+| Config Server | 5000 | TCP | Configuration (GWS → Genesys) |
+| T-Server | 5025 | TCP | Call control (GWS → Genesys) |
+| SIP Server | 5060 | UDP/TCP | SIP trunk (Asterisk → Genesys) |
 
 ---
 
@@ -633,15 +732,24 @@ Nginx Logs:
 
 | Layer | Technology | Version |
 |-------|------------|---------|
-| OS | CentOS | 7/8/9 |
+| **Agent Desktop** | | |
+| UI Framework | HTML5, JavaScript | - |
+| SIP Stack | JsSIP | 3.10+ |
+| Real-time | CometD (Bayeux) | 3.1.12 |
+| **Application Layer** | | |
+| Framework | Spring Boot | 1.5.22 |
+| Language | Java | 8+ |
+| Genesys SDK | Platform SDK (PSDK) | 9.0.7 |
+| Real-time Server | CometD Server | 3.1.12 |
+| **Gateway Layer** | | |
+| OS | CentOS / Windows | 7/8/9 / 10/11 |
 | Container | Docker | 20.10+ |
-| Orchestration | Docker Compose | 2.x |
 | PBX | Asterisk | 18+ |
+| SIP Stack | PJSIP | 2.x |
 | Web Server | Nginx | Alpine |
 | TURN Server | Coturn | Latest |
-| SIP Library | PJSIP | 2.x |
-| WebRTC Library | JsSIP | 3.10+ |
-| Contact Center | Genesys Engage | 8.5/9.0 |
+| **Contact Center** | | |
+| Platform | Genesys Engage | 8.5.2 |
 
 ---
 
@@ -655,7 +763,46 @@ Nginx Logs:
 
 ---
 
-*This architecture supports enterprise-grade WebRTC calling with seamless Genesys Engage integration for contact center operations.*
+## 🎯 Architecture Benefits
+
+### Unified Agent Experience
+- **Single Desktop:** GWS provides one interface for all interactions
+- **CTI Integration:** Screen pops with customer data
+- **Call Control:** All via GWS (no manual dialing in WebRTC client)
+- **Agent State:** Synchronized across all systems
+
+### Enterprise Features
+- **Skills-Based Routing:** Powered by Genesys URS
+- **Queue Management:** Advanced queue strategies
+- **Reporting:** Full Genesys reporting capabilities
+- **Recording:** Call recording via T-Server
+- **Transfer/Conference:** Native Genesys features
+
+### Scalability
+- **GWS:** Can run multiple instances with load balancer
+- **Asterisk:** Lightweight (just gateway, no logic)
+- **Genesys:** Handles all intelligence and routing
+- **WebRTC:** Browser-based, no phone required
+
+### Cloud-Ready
+- GWS can run in cloud or on-premise
+- Asterisk can be deployed anywhere
+- Agents work from anywhere (home, office, mobile)
+- Only SIP trunk needed to Genesys
+
+---
+
+## 📚 Related Documentation
+
+- **[GWS_SIP_ENDPOINT_INTEGRATION.md](GWS_SIP_ENDPOINT_INTEGRATION.md)** - Complete integration guide
+- **[GWS_STARTUP_GUIDE.md](GWS_STARTUP_GUIDE.md)** - Setup instructions
+- **[INTEGRATION_DIAGRAM.md](INTEGRATION_DIAGRAM.md)** - Visual diagrams
+- **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** - Quick reference
+- **[h:\Abhishek\gws-main\README.md](../../h:/Abhishek/gws-main/README.md)** - GWS application guide
+
+---
+
+*This architecture provides enterprise-grade contact center capabilities with WebRTC voice through Genesys Workspace Web Edition integration.*
 
 
 
