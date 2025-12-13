@@ -41,17 +41,17 @@ else
 fi
 echo ""
 
-# Kamailio Status
-echo -e "${GREEN}=== Kamailio Status ===${NC}"
-if docker ps | grep -q webrtc-kamailio; then
-    echo "Active Dialogs:"
-    docker exec webrtc-kamailio kamctl dialog show 2>/dev/null | grep -c "dialog::" || echo "0"
+# Coturn Status
+echo -e "${GREEN}=== Coturn (TURN) Status ===${NC}"
+if docker ps | grep -q webrtc-coturn; then
+    echo "TURN Server:"
+    docker exec webrtc-coturn ps aux | grep turnserver | grep -v grep || echo "Not running"
     echo ""
     
     echo "Recent errors (last 10):"
-    docker logs --tail 10 webrtc-kamailio 2>&1 | grep -i error || echo "No recent errors"
+    docker logs --tail 10 webrtc-coturn 2>&1 | grep -i error || echo "No recent errors"
 else
-    echo -e "${RED}Kamailio container not running${NC}"
+    echo -e "${RED}Coturn container not running${NC}"
 fi
 echo ""
 
@@ -106,9 +106,8 @@ check_service() {
 
 check_service "webrtc-nginx" 443
 check_service "webrtc-asterisk" 5060
-check_service "webrtc-kamailio" 5060
+check_service "webrtc-asterisk" 8089
 check_service "webrtc-coturn" 3478
-check_service "webrtc-mysql" 3306
 
 echo ""
 echo -e "${BLUE}========================================${NC}"

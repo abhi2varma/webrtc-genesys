@@ -2,11 +2,21 @@
 
 Step-by-step guide to deploy this WebRTC system on CentOS.
 
+## Architecture Overview
+
+This deployment includes:
+- **Asterisk** - WebRTC ↔ SIP Gateway (minimal proxy, no call routing logic)
+- **Nginx** - Web server & reverse proxy for WebRTC client
+- **Coturn** - TURN/STUN server for NAT traversal
+
+**Note:** This is a simplified architecture. Asterisk connects directly to Genesys SIP Server. No Kamailio or MySQL required.
+
 ## Prerequisites
 
 - CentOS 7/8/9 server (accessible via SSH on port 22)
 - Root or sudo access
 - Minimum: 2 CPU cores, 4GB RAM
+- Network access to Genesys SIP Server (typically port 5060)
 
 ## Deployment Steps
 
@@ -130,14 +140,28 @@ docker-compose up -d
 ### Step 7: Verify Deployment
 
 ```bash
-# Check container status
+# Check container status (should show asterisk, nginx, coturn)
 docker-compose ps
+
+# Expected services:
+# - webrtc-asterisk (Asterisk PBX)
+# - webrtc-nginx (Web server)
+# - webrtc-coturn (TURN server)
 
 # View logs
 docker-compose logs -f
 
+# Check specific service
+docker-compose logs asterisk
+docker-compose logs nginx
+docker-compose logs coturn
+
 # Run monitoring script
 ./scripts/monitor.sh
+
+# Verify Asterisk is running
+docker exec -it webrtc-asterisk asterisk -rx "core show version"
+docker exec -it webrtc-asterisk asterisk -rx "pjsip show endpoints"
 ```
 
 ## CentOS-Specific Notes
@@ -300,14 +324,19 @@ sudo netstat -tulpn | grep -E '443|5060|8089'
 
 - [ ] System fully updated: `sudo yum update -y`
 - [ ] Docker installed and running
-- [ ] Firewalld configured with proper rules
+- [ ] Firewalld configured with proper rules (ports: 80, 443, 5060-5061, 8088-8089, 10000-20000, 3478-3479, 5349)
 - [ ] SELinux configured (not disabled)
-- [ ] SSL certificates installed
-- [ ] All configuration files updated
-- [ ] Services auto-start on boot
-- [ ] Monitoring configured
+- [ ] SSL certificates installed in `./certs/` directory
+- [ ] Configuration files updated:
+  - [ ] `asterisk/etc/pjsip.conf` - Genesys SIP Server and agent DNs
+  - [ ] `asterisk/etc/extensions-sip-endpoint.conf` - Minimal dialplan
+  - [ ] `nginx/nginx.conf` - Domain name and SSL paths
+  - [ ] `coturn/turnserver.conf` - Public IP and realm
+- [ ] Services auto-start on boot: `sudo systemctl enable webrtc`
+- [ ] Monitoring configured: `./scripts/monitor.sh`
 - [ ] Backups scheduled via cron
-- [ ] Security hardening applied
+- [ ] Security hardening applied (change default passwords)
+- [ ] Genesys SIP Server connectivity verified
 
 ## Useful CentOS Commands
 
@@ -337,6 +366,36 @@ sudo journalctl -u docker -f
 sudo tail -f /var/log/messages
 ```
 
+## Service Verification
+
+After starting services, verify all components:
+
+```bash
+# Check all containers are running
+docker-compose ps
+
+# Expected output should show 3 services:
+# - webrtc-asterisk (Up)
+# - webrtc-nginx (Up)  
+# - webrtc-coturn (Up)
+
+# Test Asterisk
+docker exec -it webrtc-asterisk asterisk -rx "core show version"
+docker exec -it webrtc-asterisk asterisk -rx "pjsip show endpoints"
+
+# Test Nginx
+curl -k https://localhost
+curl -k https://localhost/ws  # Should return WebSocket upgrade
+
+# Test Coturn
+docker exec -it webrtc-coturn turnutils_stunclient localhost
+
+# Check logs for errors
+docker-compose logs --tail=50 asterisk
+docker-compose logs --tail=50 nginx
+docker-compose logs --tail=50 coturn
+```
+
 ## Next Steps
 
 1. ✅ Files transferred to CentOS
@@ -345,8 +404,9 @@ sudo tail -f /var/log/messages
 4. ✅ Configuration updated
 5. ✅ Services started
 6. 🎯 Test WebRTC client connection
-7. 🎯 Verify Genesys integration
-8. 🎯 Set up monitoring and backups
+7. 🎯 Verify Genesys SIP Server connectivity
+8. 🎯 Test agent DN registration (5001-5020)
+9. 🎯 Set up monitoring and backups
 
 ---
 

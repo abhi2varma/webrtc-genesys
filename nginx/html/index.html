@@ -10,7 +10,7 @@
     <div class="container">
         <header>
             <h1>🌐 WebRTC SIP Client</h1>
-            <p class="subtitle">Asterisk + Kamailio + Genesys Integration</p>
+            <p class="subtitle">Asterisk + Genesys SIP Endpoint Integration</p>
         </header>
 
         <div class="main-content">
@@ -19,7 +19,7 @@
                 <h2>🧠 GWS (CTI) Settings</h2>
                 <div class="form-group">
                     <label for="gwsUrl">GWS URL (CometD/REST):</label>
-                    <input type="text" id="gwsUrl" value="https://localhost:8000" placeholder="https://localhost:8000">
+                    <input type="text" id="gwsUrl" value="http://192.168.18.109:8090" placeholder="http://192.168.18.109:8090">
                 </div>
                 <div class="form-group">
                     <label for="gwsUsername">GWS Username (optional for Basic Auth):</label>
@@ -55,12 +55,12 @@
                     <input type="text" id="sipServer" value="wss://your-domain.com/ws" placeholder="wss://your-domain.com/ws">
                 </div>
                 <div class="form-group">
-                    <label for="sipUsername">Username:</label>
-                    <input type="text" id="sipUsername" value="1000" placeholder="1000">
+                    <label for="sipUsername">Agent DN:</label>
+                    <input type="text" id="sipUsername" value="5001" placeholder="5001">
                 </div>
                 <div class="form-group">
                     <label for="sipPassword">Password:</label>
-                    <input type="password" id="sipPassword" value="webrtc1000pass" placeholder="Password">
+                    <input type="password" id="sipPassword" value="GenesysAgent5001!" placeholder="Password">
                 </div>
                 <div class="button-group">
                     <button id="connectBtn" class="btn btn-primary">Connect</button>

@@ -33,10 +33,6 @@ echo "Backing up Asterisk configuration..."
 cp -r asterisk/etc "$BACKUP_DIR/asterisk-etc"
 cp -r asterisk/sounds "$BACKUP_DIR/asterisk-sounds" 2>/dev/null || true
 
-# Backup Kamailio configuration
-echo "Backing up Kamailio configuration..."
-cp -r kamailio "$BACKUP_DIR/kamailio"
-
 # Backup Nginx configuration
 echo "Backing up Nginx configuration..."
 cp -r nginx "$BACKUP_DIR/nginx"
@@ -53,15 +49,6 @@ cp .env "$BACKUP_DIR/" 2>/dev/null || true
 # Backup SSL certificates
 echo "Backing up SSL certificates..."
 cp -r certs "$BACKUP_DIR/certs" 2>/dev/null || true
-
-# Backup MySQL database
-echo "Backing up MySQL database..."
-if docker ps | grep -q webrtc-mysql; then
-    docker exec webrtc-mysql mysqldump -u root -p${MYSQL_ROOT_PASSWORD:-rootpassword} kamailio > "$BACKUP_DIR/kamailio.sql"
-    echo "Database backup completed"
-else
-    echo -e "${YELLOW}Warning: MySQL container not running, skipping database backup${NC}"
-fi
 
 # Create archive
 echo "Creating compressed archive..."

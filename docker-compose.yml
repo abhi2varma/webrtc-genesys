@@ -20,24 +20,7 @@ services:
       - NET_ADMIN
       - SYS_NICE
     depends_on:
-      - kamailio
       - coturn
-
-  kamailio:
-    image: kamailio/kamailio:latest
-    container_name: webrtc-kamailio
-    hostname: kamailio
-    network_mode: host
-    restart: unless-stopped
-    volumes:
-      - ./kamailio/kamailio.cfg:/etc/kamailio/kamailio.cfg
-      - ./kamailio/kamctlrc:/etc/kamailio/kamctlrc
-      - ./certs:/etc/certs:ro
-    environment:
-      - KAMAILIO_SIP_DOMAIN=localhost
-      - KAMAILIO_DBENGINE=MYSQL
-    cap_add:
-      - NET_ADMIN
 
   coturn:
     image: coturn/coturn:latest
@@ -65,25 +48,6 @@ services:
       - ./certs:/etc/certs:ro
     depends_on:
       - asterisk
-
-  mysql:
-    image: mysql:8.0
-    container_name: webrtc-mysql
-    restart: unless-stopped
-    environment:
-      - MYSQL_ROOT_PASSWORD=rootpassword
-      - MYSQL_DATABASE=kamailio
-      - MYSQL_USER=kamailio
-      - MYSQL_PASSWORD=kamailiopass
-    volumes:
-      - mysql-data:/var/lib/mysql
-      - ./kamailio/schema.sql:/docker-entrypoint-initdb.d/schema.sql
-    ports:
-      - "3306:3306"
-
-volumes:
-  mysql-data:
-    driver: local
 
 
 

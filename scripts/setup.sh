@@ -110,20 +110,13 @@ print_success "Configuration updated"
 # Update Asterisk pjsip.conf
 print_step "Updating Asterisk configuration..."
 
-sed -i "s/YOUR_PUBLIC_IP_HERE/$PUBLIC_IP/g" asterisk/etc/pjsip.conf
-sed -i "s/GENESYS_SIP_HOST/$GENESYS_HOST/g" asterisk/etc/pjsip.conf
-sed -i "s/YOUR_GENESYS_USERNAME/$GENESYS_USER/g" asterisk/etc/pjsip.conf
-sed -i "s/YOUR_GENESYS_PASSWORD/$GENESYS_PASS/g" asterisk/etc/pjsip.conf
+sed -i "s/\${PUBLIC_IP}/$PUBLIC_IP/g" asterisk/etc/pjsip.conf
+sed -i "s/\${GENESYS_SIP_HOST}/$GENESYS_HOST/g" asterisk/etc/pjsip.conf
+sed -i "s/\${GENESYS_SIP_PORT}/5060/g" asterisk/etc/pjsip.conf
+sed -i "s/\${GENESYS_USERNAME}/$GENESYS_USER/g" asterisk/etc/pjsip.conf
+sed -i "s/\${GENESYS_PASSWORD}/$GENESYS_PASS/g" asterisk/etc/pjsip.conf
 
 print_success "Asterisk configuration updated"
-
-# Update Kamailio configuration
-print_step "Updating Kamailio configuration..."
-
-sed -i "s/YOUR_PUBLIC_IP_HERE/$PUBLIC_IP/g" kamailio/kamailio.cfg
-sed -i "s/your-domain.com/$DOMAIN/g" kamailio/kamailio.cfg
-
-print_success "Kamailio configuration updated"
 
 # Update Coturn configuration
 print_step "Updating TURN server configuration..."

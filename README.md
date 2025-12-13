@@ -1,14 +1,14 @@
-# Asterisk WebRTC with Genesys SIP and Kamailio RTP Engine
+# Asterisk WebRTC with Genesys SIP Endpoint Integration
 
-A complete WebRTC telephony solution integrating Asterisk PBX, Kamailio SIP proxy, Genesys SIP trunk, and a modern web-based client interface.
+A complete WebRTC telephony solution integrating Asterisk PBX as a SIP gateway, Genesys SIP Server, and a modern web-based client interface. Designed for Genesys Workspace Web Edition (GWS) integration.
 
 ## 🌟 Features
 
 - **WebRTC Support**: Full browser-based calling with no plugins required
-- **Asterisk PBX**: Enterprise-grade call routing and features
-- **Kamailio Integration**: High-performance SIP proxy with RTP engine
-- **Genesys SIP Trunk**: Connect to Genesys cloud telephony
-- **Modern Web Client**: Beautiful, responsive interface for making/receiving calls
+- **Asterisk Gateway**: Minimal SIP gateway (proxy only, no call routing logic)
+- **Genesys SIP Integration**: Direct connection to Genesys SIP Server
+- **GWS Integration**: Works with Genesys Workspace Web Edition for CTI control
+- **Modern Web Client**: Beautiful, responsive interface with GWS CometD integration
 - **TURN/STUN Support**: NAT traversal for reliable connectivity
 - **Docker Compose**: Easy deployment and management
 
@@ -17,23 +17,18 @@ A complete WebRTC telephony solution integrating Asterisk PBX, Kamailio SIP prox
 ```
 ┌─────────────┐      WSS      ┌──────────┐     SIP/RTP    ┌────────────┐
 │   WebRTC    │ ◄────────────► │  Nginx   │ ◄────────────► │  Asterisk  │
-│   Client    │                │  Proxy   │                │    PBX     │
+│   Client    │                │  Proxy   │                │  Gateway   │
 └─────────────┘                └──────────┘                └────────────┘
                                                                   │
                                                                   │ SIP
                                                                   ▼
                                                             ┌────────────┐
-                                                            │  Kamailio  │
-                                                            │ SIP Proxy  │
-                                                            └────────────┘
-                                                                  │
-                                                                  │ SIP
-                                                                  ▼
-                                                            ┌────────────┐
                                                             │  Genesys   │
-                                                            │ SIP Trunk  │
+                                                            │ SIP Server │
                                                             └────────────┘
 ```
+
+**Note:** Asterisk acts as a minimal gateway. All call routing and control is handled by Genesys T-Server via GWS.
 
 ## 🚀 Quick Start
 
@@ -80,10 +75,11 @@ For self-signed (testing):
 4. **Update configuration files:**
 
 Edit the following files with your specific values:
-- `asterisk/etc/pjsip.conf` - Update Genesys SIP settings
+- `asterisk/etc/pjsip.conf` - Update Genesys SIP settings and agent DNs (5001-5020)
 - `asterisk/etc/rtp.conf` - Update public IP for RTP
-- `kamailio/kamailio.cfg` - Update domain and IP addresses
+- `asterisk/etc/extensions-sip-endpoint.conf` - Minimal dialplan (proxy only)
 - `nginx/nginx.conf` - Update domain name
+- `coturn/turnserver.conf` - Update public IP and realm
 
 5. **Start the services:**
 ```bash
@@ -102,33 +98,22 @@ Open your browser and navigate to: `https://your-domain.com`
 
 ### Asterisk Configuration
 
-**WebRTC Extensions (pjsip.conf):**
-- Default users: 1000, 1001, 1002
-- Passwords: webrtc1000pass, webrtc1001pass, webrtc1002pass
+**Agent DN Endpoints (pjsip.conf):**
+- Agent DNs: 5001-5020 (matching Genesys configuration)
+- Passwords: GenesysAgent5001!, GenesysAgent5002!, etc.
+- WebRTC-enabled with DTLS-SRTP encryption
+- All calls forwarded to Genesys SIP Server
 
-**Dialplan Features (extensions.conf):**
-- `600`: Echo test
-- `601`: Music on hold test
-- `700`: Conference room
-- `*97`: Voicemail
-- `1000-1999`: Internal extensions
-- `NXXXXXXXXX`: External calls via Genesys (10-digit)
-- `011.*`: International calls via Genesys
-- `911`: Emergency calls
-
-### Kamailio Configuration
-
-Kamailio acts as a SIP proxy and RTP engine, handling:
-- WebSocket to SIP translation
-- NAT traversal with RTP proxying
-- Load balancing (if configured)
-- Security filtering
+**Dialplan (extensions-sip-endpoint.conf):**
+- Minimal proxy-only dialplan
+- `[genesys-agent]` context: Forwards all outbound calls to Genesys
+- `[from-genesys]` context: Routes incoming calls to agent DNs
+- **No local routing logic** - all handled by Genesys T-Server
 
 **Key Ports:**
-- `5060`: SIP UDP/TCP
-- `5061`: SIP TLS
-- `8080`: WebSocket
-- `4443`: WebSocket Secure (WSS)
+- `5060`: SIP UDP (to Genesys SIP Server)
+- `8089`: WebSocket Secure (WSS) for WebRTC clients
+- `10000-20000`: RTP/SRTP media ports
 
 ### Genesys SIP Integration
 
@@ -144,9 +129,11 @@ outbound_auth=genesys_auth
 ```
 
 Update the following in `pjsip.conf`:
-- `GENESYS_SIP_HOST`: Your Genesys SIP server
-- `YOUR_GENESYS_USERNAME`: Your Genesys username
-- `YOUR_GENESYS_PASSWORD`: Your Genesys password
+- `${GENESYS_SIP_HOST}`: Your Genesys SIP server IP/hostname
+- `${GENESYS_SIP_PORT}`: Genesys SIP port (typically 5060)
+- `${GENESYS_USERNAME}`: Your Genesys username
+- `${GENESYS_PASSWORD}`: Your Genesys password
+- `${PUBLIC_IP}`: Your server's public IP address
 
 ### TURN Server Configuration
 
@@ -169,14 +156,15 @@ Update `coturn/turnserver.conf` with your public IP.
    - Allow RTP range: 10000-20000
 
 3. **Strong Passwords:**
-   - Change default passwords in `pjsip.conf`
+   - Change default agent DN passwords in `pjsip.conf`
    - Use strong passwords for Genesys credentials
-   - Update MySQL passwords
+   - Rotate TURN server credentials regularly
 
 4. **Network Security:**
-   - Place Asterisk/Kamailio behind a firewall
+   - Place Asterisk behind a firewall
    - Use fail2ban for brute-force protection
    - Implement rate limiting
+   - Restrict access to Asterisk CLI
 
 ## 🛠️ Troubleshooting
 
@@ -228,8 +216,9 @@ docker logs webrtc-asterisk
 
 **Test Genesys connection:**
 ```bash
-docker exec -it webrtc-asterisk asterisk -rx "pjsip show endpoint genesys_trunk"
-docker exec -it webrtc-asterisk asterisk -rx "pjsip show aors genesys_trunk"
+docker exec -it webrtc-asterisk asterisk -rx "pjsip show endpoint genesys_sip_server"
+docker exec -it webrtc-asterisk asterisk -rx "pjsip show aors genesys_sip_server"
+docker exec -it webrtc-asterisk asterisk -rx "pjsip show registrations"
 ```
 
 ## 📊 Monitoring
@@ -253,20 +242,14 @@ pjsip show registrations
 rtp show stats
 ```
 
-### View Kamailio Status
+### View Coturn Status
 
 ```bash
-# Access Kamailio container
-docker exec -it webrtc-kamailio bash
+# Check Coturn container
+docker exec -it webrtc-coturn ps aux
 
-# Check running processes
-kamctl monitor
-
-# View active dialogs
-kamctl dialog show
-
-# Check statistics
-kamctl stats
+# Test TURN server
+turnutils_stunclient your-domain.com
 ```
 
 ### View Logs
@@ -275,11 +258,11 @@ kamctl stats
 # Asterisk logs
 docker logs -f webrtc-asterisk
 
-# Kamailio logs
-docker logs -f webrtc-kamailio
-
 # Nginx logs
 docker logs -f webrtc-nginx
+
+# Coturn logs
+docker logs -f webrtc-coturn
 
 # All services
 docker-compose logs -f
@@ -289,16 +272,24 @@ docker-compose logs -f
 
 1. **Connect:**
    - Enter WebSocket URL: `wss://your-domain.com/ws`
-   - Enter username (e.g., `1000`)
-   - Enter password (e.g., `webrtc1000pass`)
+   - Enter Agent DN (e.g., `5001` - must match Genesys configuration)
+   - Enter password (e.g., `GenesysAgent5001!`)
    - Click "Connect"
+   
+2. **Connect to GWS (Optional - for CTI control):**
+   - Enter GWS URL: `https://localhost:8000`
+   - Enter GWS credentials (if using Basic Auth)
+   - Click "Connect GWS"
+   - Enable "Use GWS for dialing" to route calls through GWS
 
-2. **Make a Call:**
+3. **Make a Call:**
    - Enter destination number
    - Click "Call" or press Enter
+   - If GWS is connected and "Use GWS for dialing" is enabled, call routes through GWS/T-Server
+   - Otherwise, direct SIP call via Asterisk
    - Use dialpad during call for DTMF
 
-3. **Features:**
+4. **Features:**
    - **Mute/Unmute**: Control your microphone
    - **Hold/Resume**: Put call on hold
    - **Transfer**: Transfer to another extension
@@ -306,48 +297,41 @@ docker-compose logs -f
 
 ## 🔧 Advanced Configuration
 
-### Adding More WebRTC Users
+### Adding More Agent DNs
 
-Edit `asterisk/etc/pjsip.conf`:
-
-```ini
-[1003](webrtc_client)
-type=endpoint
-auth=1003
-aors=1003
-callerid="WebRTC User 1003" <1003>
-
-[1003](webrtc_auth)
-type=auth
-password=your-password-here
-username=1003
-
-[1003](webrtc_aor)
-type=aor
-```
-
-### Custom IVR
-
-Edit `asterisk/etc/extensions.conf` to create custom IVR menus:
+Edit `asterisk/etc/pjsip.conf` and add more agent DNs following the pattern:
 
 ```ini
-[ivr]
-exten => s,1,NoOp(Custom IVR)
- same => n,Answer()
- same => n,Background(your-custom-prompt)
- same => n,WaitExten(10)
+; Agent 5021
+[5021](agent_dn)
+auth=5021
+aors=5021
+callerid="Agent 5021" <5021>
+
+[5021](agent_dn_auth)
+password=GenesysAgent5021!
+username=5021
+
+[5021](agent_dn_aor)
 ```
 
-### Load Balancing Multiple Asterisk Servers
+**Important:** Agent DN numbers must match your Genesys Configuration Server setup.
 
-Configure Kamailio dispatcher to load balance across multiple Asterisk instances.
+### GWS Integration
+
+For full CTI control, integrate with Genesys Workspace Web Edition:
+- See `GWS_SIP_ENDPOINT_INTEGRATION.md` for complete setup
+- GWS handles all call control via T-Server
+- WebRTC client provides audio/media only
 
 ## 🤝 Support
 
 For issues and questions:
 - Check the troubleshooting section
 - Review Docker logs
-- Consult Asterisk/Kamailio documentation
+- Consult Asterisk documentation
+- See `ARCHITECTURE.md` for detailed architecture
+- See `GWS_SIP_ENDPOINT_INTEGRATION.md` for GWS integration
 
 ## 📄 License
 
@@ -357,10 +341,10 @@ This project is provided as-is for educational and commercial use.
 
 Built with:
 - [Asterisk](https://www.asterisk.org/)
-- [Kamailio](https://www.kamailio.org/)
 - [JsSIP](https://jssip.net/)
 - [Coturn](https://github.com/coturn/coturn)
 - [Docker](https://www.docker.com/)
+- [Genesys Workspace Web Edition](https://docs.genesys.com/)
 
 
 
