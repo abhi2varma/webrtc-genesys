@@ -123,17 +123,8 @@ Write-Host ""
 
 # Generate certificates on server if needed
 Write-Host "[OPTIONAL] Generating SSL certificates on server..." -ForegroundColor Cyan
-ssh -p $Port "$Username@$ServerIP" @"
-cd $RemotePath
-if [ ! -f certs/cert.pem ]; then
-    echo '  Generating self-signed certificates...'
-    docker run --rm -v \$(pwd)/certs:/certs alpine/openssl req -x509 -newkey rsa:2048 -keyout /certs/key.pem -out /certs/cert.pem -days 365 -nodes -subj '/CN=192.168.210.54'
-    cp certs/cert.pem certs/ca.pem
-    echo '  ✓ Certificates generated'
-else
-    echo '  ✓ Certificates already exist'
-fi
-"@
+$certScript = "cd $RemotePath && if [ ! -f certs/cert.pem ]; then echo '  Generating self-signed certificates...' && docker run --rm -v `$(pwd)/certs:/certs alpine/openssl req -x509 -newkey rsa:2048 -keyout /certs/key.pem -out /certs/cert.pem -days 365 -nodes -subj '/CN=192.168.210.54' && cp certs/cert.pem certs/ca.pem && echo '  ✓ Certificates generated'; else echo '  ✓ Certificates already exist'; fi"
+ssh -p $Port "$Username@$ServerIP" $certScript
 Write-Host ""
 
 # Summary
@@ -169,16 +160,8 @@ if ($restart -eq "y" -or $restart -eq "Y") {
     Write-Host ""
     Write-Host "Restarting services on server..." -ForegroundColor Green
     
-    ssh -p $Port "$Username@$ServerIP" @"
-cd $RemotePath
-echo 'Stopping services...'
-docker-compose down
-echo 'Starting services...'
-docker-compose up -d
-echo ''
-echo 'Service Status:'
-docker-compose ps
-"@
+    $restartScript = "cd $RemotePath && echo 'Stopping services...' && docker-compose down && echo 'Starting services...' && docker-compose up -d && echo '' && echo 'Service Status:' && docker-compose ps"
+    ssh -p $Port "$Username@$ServerIP" $restartScript
     
     Write-Host ""
     Write-Host "========================================" -ForegroundColor Cyan
