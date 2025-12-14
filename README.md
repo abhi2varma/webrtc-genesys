@@ -53,12 +53,12 @@ nano .env
 ```
 
 Update the following critical values:
-- `DOMAIN`: Your domain name
-- `PUBLIC_IP`: Your server's public IP
-- `PRIVATE_IP`: Your server's private IP
-- `GENESYS_SIP_HOST`: Genesys SIP server
-- `GENESYS_USERNAME`: Your Genesys username
-- `GENESYS_PASSWORD`: Your Genesys password
+- `DOMAIN`: Your domain name (or use IP: 192.168.210.54)
+- `PUBLIC_IP`: Your server's public IP (configured: 192.168.210.54)
+- `PRIVATE_IP`: Your server's private IP (192.168.210.54)
+- `GENESYS_SIP_HOST`: Genesys SIP server (configured: 192.168.210.81)
+- `GENESYS_SIP_PORT`: Genesys SIP port (configured: 5060)
+- `GWS_URL`: Genesys Workspace Web Edition URL (http://192.168.210.54:8090)
 
 3. **Generate SSL certificates:**
 
@@ -92,7 +92,10 @@ docker-compose ps
 ```
 
 7. **Access the WebRTC client:**
-Open your browser and navigate to: `https://your-domain.com`
+Open your browser and navigate to: `http://192.168.210.54/`
+
+8. **Access Genesys Workspace Web Edition:**
+Open your browser and navigate to: `http://192.168.210.54:8090/ui/ad/v1/index.html`
 
 ## 📝 Configuration Details
 
@@ -111,29 +114,29 @@ Open your browser and navigate to: `https://your-domain.com`
 - **No local routing logic** - all handled by Genesys T-Server
 
 **Key Ports:**
-- `5060`: SIP UDP (to Genesys SIP Server)
-- `8089`: WebSocket Secure (WSS) for WebRTC clients
+- `5060`: SIP UDP (to Genesys SIP Server at 192.168.210.81)
+- `8088`: WebSocket (WS) for WebRTC clients
 - `10000-20000`: RTP/SRTP media ports
 
 ### Genesys SIP Integration
 
-The system connects to Genesys via SIP trunk configured in `asterisk/etc/pjsip.conf`:
+The system connects to Genesys via SIP endpoint configured in `asterisk/etc/pjsip.conf`:
 
 ```ini
-[genesys_trunk]
+[genesys_sip_server]
 type=endpoint
 context=from-genesys
 transport=transport-udp
-aors=genesys_trunk
+aors=genesys_sip_server
 outbound_auth=genesys_auth
 ```
 
-Update the following in `pjsip.conf`:
-- `${GENESYS_SIP_HOST}`: Your Genesys SIP server IP/hostname
-- `${GENESYS_SIP_PORT}`: Genesys SIP port (typically 5060)
-- `${GENESYS_USERNAME}`: Your Genesys username
-- `${GENESYS_PASSWORD}`: Your Genesys password
-- `${PUBLIC_IP}`: Your server's public IP address
+**Configuration (Already Set):**
+- **Genesys SIP Host**: `192.168.210.81` ✅
+- **Genesys SIP Port**: `5060` ✅
+- **Asterisk Public IP**: `192.168.210.54` ✅
+- **Authentication**: IP-based (no credentials needed) ✅
+- **Agent DNs**: 5001-5020 (all configured) ✅
 
 ### TURN Server Configuration
 
@@ -178,7 +181,11 @@ Update `coturn/turnserver.conf` with your public IP.
 
 **Test WebSocket:**
 ```bash
+# For WSS (secure)
 wscat -c wss://your-domain.com/ws
+
+# For WS (non-secure, current setup)
+wscat -c ws://192.168.210.54:8088/ws
 ```
 
 ### No Audio in Calls

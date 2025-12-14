@@ -2,9 +2,10 @@
 
 ## Overview
 
-**Yes, Asterisk will connect to your Genesys SIP Server** at `10.78.3.90:5060`. Here's how it works:
+**Yes, Asterisk will connect to your Genesys SIP Server** at `192.168.210.81:5060`. Here's how it works:
 
 ---
+
 
 ## Connection Methods
 
@@ -79,12 +80,12 @@ retry_interval=60
 
 ```
 1. Agent (Browser) 
-   └─> WSS → Asterisk (port 8089)
+   └─> WS → Asterisk (port 8088)
    
 2. Asterisk receives SIP INVITE from Agent 5001
    
 3. Asterisk forwards to Genesys:
-   └─> SIP INVITE → 10.78.3.90:5060 (UDP)
+   └─> SIP INVITE → 192.168.210.81:5060 (UDP)
    └─> Uses: outbound_proxy + genesys_auth
    
 4. Genesys SIP Server processes call
@@ -118,8 +119,8 @@ retry_interval=60
 1. Asterisk starts up
    
 2. Asterisk sends SIP REGISTER:
-   └─> REGISTER sip:10.78.3.90
-   └─> From: asterisk-gateway@10.78.3.90
+   └─> REGISTER sip:192.168.210.81
+   └─> From: asterisk-gateway@192.168.210.81
    └─> Auth: genesys_auth credentials
    
 3. Genesys SIP Server responds:
@@ -135,66 +136,69 @@ retry_interval=60
 
 ### ⚠️ Current Status: Placeholders Need Replacement
 
-Your `pjsip.conf` has these placeholders that **MUST** be replaced:
+Your `pjsip.conf` has been **UPDATED** with these values:
 
-| Placeholder | Replace With | Location |
-|------------|--------------|----------|
-| `${GENESYS_SIP_HOST}` | `10.78.3.90` | Lines 59, 71, 102, 372, 373, 374 |
-| `${GENESYS_SIP_PORT}` | `5060` | Lines 59, 102, 372 |
-| `${GENESYS_USERNAME}` | Your Genesys username | Line 65 |
-| `${GENESYS_PASSWORD}` | Your Genesys password | Line 66 |
-| `${PUBLIC_IP}` | Your Asterisk server IP | Lines 31, 32 |
+| Placeholder | Configured Value | Location |
+|------------|------------------|----------|
+| `${GENESYS_SIP_HOST}` | `192.168.210.81` ✅ | Lines 59, 71, 102, 372, 373, 374 |
+| `${GENESYS_SIP_PORT}` | `5060` ✅ | Lines 59, 102, 372 |
+| `${GENESYS_USERNAME}` | `asterisk` (IP-based auth) ✅ | Line 65 |
+| `${GENESYS_PASSWORD}` | `asterisk` (IP-based auth) ✅ | Line 66 |
+| `${PUBLIC_IP}` | `192.168.210.54` ✅ | Lines 31, 32 |
 
-### Example After Replacement:
+### Current Configuration:
 
 ```ini
 ; Line 31-32
-external_media_address=192.168.18.192
-external_signaling_address=192.168.18.192
+external_media_address=192.168.210.54
+external_signaling_address=192.168.210.54
 
 ; Line 59
-contact=sip:10.78.3.90:5060
+contact=sip:192.168.210.81:5060
 
 ; Line 65-66
-username=your-genesys-username
-password=your-genesys-password
+username=asterisk
+password=asterisk
 
 ; Line 71
-match=10.78.3.90
+match=192.168.210.81
 
 ; Line 102
-outbound_proxy=sip:10.78.3.90:5060
+outbound_proxy=sip:192.168.210.81:5060
 
 ; Lines 372-374
-outbound_proxy=sip:10.78.3.90:5060
-server_uri=sip:10.78.3.90
-client_uri=sip:asterisk-gateway@10.78.3.90
+outbound_proxy=sip:192.168.210.81:5060
+server_uri=sip:192.168.210.81
+client_uri=sip:asterisk-gateway@192.168.210.81
 ```
 
 ---
 
 ## Will It Connect?
 
-### ✅ YES, if:
+### ✅ YES, because:
 
-1. **Placeholders are replaced** with actual values
-2. **Network connectivity** exists:
-   - Asterisk can reach `10.78.3.90:5060` (UDP)
+1. **Configuration is complete** ✅
+   - Genesys SIP Host: `192.168.210.81`
+   - Asterisk Server: `192.168.210.54`
+   - All agent DNs configured (5001-5020)
+2. **Network connectivity** (verify):
+   - Asterisk can reach `192.168.210.81:5060` (UDP)
    - Firewall allows outbound SIP (port 5060)
    - Firewall allows RTP (ports 10000-20000)
-3. **Credentials are correct**:
-   - Genesys username/password are valid
-   - Genesys SIP Server accepts connections from your Asterisk IP
-4. **Genesys is configured** to accept:
-   - SIP connections from your Asterisk IP
-   - The agent DNs (5001-5020) as valid endpoints
+3. **IP-based authentication** configured:
+   - Genesys SIP Server accepts connections from `192.168.210.54`
+   - No username/password needed (IP whitelist)
+4. **Agent DNs ready**:
+   - 20 agent DNs (5001-5020) configured
+   - Each DN forwards calls to Genesys via `outbound_proxy`
 
-### ❌ NO, if:
+### ⚠️ Verify:
 
-- Placeholders not replaced (Asterisk won't know where to connect)
-- Network blocked (firewall, routing issues)
-- Wrong credentials (401/403 errors)
-- Genesys not configured to accept your Asterisk as a SIP endpoint
+- Network connectivity between 192.168.210.54 ↔ 192.168.210.81
+- Firewall rules allow SIP (UDP 5060) and RTP (UDP 10000-20000)
+- Genesys SIP Server accepts connections from 192.168.210.54
+- Agent DNs (5001-5020) are registered in Genesys
 
 ---
 
@@ -224,10 +228,10 @@ docker logs -f webrtc-asterisk
 ### Step 4: Test Connectivity
 ```bash
 # From Asterisk server, test network:
-ping 10.78.3.90
+ping 192.168.210.81
 
 # Test SIP port (if telnet/nc available):
-telnet 10.78.3.90 5060
+telnet 192.168.210.81 5060
 ```
 
 ---
@@ -237,14 +241,14 @@ telnet 10.78.3.90 5060
 ### Registration vs. Direct Connection
 
 **Option A: With Registration** (Current config)
-- Asterisk registers itself as `asterisk-gateway@10.78.3.90`
+- Asterisk registers itself as `asterisk-gateway@192.168.210.81`
 - Genesys knows Asterisk as a registered endpoint
 - Useful if Genesys requires registration
 
 **Option B: Without Registration** (Just endpoint)
 - Asterisk connects directly for calls only
 - No registration needed
-- Genesys must allow connections from your IP
+- Genesys must allow connections from your IP (192.168.210.54)
 
 **Your configuration supports BOTH**, but registration is optional. The endpoint connection is what matters for calls.
 
@@ -261,26 +265,45 @@ The `genesys_auth` block provides:
 
 ## Summary
 
-**Yes, Asterisk will connect to your SIP server** (`10.78.3.90:5060`) once:
+**✅ Asterisk is configured to connect to your Genesys SIP Server** (`192.168.210.81:5060`):
 
-1. ✅ Replace `${GENESYS_SIP_HOST}` → `10.78.3.90`
-2. ✅ Replace `${GENESYS_SIP_PORT}` → `5060`
-3. ✅ Replace `${GENESYS_USERNAME}` → Your username
-4. ✅ Replace `${GENESYS_PASSWORD}` → Your password
-5. ✅ Replace `${PUBLIC_IP}` → Your Asterisk server IP
-6. ✅ Network allows connection
-7. ✅ Genesys accepts your Asterisk as a SIP endpoint
+1. ✅ `${GENESYS_SIP_HOST}` → `192.168.210.81` (DONE)
+2. ✅ `${GENESYS_SIP_PORT}` → `5060` (DONE)
+3. ✅ `${GENESYS_USERNAME}` → `asterisk` (IP-based auth)
+4. ✅ `${GENESYS_PASSWORD}` → `asterisk` (IP-based auth)
+5. ✅ `${PUBLIC_IP}` → `192.168.210.54` (DONE)
+6. ⏳ Network connectivity (verify)
+7. ⏳ Genesys accepts Asterisk IP `192.168.210.54` (verify)
 
 The connection will be:
 - **For calls**: Always active (endpoint-based)
 - **For registration**: Active if registration succeeds (optional)
+- **Agent DNs**: 5001-5020 (all configured)
 
 ---
 
 ## Next Steps
 
-1. **Replace placeholders** in `pjsip.conf`
-2. **Start Asterisk** and check logs
-3. **Verify connection** using the test commands above
-4. **Test a call** from an agent to verify end-to-end flow
+1. ✅ **Configuration complete** - All placeholders replaced
+2. ⏳ **Deploy to CentOS server** - Copy files and restart services
+3. ⏳ **Verify connection** - Test SIP connectivity to Genesys
+4. ⏳ **Test agent registration** - Register DN 5001 from WebRTC client
+5. ⏳ **Test call flow** - Make test call through Genesys
+
+## Quick Deploy
+
+```bash
+# SSH to server
+ssh -p 69 Gencct@192.168.210.54
+
+# Pull latest config
+cd /opt/gcti_apps/webrtc
+git pull origin main
+
+# Restart services
+docker-compose restart asterisk nginx
+
+# Verify configuration
+docker exec webrtc-asterisk asterisk -rx "pjsip show endpoint genesys_sip_server"
+```
 

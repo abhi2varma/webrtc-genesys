@@ -13,10 +13,20 @@ This deployment includes:
 
 ## Prerequisites
 
-- CentOS 7/8/9 server (accessible via SSH on port 22)
+- CentOS 7/8/9 server (accessible via SSH on port 69)
 - Root or sudo access
 - Minimum: 2 CPU cores, 4GB RAM
-- Network access to Genesys SIP Server (typically port 5060)
+- Network access to Genesys SIP Server (192.168.210.81:5060)
+
+## Your Server Configuration
+
+- **Server IP**: 192.168.210.54
+- **SSH Port**: 69
+- **Username**: Gencct
+- **Genesys SIP Server**: 192.168.210.81:5060
+- **GWS URL**: http://192.168.210.54:8090/ui/ad/v1/index.html
+- **WebRTC Client**: http://192.168.210.54/
+- **Project Path**: /opt/gcti_apps/webrtc
 
 ## Deployment Steps
 
@@ -24,39 +34,39 @@ This deployment includes:
 
 From your Windows machine:
 
-**Option A: Using SCP (Git Bash or WSL)**
+**Option A: Using SCP (Git Bash or PowerShell)**
 ```bash
 # Navigate to project directory
-cd /f/Project/WebRTC
+cd D:\Abhi\WebRTC\webrtc-genesys
 
 # Copy entire project to server
-scp -r -P 22 . user@localhost:/home/user/WebRTC
+scp -P 69 -r . Gencct@192.168.210.54:/opt/gcti_apps/webrtc
 ```
 
 **Option B: Using WinSCP or FileZilla**
 1. Open WinSCP/FileZilla
-2. Connect to: localhost:22
-3. Upload entire `WebRTC` folder to `/home/user/`
+2. Connect to: 192.168.210.54:69
+3. Upload entire `webrtc-genesys` folder to `/opt/gcti_apps/`
 
-**Option C: Using Git (if server has git)**
+**Option C: Using Git (Recommended)**
 ```bash
-# On Windows - push to git repository first
-git init
-git add .
-git commit -m "Initial commit"
-git remote add origin <your-repo-url>
-git push -u origin main
+# On Windows - already pushed to GitHub
+cd D:\Abhi\WebRTC\webrtc-genesys
+git push origin main
 
 # Then on CentOS server
-ssh user@localhost -p 22
-git clone <your-repo-url> WebRTC
+ssh -p 69 Gencct@192.168.210.54
+cd /opt/gcti_apps
+git clone https://github.com/abhi2varma/webrtc-genesys.git
+cd webrtc-genesys
 ```
 
 ### Step 2: Connect to CentOS Server
 
 ```bash
-# From Windows PowerShell, Git Bash, or WSL
-ssh user@localhost -p 22
+# From Windows PowerShell or Git Bash
+ssh -p 69 Gencct@192.168.210.54
+# Password: !QAZxsw23edcvfr4
 ```
 
 ### Step 3: Run CentOS Setup Script
@@ -64,8 +74,8 @@ ssh user@localhost -p 22
 Once connected to the server:
 
 ```bash
-cd WebRTC
-chmod +x scripts/centos-setup.sh
+cd /opt/gcti_apps/webrtc-genesys
+chmod +x scripts/*.sh
 sudo ./scripts/centos-setup.sh
 ```
 
@@ -172,8 +182,8 @@ If SELinux is enforcing (check with `getenforce`):
 
 ```bash
 # Allow Docker containers
-sudo semanage fcontext -a -t container_file_t "/home/user/WebRTC(/.*)?"
-sudo restorecon -Rv /home/user/WebRTC
+sudo semanage fcontext -a -t container_file_t "/opt/gcti_apps/webrtc-genesys(/.*)?"
+sudo restorecon -Rv /opt/gcti_apps/webrtc-genesys
 
 # Allow HTTP connections
 sudo setsebool -P httpd_can_network_connect on
@@ -218,10 +228,10 @@ After=docker.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-WorkingDirectory=/home/user/WebRTC
+WorkingDirectory=/opt/gcti_apps/webrtc-genesys
 ExecStart=/usr/local/bin/docker-compose up -d
 ExecStop=/usr/local/bin/docker-compose down
-User=user
+User=Gencct
 
 [Install]
 WantedBy=multi-user.target
@@ -238,17 +248,17 @@ sudo systemctl start webrtc
 
 ### Access Web Client
 
-1. **Using localhost:**
+1. **Using server IP (current setup):**
    ```
-   https://localhost
-   ```
-
-2. **Using server IP:**
-   ```
-   https://SERVER_IP
+   http://192.168.210.54/
    ```
 
-3. **Using domain (if configured):**
+2. **Access Genesys Workspace Web Edition:**
+   ```
+   http://192.168.210.54:8090/ui/ad/v1/index.html
+   ```
+
+3. **Using domain (if configured later):**
    ```
    https://your-domain.com
    ```
@@ -259,10 +269,10 @@ If you want to test via localhost from Windows:
 
 ```powershell
 # Create SSH tunnel
-ssh -L 443:localhost:443 -L 8089:localhost:8089 user@localhost -p 22
+ssh -L 80:localhost:80 -L 8088:localhost:8088 -L 8090:localhost:8090 -p 69 Gencct@192.168.210.54
 
 # Keep this terminal open
-# Then access: https://localhost in browser
+# Then access: http://localhost in browser
 ```
 
 ## Troubleshooting CentOS-Specific Issues
@@ -279,8 +289,9 @@ newgrp docker
 
 ```bash
 # Check what's using the port
-sudo netstat -tulpn | grep :443
-sudo lsof -i :443
+sudo netstat -tulpn | grep :80
+sudo netstat -tulpn | grep :8088
+sudo lsof -i :80
 
 # Stop conflicting service
 sudo systemctl stop httpd  # If Apache is running
@@ -315,23 +326,25 @@ sudo firewall-cmd --reload
 
 ```bash
 # On CentOS, ensure services are listening on all interfaces
-sudo netstat -tulpn | grep -E '443|5060|8089'
+sudo netstat -tulpn | grep -E '80|5060|8088|8090'
 
 # Should show 0.0.0.0:PORT, not 127.0.0.1:PORT
+# Asterisk (5060, 8088) should be in host mode
 ```
 
 ## Production Checklist for CentOS
 
 - [ ] System fully updated: `sudo yum update -y`
 - [ ] Docker installed and running
-- [ ] Firewalld configured with proper rules (ports: 80, 443, 5060-5061, 8088-8089, 10000-20000, 3478-3479, 5349)
-- [ ] SELinux configured (not disabled)
-- [ ] SSL certificates installed in `./certs/` directory
-- [ ] Configuration files updated:
-  - [ ] `asterisk/etc/pjsip.conf` - Genesys SIP Server and agent DNs
-  - [ ] `asterisk/etc/extensions-sip-endpoint.conf` - Minimal dialplan
-  - [ ] `nginx/nginx.conf` - Domain name and SSL paths
-  - [ ] `coturn/turnserver.conf` - Public IP and realm
+- [x] Firewalld configured with proper rules (ports: 80, 5060, 8088, 10000-20000, 3478)
+- [x] SELinux configured (permissive mode for testing)
+- [ ] SSL certificates installed in `./certs/` directory (optional for testing)
+- [x] Configuration files updated:
+  - [x] `asterisk/etc/pjsip.conf` - Genesys SIP Server (192.168.210.81:5060) and agent DNs (5001-5020)
+  - [x] `asterisk/etc/extensions-sip-endpoint.conf` - Minimal dialplan
+  - [x] `nginx/nginx.conf` - HTTP configuration (SSL optional)
+  - [x] `nginx/html/index.html` - GWS URL and WebSocket endpoint configured
+  - [ ] `coturn/turnserver.conf` - Public IP and realm (if using TURN)
 - [ ] Services auto-start on boot: `sudo systemctl enable webrtc`
 - [ ] Monitoring configured: `./scripts/monitor.sh`
 - [ ] Backups scheduled via cron
