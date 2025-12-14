@@ -304,37 +304,120 @@ class WebRTCClient {
             return;
         }
 
+        this.addDebugMessage('Initializing CometD connection...', 'info');
         const cometd = new org.cometd.CometD();
+        
+        // Configure connection
         const headers = {};
         const user = this.gwsUsername?.value || '';
         const pass = this.gwsPassword?.value || '';
         if (user && pass) {
             const token = btoa(`${user}:${pass}`);
             headers['Authorization'] = `Basic ${token}`;
+            this.addDebugMessage(`Using Basic Auth for user: ${user}`, 'info');
         }
 
         cometd.configure({
-            url: baseUrl + '/cometd',
-            logLevel: 'warn',
-            requestHeaders: headers
+            url: baseUrl + '/genesys/cometd',  // Correct GWS CometD path
+            logLevel: 'info',
+            requestHeaders: headers,
+            maxConnections: 2,
+            backoffIncrement: 1000,
+            maxBackoff: 60000,
+            maxNetworkDelay: 10000
         });
 
+        // Add connection listeners
+        cometd.addListener('/meta/connect', (message) => {
+            if (message.successful) {
+                this.addDebugMessage('CometD connection established', 'success');
+            } else {
+                this.addDebugMessage('CometD connection failed', 'warning');
+            }
+        });
+
+        cometd.addListener('/meta/disconnect', (message) => {
+            this.addDebugMessage('CometD disconnected', 'warning');
+            this.updateGwsStatus('disconnected');
+        });
+
+        // Perform handshake
+        this.addDebugMessage(`Connecting to ${baseUrl}/genesys/cometd...`, 'info');
         cometd.handshake((h) => {
             if (h.successful) {
-                this.addDebugMessage('GWS CometD connected', 'success');
+                this.addDebugMessage(`✅ GWS CometD connected! ClientID: ${h.clientId}`, 'success');
                 this.updateGwsStatus('connected');
                 this.cometd = cometd;
                 this.gwsConnected = true;
                 this.gwsConnectBtn.disabled = true;
                 this.gwsDisconnectBtn.disabled = false;
-                // Subscribe to configured channel
-                const channel = this.gwsChannel?.value || '/user/agent/events';
-                cometd.subscribe(channel, (message) => this.handleGwsEvent(message));
+                
+                // Subscribe to GWS CTI channels
+                this.subscribeToGwsChannels(cometd);
             } else {
-                this.addDebugMessage('GWS CometD handshake failed', 'error');
+                this.addDebugMessage(`❌ GWS CometD handshake failed: ${h.error || 'Unknown error'}`, 'error');
                 this.updateGwsStatus('disconnected');
+                
+                // Log more details for troubleshooting
+                if (h.advice) {
+                    this.addDebugMessage(`Server advice: ${JSON.stringify(h.advice)}`, 'warning');
+                }
             }
         });
+    }
+
+    subscribeToGwsChannels(cometd) {
+        // Subscribe to voice call events
+        cometd.subscribe('/v2/me/calls', (message) => {
+            this.addDebugMessage('📞 Call event received', 'info');
+            this.handleGwsCallEvent(message);
+        }, (subscribeReply) => {
+            if (subscribeReply.successful) {
+                this.addDebugMessage('✅ Subscribed to /v2/me/calls', 'success');
+            } else {
+                this.addDebugMessage('❌ Failed to subscribe to /v2/me/calls', 'error');
+            }
+        });
+
+        // Subscribe to agent state events
+        cometd.subscribe('/v2/me/state', (message) => {
+            this.addDebugMessage('👤 Agent state event received', 'info');
+            this.handleGwsStateEvent(message);
+        }, (subscribeReply) => {
+            if (subscribeReply.successful) {
+                this.addDebugMessage('✅ Subscribed to /v2/me/state', 'success');
+            } else {
+                this.addDebugMessage('❌ Failed to subscribe to /v2/me/state', 'error');
+            }
+        });
+
+        // Subscribe to multimedia interactions
+        cometd.subscribe('/v2/me/interactions', (message) => {
+            this.addDebugMessage('💬 Interaction event received', 'info');
+            this.handleGwsInteractionEvent(message);
+        }, (subscribeReply) => {
+            if (subscribeReply.successful) {
+                this.addDebugMessage('✅ Subscribed to /v2/me/interactions', 'success');
+            } else {
+                this.addDebugMessage('❌ Failed to subscribe to /v2/me/interactions', 'error');
+            }
+        });
+
+        // Subscribe to custom channel if specified
+        const customChannel = this.gwsChannel?.value;
+        if (customChannel && customChannel !== '/v2/me/calls' && 
+            customChannel !== '/v2/me/state' && customChannel !== '/v2/me/interactions') {
+            cometd.subscribe(customChannel, (message) => {
+                this.addDebugMessage(`📨 Custom channel event: ${customChannel}`, 'info');
+                this.handleGwsEvent(message);
+            }, (subscribeReply) => {
+                if (subscribeReply.successful) {
+                    this.addDebugMessage(`✅ Subscribed to ${customChannel}`, 'success');
+                } else {
+                    this.addDebugMessage(`❌ Failed to subscribe to ${customChannel}`, 'error');
+                }
+            });
+        }
     }
 
     disconnectGws() {
@@ -375,41 +458,119 @@ class WebRTCClient {
         this.addDebugMessage('GWS accepted dial request', 'success');
     }
 
+    handleGwsCallEvent(message) {
+        try {
+            const data = message.data || {};
+            this.addDebugMessage(`Call event data: ${JSON.stringify(data)}`, 'info');
+            
+            const notificationType = data.notificationType || data.type || '';
+            const call = data.call || data;
+            
+            switch (notificationType) {
+                case 'StateChange':
+                case 'EventRinging':
+                    const callState = call.state || '';
+                    const from = call.from || call.ani || call.caller || 'Unknown';
+                    const to = call.to || call.dnis || call.called || 'Unknown';
+                    
+                    this.addDebugMessage(`📞 Call State: ${callState} | From: ${from} | To: ${to}`, 'success');
+                    
+                    if (callState === 'Ringing' || callState === 'Alerting') {
+                        this.updateCallStatus(`Incoming call from ${from}`);
+                        // WebRTC SIP client will handle the actual ring
+                    } else if (callState === 'Established' || callState === 'Connected') {
+                        this.updateCallStatus(`Call connected: ${from} ↔ ${to}`);
+                    } else if (callState === 'Released' || callState === 'Disconnected') {
+                        this.updateCallStatus('Call ended by Genesys');
+                        // Optionally auto-hangup the WebRTC session
+                        if (this.session) {
+                            this.addDebugMessage('Auto-hanging up WebRTC session', 'info');
+                            this.hangUp();
+                        }
+                    } else if (callState === 'Held' || callState === 'Hold') {
+                        this.updateCallStatus('Call on hold (from Genesys)');
+                        if (this.session && !this.isOnHold) {
+                            this.toggleHold();
+                        }
+                    } else if (callState === 'Retrieved' || callState === 'Resume') {
+                        this.updateCallStatus('Call resumed (from Genesys)');
+                        if (this.session && this.isOnHold) {
+                            this.toggleHold();
+                        }
+                    }
+                    break;
+                    
+                case 'CallCreated':
+                    this.addDebugMessage('📞 New call created in Genesys', 'info');
+                    break;
+                    
+                case 'CallDeleted':
+                    this.addDebugMessage('📞 Call deleted in Genesys', 'info');
+                    break;
+                    
+                default:
+                    this.addDebugMessage(`📞 Unhandled call event: ${notificationType}`, 'warning');
+                    break;
+            }
+        } catch (e) {
+            this.addDebugMessage(`Error handling call event: ${e}`, 'error');
+        }
+    }
+
+    handleGwsStateEvent(message) {
+        try {
+            const data = message.data || {};
+            this.addDebugMessage(`State event data: ${JSON.stringify(data)}`, 'info');
+            
+            const state = data.state || data.agentState || '';
+            const reason = data.reason || data.reasonCode || '';
+            
+            this.addDebugMessage(`👤 Agent State: ${state}${reason ? ' (' + reason + ')' : ''}`, 'success');
+            
+            switch (state) {
+                case 'Ready':
+                case 'Available':
+                    this.addDebugMessage('✅ Agent is Ready', 'success');
+                    break;
+                case 'NotReady':
+                case 'Unavailable':
+                    this.addDebugMessage('🔴 Agent is Not Ready', 'warning');
+                    break;
+                case 'AfterCallWork':
+                case 'ACW':
+                case 'Wrapup':
+                    this.addDebugMessage('📝 Agent in After Call Work', 'info');
+                    break;
+                case 'LoggedOut':
+                    this.addDebugMessage('👋 Agent logged out', 'warning');
+                    break;
+                default:
+                    this.addDebugMessage(`👤 Agent state changed to: ${state}`, 'info');
+                    break;
+            }
+        } catch (e) {
+            this.addDebugMessage(`Error handling state event: ${e}`, 'error');
+        }
+    }
+
+    handleGwsInteractionEvent(message) {
+        try {
+            const data = message.data || {};
+            this.addDebugMessage(`Interaction event data: ${JSON.stringify(data)}`, 'info');
+            
+            const interactionType = data.type || data.mediaType || '';
+            const state = data.state || '';
+            
+            this.addDebugMessage(`💬 ${interactionType} interaction: ${state}`, 'info');
+        } catch (e) {
+            this.addDebugMessage(`Error handling interaction event: ${e}`, 'error');
+        }
+    }
+
     handleGwsEvent(message) {
         try {
             const data = message.data || {};
-            const type = (data.type || data.eventType || '').toUpperCase();
-            this.addDebugMessage(`GWS event: ${type}`, 'info');
-
-            switch (type) {
-                case 'RINGING':
-                case 'EVENTRINGING':
-                    // Let SIP incoming handler prompt user; nothing to do here
-                    break;
-                case 'ANSWER':
-                case 'EVENTESTABLISHED':
-                    // If we have a pending session and it's not confirmed yet, nothing to force here
-                    break;
-                case 'HOLD':
-                    if (this.session && !this.isOnHold) this.toggleHold();
-                    break;
-                case 'RESUME':
-                    if (this.session && this.isOnHold) this.toggleHold();
-                    break;
-                case 'TRANSFER':
-                    if (this.session && data.target) {
-                        this.session.refer(`sip:${data.target}@${this.sipServer.value.replace(/^wss?:\/\//, '').split('/')[0]}`);
-                        this.addDebugMessage(`GWS requested transfer to ${data.target}`, 'info');
-                    }
-                    break;
-                case 'RELEASE':
-                case 'HANGUP':
-                    if (this.session) this.hangUp();
-                    break;
-                default:
-                    // Unhandled event types are logged only
-                    break;
-            }
+            this.addDebugMessage(`Generic GWS event: ${JSON.stringify(data)}`, 'info');
         } catch (e) {
             this.addDebugMessage(`Error handling GWS event: ${e}`, 'error');
         }
