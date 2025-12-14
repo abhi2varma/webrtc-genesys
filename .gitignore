@@ -70,6 +70,7 @@ env/
 *.so
 *.dll
 *.exe
+*.class
 
 # PDF documentation (large files)
 *.pdf
@@ -82,3 +83,6 @@ credentials.txt
 # Test files
 test-calls/
 recordings-test/
+
+# GWS extracted files (large, compiled code, proprietary)
+gws/
