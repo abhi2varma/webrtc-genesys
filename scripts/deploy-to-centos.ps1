@@ -1,302 +1,194 @@
-# PowerShell Script to Deploy WebRTC System to CentOS
-# Run this script from your Windows machine
+# WebRTC Genesys Deployment Script for CentOS
+# Deploys from Windows to CentOS server at 192.168.210.54
 
 param(
-    [string]$CentOSIP,
-    [string]$CentOSUser,
-    [string]$SkipTransfer = $false
+    [string]$ServerIP = "192.168.210.54",
+    [int]$Port = 69,
+    [string]$Username = "Gencct",
+    [string]$RemotePath = "/opt/gcti_apps/webrtc-genesys"
 )
 
-# Set error action preference
-$ErrorActionPreference = "Stop"
-
-# Colors for output
-function Write-Header {
-    param([string]$Message)
-    Write-Host "======================================" -ForegroundColor Green
-    Write-Host "  $Message" -ForegroundColor Green
-    Write-Host "======================================" -ForegroundColor Green
-    Write-Host ""
-}
-
-function Write-Step {
-    param([string]$Message)
-    Write-Host ">>> $Message" -ForegroundColor Blue
-}
-
-function Write-Success {
-    param([string]$Message)
-    Write-Host "✓ $Message" -ForegroundColor Green
-}
-
-function Write-Err {
-    param([string]$Message)
-    Write-Host "✗ $Message" -ForegroundColor Red
-}
-
-function Write-Warning {
-    param([string]$Message)
-    Write-Host "! $Message" -ForegroundColor Yellow
-}
-
-Write-Header "CentOS Deployment Script for WebRTC System"
-
-# Collect deployment information
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "WebRTC Genesys Deployment Script" -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
-Write-Warning "Please provide the following information:"
+Write-Host "Target Server: $Username@$ServerIP`:$Port" -ForegroundColor Yellow
+Write-Host "Remote Path: $RemotePath" -ForegroundColor Yellow
 Write-Host ""
 
-if ([string]::IsNullOrEmpty($CentOSIP)) {
-    $script:CentOSIP = Read-Host "CentOS Server IP"
-}
-
-if ([string]::IsNullOrEmpty($CentOSUser)) {
-    $script:CentOSUser = Read-Host "CentOS Username"
-}
-
-$Domain = Read-Host "Domain name (or IP)"
-$PublicIP = Read-Host "Public IP address"
-$PrivateIP = Read-Host "Private IP address [$PublicIP]"
-if ([string]::IsNullOrEmpty($PrivateIP)) {
-    $PrivateIP = $PublicIP
-}
-
-Write-Host ""
-$GenesysHost = Read-Host "Genesys SIP Host"
-$GenesysPort = Read-Host "Genesys SIP Port [5060]"
-if ([string]::IsNullOrEmpty($GenesysPort)) {
-    $GenesysPort = "5060"
-}
-$GenesysUser = Read-Host "Genesys Username"
-$GenesysPass = Read-Host "Genesys Password" -AsSecureString
-$GenesysPassPlain = [Runtime.InteropServices.Marshal]::PtrToStringAuto(
-    [Runtime.InteropServices.Marshal]::SecureStringToBSTR($GenesysPass)
-)
-
-# Generate TURN secret
-$TURNSecret = -join ((48..57) + (97..102) | Get-Random -Count 32 | ForEach-Object {[char]$_})
-$TURNDomain = $Domain
-
-Write-Host ""
-
-# Step 2: Test SSH connection
-Write-Step "Testing SSH connection to CentOS server..."
-
-# Check if OpenSSH is available
-if (-not (Get-Command ssh -ErrorAction SilentlyContinue)) {
-    Write-Err "SSH command not found. Please install OpenSSH or use Git Bash."
+# Check if we're in the right directory
+if (-not (Test-Path "docker-compose.yml")) {
+    Write-Host "ERROR: Please run this script from the project root directory!" -ForegroundColor Red
     exit 1
 }
 
-# Test connection
-try {
-    ssh -o ConnectTimeout=5 -o BatchMode=yes "${CentOSUser}@${CentOSIP}" "exit" 2>$null
-    Write-Success "SSH connection successful"
-} catch {
-    Write-Err "Cannot connect to CentOS server"
-    Write-Host ""
-    Write-Host "Troubleshooting:"
-    Write-Host "1. Ensure SSH is enabled on CentOS"
-    Write-Host "2. Check firewall allows port 22"
-    Write-Host "3. Verify username and IP are correct"
-    Write-Host ""
-    $continue = Read-Host "Do you want to continue anyway? (y/n)"
-    if ($continue -ne "y" -and $continue -ne "Y") {
-        exit 1
-    }
+Write-Host "[1/5] Creating remote directories..." -ForegroundColor Green
+
+# Create directory structure on remote server
+$directories = @(
+    "$RemotePath",
+    "$RemotePath/asterisk",
+    "$RemotePath/asterisk/etc",
+    "$RemotePath/asterisk/sounds",
+    "$RemotePath/asterisk/keys",
+    "$RemotePath/asterisk/logs",
+    "$RemotePath/nginx",
+    "$RemotePath/nginx/html",
+    "$RemotePath/coturn",
+    "$RemotePath/certs",
+    "$RemotePath/scripts"
+)
+
+foreach ($dir in $directories) {
+    Write-Host "  Creating: $dir" -ForegroundColor Gray
+    ssh -p $Port "$Username@$ServerIP" "mkdir -p $dir"
 }
 
-# Step 3: Transfer files (if not skipped)
-if (-not $SkipTransfer) {
-    Write-Step "Transferring files to CentOS server..."
-    
-    # Get current directory
-    $ProjectRoot = $PSScriptRoot | Split-Path -Parent
-    
-    # Create .env file content safely (avoid here-string parsing issues)
-    $envLines = @(
-        "# Domain Configuration",
-        "DOMAIN=$Domain",
-        "PUBLIC_IP=$PublicIP",
-        "PRIVATE_IP=$PrivateIP",
-        "",
-        "# Genesys SIP Configuration",
-        "GENESYS_SIP_HOST=$GenesysHost",
-        "GENESYS_SIP_PORT=$GenesysPort",
-        "GENESYS_USERNAME=$GenesysUser",
-        "GENESYS_PASSWORD=$GenesysPassPlain",
-        "",
-        "# TURN Server Configuration",
-        "TURN_SECRET=$TURNSecret",
-        "TURN_REALM=$TURNDomain",
-        "",
-        "# Asterisk Configuration",
-        "ASTERISK_HTTP_PORT=8088",
-        "ASTERISK_HTTPS_PORT=8089",
-        "",
-        "# Docker Configuration",
-        "COMPOSE_PROJECT_NAME=webrtc",
-        "",
-        "# Security",
-        "ADMIN_USER=admin"
-    )
-    $envContent = $envLines -join "`n"
+Write-Host "  ✓ Directories created" -ForegroundColor Green
+Write-Host ""
 
-    # Create temporary file with .env
-    $envFilePath = Join-Path -Path $env:TEMP -ChildPath 'webrtc.env'
-    $envContent | Out-File -FilePath $envFilePath -Encoding utf8 -Force
-    
-    # Transfer files using scp
-    Write-Host "Copying files to CentOS..."
-    
-    # Create remote directory
-    ssh "${CentOSUser}@${CentOSIP}" "mkdir -p ~/webrtc"
-    
-    # Use rsync if available, otherwise scp
-    if (Get-Command rsync -ErrorAction SilentlyContinue) {
-        rsync -avz --exclude='.git' --exclude='node_modules' --exclude='*.log' "${ProjectRoot}/" "${CentOSUser}@${CentOSIP}:~/webrtc/"
+# Copy Asterisk configuration files
+Write-Host "[2/5] Copying Asterisk configuration files..." -ForegroundColor Green
+$asteriskFiles = @(
+    "asterisk/etc/pjsip.conf",
+    "asterisk/etc/logger.conf",
+    "asterisk/etc/asterisk.conf",
+    "asterisk/etc/extensions-sip-endpoint.conf",
+    "asterisk/etc/http.conf",
+    "asterisk/etc/rtp.conf"
+)
+
+foreach ($file in $asteriskFiles) {
+    if (Test-Path $file) {
+        Write-Host "  Copying: $file" -ForegroundColor Gray
+        scp -P $Port $file "$Username@$ServerIP`:$RemotePath/$file"
     } else {
-        # Use SCP (slower but works)
-        scp -r "${ProjectRoot}" "${CentOSUser}@${CentOSIP}:~/"
-        ssh "${CentOSUser}@${CentOSIP}" "mv ~/webrtc-genesys ~/webrtc"
+        Write-Host "  Skipping: $file (not found)" -ForegroundColor Yellow
     }
-    
-    # Copy .env file
-    scp "$envFilePath" "${CentOSUser}@${CentOSIP}:~/webrtc/.env"
-    Remove-Item $envFilePath -Force
-    
-    Write-Success "Files transferred"
-} else {
-    Write-Warning "Skipping file transfer (use -SkipTransfer:$false to transfer files)"
 }
+Write-Host "  ✓ Asterisk files copied" -ForegroundColor Green
+Write-Host ""
 
-# Step 4: Run setup on CentOS
-Write-Step "Running setup on CentOS server..."
+# Copy Nginx files
+Write-Host "[3/5] Copying Nginx files..." -ForegroundColor Green
+$nginxFiles = @(
+    "nginx/nginx.conf",
+    "nginx/html/index.html",
+    "nginx/html/app.js",
+    "nginx/html/style.css",
+    "nginx/html/jssip.min.js"
+)
 
-$setupScript = @"
-#!/bin/bash
-set -e
+foreach ($file in $nginxFiles) {
+    if (Test-Path $file) {
+        Write-Host "  Copying: $file" -ForegroundColor Gray
+        scp -P $Port $file "$Username@$ServerIP`:$RemotePath/$file"
+    } else {
+        Write-Host "  Skipping: $file (not found)" -ForegroundColor Yellow
+    }
+}
+Write-Host "  ✓ Nginx files copied" -ForegroundColor Green
+Write-Host ""
 
-cd ~/webrtc
+# Copy certificates
+Write-Host "[4/5] Copying SSL certificates..." -ForegroundColor Green
+if (Test-Path "certs/*.pem") {
+    Write-Host "  Copying certificate files..." -ForegroundColor Gray
+    scp -P $Port certs/*.pem "$Username@$ServerIP`:$RemotePath/certs/"
+    Write-Host "  ✓ Certificates copied" -ForegroundColor Green
+} else {
+    Write-Host "  ! No certificates found, will generate on server" -ForegroundColor Yellow
+}
+Write-Host ""
 
-# Make scripts executable
-chmod +x scripts/*.sh
+# Copy Docker and other files
+Write-Host "[5/5] Copying Docker and documentation files..." -ForegroundColor Green
+$otherFiles = @(
+    "docker-compose.yml",
+    "TEST_DN_REGISTRATION.md",
+    "GENESYS_GWS_INTEGRATION.md",
+    "README.md"
+)
 
-# Run CentOS setup
-echo ">>> Running CentOS system setup..."
-sudo ./scripts/centos-setup.sh
+foreach ($file in $otherFiles) {
+    if (Test-Path $file) {
+        Write-Host "  Copying: $file" -ForegroundColor Gray
+        scp -P $Port $file "$Username@$ServerIP`:$RemotePath/$file"
+    } else {
+        Write-Host "  Skipping: $file (not found)" -ForegroundColor Yellow
+    }
+}
+Write-Host "  ✓ Files copied" -ForegroundColor Green
+Write-Host ""
 
-# Generate self-signed certificates
-echo ">>> Generating SSL certificates..."
-DOMAIN="$Domain" ./scripts/generate-certs.sh development
-
-# Update configuration files
-echo ">>> Updating configuration files..."
-
-# Update Asterisk pjsip.conf
-sed -i "s/YOUR_PUBLIC_IP_HERE/$PublicIP/g" asterisk/etc/pjsip.conf
-sed -i "s/GENESYS_SIP_HOST/$GenesysHost/g" asterisk/etc/pjsip.conf
-sed -i "s/YOUR_GENESYS_USERNAME/$GenesysUser/g" asterisk/etc/pjsip.conf
-sed -i "s/YOUR_GENESYS_PASSWORD/$GenesysPassPlain/g" asterisk/etc/pjsip.conf
-
-# Update Nginx configuration
-sed -i "s/your-domain.com/$Domain/g" nginx/nginx.conf
-
-# Update TURN server configuration
-sed -i "s/YOUR_PUBLIC_IP_HERE/$PublicIP/g" coturn/turnserver.conf
-sed -i "s/your-domain.com/$Domain/g" coturn/turnserver.conf
-sed -i "s/your-turn-secret-key/$TURNSecret/g" coturn/turnserver.conf
-
-# Update Kamailio configuration (if exists)
-if [ -f kamailio/kamailio.cfg ]; then
-    sed -i "s/YOUR_PUBLIC_IP_HERE/$PublicIP/g" kamailio/kamailio.cfg
-    sed -i "s/your-domain.com/$Domain/g" kamailio/kamailio.cfg
+# Generate certificates on server if needed
+Write-Host "[OPTIONAL] Generating SSL certificates on server..." -ForegroundColor Cyan
+ssh -p $Port "$Username@$ServerIP" @"
+cd $RemotePath
+if [ ! -f certs/cert.pem ]; then
+    echo '  Generating self-signed certificates...'
+    docker run --rm -v \$(pwd)/certs:/certs alpine/openssl req -x509 -newkey rsa:2048 -keyout /certs/key.pem -out /certs/cert.pem -days 365 -nodes -subj '/CN=192.168.210.54'
+    cp certs/cert.pem certs/ca.pem
+    echo '  ✓ Certificates generated'
+else
+    echo '  ✓ Certificates already exist'
 fi
-
-echo "✓ Configuration files updated"
-
-# Start services
-echo ">>> Starting Docker containers..."
-docker-compose up -d
-
-# Wait for services to start
-sleep 10
-
-# Check status
-echo ">>> Service status:"
-docker-compose ps
-
-echo "✓ Deployment completed on CentOS server"
 "@
-
-# Write script to remote and execute
-$tempScript = Join-Path -Path $env:TEMP -ChildPath 'deploy-remote.sh'
-$setupScript | Out-File -FilePath $tempScript -Encoding utf8 -NoNewline -Force
-scp "$tempScript" "${CentOSUser}@${CentOSIP}:~/webrtc/deploy-remote.sh"
-ssh "${CentOSUser}@${CentOSIP}" "chmod +x ~/webrtc/deploy-remote.sh; ~/webrtc/deploy-remote.sh"
-Remove-Item $tempScript -Force -ErrorAction SilentlyContinue
-
-if ($LASTEXITCODE -eq 0) {
-    Write-Success "Deployment completed successfully!"
-} else {
-    Write-Err "Deployment failed"
-    exit 1
-}
+Write-Host ""
 
 # Summary
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "Deployment Summary" -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "✓ All files copied to $ServerIP`:$RemotePath" -ForegroundColor Green
 Write-Host ""
-Write-Header "Deployment Summary"
+Write-Host "Next Steps:" -ForegroundColor Yellow
+Write-Host "1. SSH to server:" -ForegroundColor White
+Write-Host "   ssh -p $Port $Username@$ServerIP" -ForegroundColor Gray
+Write-Host ""
+Write-Host "2. Navigate to project:" -ForegroundColor White
+Write-Host "   cd $RemotePath" -ForegroundColor Gray
+Write-Host ""
+Write-Host "3. Start services:" -ForegroundColor White
+Write-Host "   docker-compose down" -ForegroundColor Gray
+Write-Host "   docker-compose up -d" -ForegroundColor Gray
+Write-Host ""
+Write-Host "4. Check status:" -ForegroundColor White
+Write-Host "   docker-compose ps" -ForegroundColor Gray
+Write-Host ""
+Write-Host "5. Test WebRTC client:" -ForegroundColor White
+Write-Host "   http://$ServerIP/" -ForegroundColor Gray
+Write-Host ""
+Write-Host "========================================" -ForegroundColor Cyan
 
-Write-Host "✅ Files transferred to CentOS"
-Write-Host "✅ System setup completed"
-Write-Host "✅ SSL certificates generated"
-Write-Host "✅ Configuration files updated"
-Write-Host "✅ Services started"
+# Ask if user wants to restart services automatically
 Write-Host ""
-Write-Host "📋 Access Information:"
-Write-Host ""
-Write-Host "  WebRTC Client URL:"
-Write-Host "    https://$Domain"
-Write-Host "    or"
-Write-Host "    https://$CentOSIP"
-Write-Host ""
-Write-Host "  WebSocket URL:"
-Write-Host "    wss://$Domain/ws"
-Write-Host ""
-Write-Host "  Test Credentials:"
-Write-Host "    Username: 1000"
-Write-Host "    Password: webrtc1000pass"
-Write-Host ""
-Write-Host "📞 SSH to CentOS:"
-Write-Host "    ssh $CentOSUser@$CentOSIP"
-Write-Host ""
-Write-Host "🔍 Useful Commands:"
-Write-Host ""
-Write-Host "    # View logs"
-Write-Host "    ssh $CentOSUser@$CentOSIP 'cd ~/webrtc && docker-compose logs -f'"
-Write-Host ""
-Write-Host "    # Check service status"
-Write-Host "    ssh $CentOSUser@$CentOSIP 'cd ~/webrtc && docker-compose ps'"
-Write-Host ""
-Write-Host "    # Restart services"
-Write-Host "    ssh $CentOSUser@$CentOSIP 'cd ~/webrtc && docker-compose restart'"
-Write-Host ""
-Write-Host "    # Access Asterisk CLI"
-Write-Host "    ssh $CentOSUser@$CentOSIP 'docker exec -it webrtc-asterisk asterisk -r'"
-Write-Host ""
+$restart = Read-Host "Do you want to restart services on the server now? (y/n)"
 
-Write-Warning "Next Steps:"
-Write-Host ""
-Write-Host "1. Access the WebRTC client at https://$Domain"
-Write-Host "2. Register as user 1000 with password webrtc1000pass"
-Write-Host "3. Test echo by dialing 600"
-Write-Host "4. Test internal call by calling 1001 from another browser"
-Write-Host "5. Test Genesys integration by making external call"
-Write-Host "6. Review and update default passwords"
-Write-Host "7. Configure your DIDs in asterisk/etc/extensions.conf"
-Write-Host "8. Set up monitoring and backups"
-Write-Host ""
-
-Write-Success "Deployment completed!"
-Write-Host ""
-
+if ($restart -eq "y" -or $restart -eq "Y") {
+    Write-Host ""
+    Write-Host "Restarting services on server..." -ForegroundColor Green
+    
+    ssh -p $Port "$Username@$ServerIP" @"
+cd $RemotePath
+echo 'Stopping services...'
+docker-compose down
+echo 'Starting services...'
+docker-compose up -d
+echo ''
+echo 'Service Status:'
+docker-compose ps
+"@
+    
+    Write-Host ""
+    Write-Host "========================================" -ForegroundColor Cyan
+    Write-Host "✓ Deployment Complete!" -ForegroundColor Green
+    Write-Host "========================================" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "WebRTC Client: http://$ServerIP/" -ForegroundColor Cyan
+    Write-Host ""
+} else {
+    Write-Host ""
+    Write-Host "Deployment files copied. Please restart services manually." -ForegroundColor Yellow
+    Write-Host ""
+}
