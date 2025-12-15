@@ -41,12 +41,34 @@ DN_RANGE_END = int(os.getenv('DN_RANGE_END', '5020'))
 
 LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
 
-# Setup logging
-logging.basicConfig(
-    level=getattr(logging, LOG_LEVEL),
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+# Setup logging to file and console
+from logging.handlers import RotatingFileHandler
+
 logger = logging.getLogger('RegistrationMonitor')
+logger.setLevel(getattr(logging, LOG_LEVEL))
+
+# Create logs directory if it doesn't exist
+os.makedirs('/app/logs', exist_ok=True)
+
+# File handler with rotation (10MB max, keep 3 files)
+file_handler = RotatingFileHandler(
+    '/app/logs/registration_monitor.log',
+    maxBytes=10*1024*1024,  # 10MB
+    backupCount=3
+)
+file_handler.setLevel(getattr(logging, LOG_LEVEL))
+file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(file_formatter)
+
+# Console handler
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setLevel(getattr(logging, LOG_LEVEL))
+console_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+console_handler.setFormatter(console_formatter)
+
+# Add handlers to logger
+logger.addHandler(file_handler)
+logger.addHandler(console_handler)
 
 class RegistrationMonitor:
     """Monitors WebRTC client registrations and manages Genesys registrations"""

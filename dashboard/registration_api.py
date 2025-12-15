@@ -8,12 +8,37 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 import asyncio
 import os
+import sys
 from panoramisk import Manager
 import logging
+from logging.handlers import RotatingFileHandler
 
-# Setup logging
-logging.basicConfig(level=logging.DEBUG)
+# Setup logging to file and console
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+# Create logs directory if it doesn't exist
+os.makedirs('/app/logs', exist_ok=True)
+
+# File handler with rotation (10MB max, keep 3 files)
+file_handler = RotatingFileHandler(
+    '/app/logs/dashboard_api.log',
+    maxBytes=10*1024*1024,  # 10MB
+    backupCount=3
+)
+file_handler.setLevel(logging.DEBUG)
+file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(file_formatter)
+
+# Console handler
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setLevel(logging.INFO)
+console_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+console_handler.setFormatter(console_formatter)
+
+# Add handlers to logger
+logger.addHandler(file_handler)
+logger.addHandler(console_handler)
 
 app = Flask(__name__)
 CORS(app)

@@ -15,6 +15,9 @@ certs/
 asterisk/logs/
 kamailio/logs/
 nginx/logs/
+coturn/logs/
+registration-monitor/logs/
+dashboard/logs/
 
 # Database
 *.sql
