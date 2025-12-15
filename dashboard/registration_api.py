@@ -75,14 +75,17 @@ async def get_registrations():
         contact_events = []
         print(f"Iterating contact response...")
         for event in contact_response:
-            # Skip non-dict items (panoramisk may return strings)
-            if not isinstance(event, dict):
+            # Convert panoramisk Message objects to dict
+            if hasattr(event, 'items'):
+                event_dict = dict(event.items())
+            else:
                 print(f"  Skipping non-dict event: {type(event)}")
                 continue
-            print(f"  Event type: {event.get('Event')}")
-            if event.get('Event') == 'ContactList':
-                contact_events.append(event)
-                print(f"  Added contact for Endpoint: {event.get('Endpoint')}")
+            
+            print(f"  Event type: {event_dict.get('Event')}")
+            if event_dict.get('Event') == 'ContactList':
+                contact_events.append(event_dict)
+                print(f"  Added contact for Endpoint: {event_dict.get('Endpoint')}")
         
         print(f"Total contacts collected: {len(contact_events)}")
         
@@ -93,14 +96,17 @@ async def get_registrations():
         registration_events = []
         print(f"Iterating registration response...")
         for event in registration_response:
-            # Skip non-dict items (panoramisk may return strings)
-            if not isinstance(event, dict):
+            # Convert panoramisk Message objects to dict
+            if hasattr(event, 'items'):
+                event_dict = dict(event.items())
+            else:
                 print(f"  Skipping non-dict event: {type(event)}")
                 continue
-            print(f"  Event type: {event.get('Event')}")
-            if event.get('Event') == 'OutboundRegistrationDetail':
-                registration_events.append(event)
-                print(f"  Added registration for: {event.get('ObjectName')}")
+            
+            print(f"  Event type: {event_dict.get('Event')}")
+            if event_dict.get('Event') == 'OutboundRegistrationDetail':
+                registration_events.append(event_dict)
+                print(f"  Added registration for: {event_dict.get('ObjectName')}")
         
         print(f"Total registrations collected: {len(registration_events)}")
         
