@@ -49,7 +49,6 @@ services:
 
   registration-monitor:
     image: webrtc-registration-monitor
-    build: ./registration-monitor
     container_name: webrtc-registration-monitor
     hostname: registration-monitor
     network_mode: host

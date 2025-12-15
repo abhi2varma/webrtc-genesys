@@ -1,3 +1,2 @@
 panoramisk==1.4
-asyncio
 
