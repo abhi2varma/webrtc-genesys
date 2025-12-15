@@ -1,14 +1,17 @@
 # Kamailio SIP Proxy for WebRTC Gateway
-FROM alpine:3.18
+FROM debian:bullseye-slim
 
-# Install Kamailio, syslog, and dependencies
-RUN apk add --no-cache \
-    kamailio \
-    kamailio-json \
-    kamailio-tls \
-    kamailio-websocket \
-    rsyslog \
-    bash \
+# Install Kamailio with all required modules
+RUN apt-get update && \
+    apt-get install -y \
+        kamailio \
+        kamailio-extra-modules \
+        kamailio-json-modules \
+        kamailio-tls-modules \
+        kamailio-websocket-modules \
+        rsyslog \
+        procps \
+    && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /var/log/kamailio \
     && chmod 777 /var/log/kamailio
 
