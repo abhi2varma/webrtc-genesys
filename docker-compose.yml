@@ -104,6 +104,8 @@ services:
     restart: unless-stopped
     volumes:
       - ./dashboard/logs:/app/logs
+      - ./kamailio/dispatcher.list:/etc/kamailio/dispatcher.list:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       - ASTERISK_HOST=127.0.0.1
       - ASTERISK_AMI_PORT=5038

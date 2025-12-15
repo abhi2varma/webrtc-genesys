@@ -238,6 +238,10 @@
                 <div class="stat-label">Registered to Genesys</div>
             </div>
             <div class="stat-card">
+                <div class="stat-number" id="kamailioStatus">-</div>
+                <div class="stat-label">Kamailio Status</div>
+            </div>
+            <div class="stat-card">
                 <div class="stat-number" id="totalDNs">20</div>
                 <div class="stat-label">Total DNs Configured</div>
             </div>
@@ -263,6 +267,11 @@
             <h2>🌐 Genesys SIP Server Registrations</h2>
             <div id="genesysContent" class="loading">Loading...</div>
         </div>
+
+        <div class="section">
+            <h2>⚖️ Kamailio SIP Load Balancer</h2>
+            <div id="kamailioContent" class="loading">Loading...</div>
+        </div>
     </div>
 
     <script>
@@ -276,13 +285,19 @@
             });
         }
 
-        function updateStats(data) {
+        function updateStats(data, kamailioData) {
             const activeWebRTC = data.contacts ? data.contacts.filter(c => c.status !== 'Unreachable').length : 0;
             const activeGenesys = data.genesys_registrations ? 
                 data.genesys_registrations.filter(r => r.status === 'Registered').length : 0;
 
             document.getElementById('activeWebRTC').textContent = activeWebRTC;
             document.getElementById('activeGenesys').textContent = activeGenesys;
+            
+            if (kamailioData && kamailioData.success) {
+                const kamailioStatusText = kamailioData.kamailio_running ? '✓' : '✗';
+                document.getElementById('kamailioStatus').textContent = kamailioStatusText;
+                document.getElementById('kamailioStatus').style.color = kamailioData.kamailio_running ? '#28a745' : '#dc3545';
+            }
         }
 
         function renderWebRTCTable(contacts) {
@@ -332,17 +347,63 @@
             return html;
         }
 
+        function renderKamailioTable(kamailioData) {
+            if (!kamailioData || !kamailioData.success) {
+                return '<p style="text-align: center; color: #999; padding: 20px;">Error loading Kamailio data</p>';
+            }
+
+            let html = '<div style="margin-bottom: 20px;">';
+            const statusColor = kamailioData.kamailio_running ? '#28a745' : '#dc3545';
+            const statusText = kamailioData.kamailio_running ? 'Running' : 'Stopped';
+            html += `<p><strong>Container Status:</strong> <span style="color: ${statusColor}; font-weight: bold;">${statusText}</span> (${kamailioData.container_status})</p>`;
+            html += `<p><strong>Dispatcher Endpoints:</strong> ${kamailioData.dispatcher_count}</p>`;
+            html += '</div>';
+
+            if (!kamailioData.dispatchers || kamailioData.dispatchers.length === 0) {
+                html += '<p style="text-align: center; color: #999; padding: 20px;">No dispatcher endpoints configured</p>';
+                return html;
+            }
+
+            html += '<table><thead><tr>';
+            html += '<th>Set ID</th><th>Destination (SIP URI)</th><th>IP</th><th>Port</th><th>Health Status</th>';
+            html += '</tr></thead><tbody>';
+
+            kamailioData.dispatchers.forEach(disp => {
+                let healthClass = 'offline';
+                if (disp.health === 'Healthy') healthClass = 'online';
+                else if (disp.health === 'Checking') healthClass = 'registered';
+                
+                html += '<tr>';
+                html += `<td>${disp.setid}</td>`;
+                html += `<td style="font-size: 12px; color: #666;">${disp.destination}</td>`;
+                html += `<td class="ip-cell">${disp.ip}</td>`;
+                html += `<td>${disp.port}</td>`;
+                html += `<td><span class="status ${healthClass}">${disp.health}</span></td>`;
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            return html;
+        }
+
         async function loadData() {
             try {
                 document.getElementById('errorContainer').innerHTML = '';
                 
-                const response = await fetch('/api/registrations');
-                const data = await response.json();
+                // Fetch both registration and Kamailio data
+                const [regResponse, kamResponse] = await Promise.all([
+                    fetch('/api/registrations'),
+                    fetch('/api/kamailio')
+                ]);
+                
+                const data = await regResponse.json();
+                const kamailioData = await kamResponse.json();
 
                 if (data.success) {
-                    updateStats(data);
+                    updateStats(data, kamailioData);
                     document.getElementById('webrtcContent').innerHTML = renderWebRTCTable(data.contacts);
                     document.getElementById('genesysContent').innerHTML = renderGenesysTable(data.genesys_registrations);
+                    document.getElementById('kamailioContent').innerHTML = renderKamailioTable(kamailioData);
                     document.getElementById('lastUpdated').textContent = `Last updated: ${formatTime(new Date())}`;
                 } else {
                     throw new Error(data.error || 'Unknown error');

@@ -9,6 +9,8 @@ from flask_cors import CORS
 import asyncio
 import os
 import sys
+import subprocess
+import re
 from panoramisk import Manager
 import logging
 from logging.handlers import RotatingFileHandler
@@ -171,6 +173,96 @@ def registrations():
     print(f"RESULT: {result}")
     print("=" * 60)
     loop.close()
+    return jsonify(result)
+
+def get_kamailio_status():
+    """Get Kamailio dispatcher status"""
+    try:
+        # Check if Kamailio container is running
+        result = subprocess.run(
+            ['docker', 'ps', '--filter', 'name=webrtc-kamailio', '--format', '{{.Status}}'],
+            capture_output=True,
+            text=True,
+            timeout=5
+        )
+        
+        container_status = result.stdout.strip() if result.returncode == 0 else 'Not found'
+        is_running = 'Up' in container_status
+        
+        dispatchers = []
+        
+        if is_running:
+            # Read dispatcher list file
+            dispatcher_file = '/etc/kamailio/dispatcher.list'
+            if os.path.exists(dispatcher_file):
+                with open(dispatcher_file, 'r') as f:
+                    for line in f:
+                        line = line.strip()
+                        # Skip comments and empty lines
+                        if not line or line.startswith('#'):
+                            continue
+                        
+                        # Parse: setid destination flags priority attributes
+                        parts = line.split()
+                        if len(parts) >= 2:
+                            setid = parts[0]
+                            destination = parts[1]
+                            flags = parts[2] if len(parts) > 2 else '0'
+                            
+                            # Extract IP from SIP URI
+                            ip_match = re.search(r'sip:([^:]+):?(\d+)?', destination)
+                            if ip_match:
+                                ip = ip_match.group(1)
+                                port = ip_match.group(2) or '5060'
+                                
+                                # Check if this destination is healthy by looking at recent logs
+                                try:
+                                    log_result = subprocess.run(
+                                        ['docker', 'logs', '--tail', '100', 'webrtc-kamailio'],
+                                        capture_output=True,
+                                        text=True,
+                                        timeout=5
+                                    )
+                                    
+                                    # Look for recent OPTIONS to this IP and 200 OK responses
+                                    options_sent = ip in log_result.stdout
+                                    ok_received = '200 OK' in log_result.stdout and ip in log_result.stdout
+                                    
+                                    health_status = 'Healthy' if ok_received else ('Checking' if options_sent else 'Unknown')
+                                except:
+                                    health_status = 'Unknown'
+                                
+                                dispatchers.append({
+                                    'setid': setid,
+                                    'destination': destination,
+                                    'ip': ip,
+                                    'port': port,
+                                    'flags': flags,
+                                    'health': health_status
+                                })
+        
+        return {
+            'success': True,
+            'kamailio_running': is_running,
+            'container_status': container_status,
+            'dispatchers': dispatchers,
+            'dispatcher_count': len(dispatchers)
+        }
+        
+    except Exception as e:
+        import traceback
+        return {
+            'success': False,
+            'error': str(e),
+            'traceback': traceback.format_exc()
+        }
+
+@app.route('/api/kamailio', methods=['GET'])
+def kamailio_status():
+    """Get Kamailio status"""
+    logger.info("API REQUEST: /api/kamailio")
+    result = get_kamailio_status()
+    logger.info(f"Kamailio status: {result}")
     return jsonify(result)
 
 @app.route('/api/health', methods=['GET'])
