@@ -75,6 +75,10 @@ async def get_registrations():
         contact_events = []
         print(f"Iterating contact response...")
         for event in contact_response:
+            # Skip non-dict items (panoramisk may return strings)
+            if not isinstance(event, dict):
+                print(f"  Skipping non-dict event: {type(event)}")
+                continue
             print(f"  Event type: {event.get('Event')}")
             if event.get('Event') == 'ContactList':
                 contact_events.append(event)
@@ -89,6 +93,10 @@ async def get_registrations():
         registration_events = []
         print(f"Iterating registration response...")
         for event in registration_response:
+            # Skip non-dict items (panoramisk may return strings)
+            if not isinstance(event, dict):
+                print(f"  Skipping non-dict event: {type(event)}")
+                continue
             print(f"  Event type: {event.get('Event')}")
             if event.get('Event') == 'OutboundRegistrationDetail':
                 registration_events.append(event)
