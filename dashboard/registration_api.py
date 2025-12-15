@@ -192,11 +192,24 @@ def get_kamailio_status():
         dispatchers = []
         
         if is_running:
-            # Read dispatcher list file
-            dispatcher_file = '/etc/kamailio/dispatcher.list'
-            if os.path.exists(dispatcher_file):
-                with open(dispatcher_file, 'r') as f:
-                    for line in f:
+            # Read dispatcher list file from container using docker exec
+            try:
+                cat_result = subprocess.run(
+                    ['docker', 'exec', 'webrtc-kamailio', 'cat', '/etc/kamailio/dispatcher.list'],
+                    capture_output=True,
+                    text=True,
+                    timeout=5
+                )
+                
+                if cat_result.returncode == 0:
+                    dispatcher_content = cat_result.stdout
+                else:
+                    dispatcher_content = ''
+            except:
+                dispatcher_content = ''
+            
+            if dispatcher_content:
+                for line in dispatcher_content.splitlines():
                         line = line.strip()
                         # Skip comments and empty lines
                         if not line or line.startswith('#'):

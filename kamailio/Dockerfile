@@ -9,6 +9,7 @@ RUN apt-get update && \
         kamailio-json-modules \
         kamailio-tls-modules \
         kamailio-websocket-modules \
+        kamailio-utils-modules \
         rsyslog \
         procps \
     && rm -rf /var/lib/apt/lists/* \
