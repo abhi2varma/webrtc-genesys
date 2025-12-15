@@ -134,7 +134,8 @@ services:
         max-file: "3"
 
   kamailio:
-    image: kamailio/kamailio:5.7-alpine
+    build: ./kamailio
+    image: webrtc-kamailio
     container_name: webrtc-kamailio
     hostname: kamailio
     network_mode: host
