@@ -108,7 +108,7 @@ class RegistrationMonitor:
         except (ValueError, TypeError):
             return False
     
-    async def handle_contact_status_detail(self, event, **kwargs):
+    async def handle_contact_status_detail(self, manager, event):
         """Handle ContactStatusDetail event (PJSIP)"""
         aor = event.get('AOR', '')
         uri = event.get('URI', '')
@@ -129,7 +129,7 @@ class RegistrationMonitor:
             # Client unregistered
             await self.unregister_from_genesys(dn)
     
-    async def handle_peer_status(self, event, **kwargs):
+    async def handle_peer_status(self, manager, event):
         """Handle PeerStatus event"""
         peer = event.get('Peer', '')
         peer_status = event.get('PeerStatus', '')
@@ -151,7 +151,7 @@ class RegistrationMonitor:
         elif peer_status in ['Unregistered', 'Unreachable', 'Rejected']:
             await self.unregister_from_genesys(dn)
     
-    async def handle_device_state(self, event, **kwargs):
+    async def handle_device_state(self, manager, event):
         """Handle DeviceStateChange event"""
         device = event.get('Device', '')
         state = event.get('State', '')
