@@ -28,6 +28,8 @@ async def get_registrations():
     contacts = []
     registrations = []
     
+    print(f"Connecting to AMI: {ASTERISK_HOST}:{ASTERISK_AMI_PORT}")
+    
     try:
         manager = Manager(
             host=ASTERISK_HOST,
@@ -37,6 +39,7 @@ async def get_registrations():
         )
         
         await manager.connect()
+        print("Connected to AMI!")
         
         # Register event listeners to collect data
         contact_events = []
@@ -71,10 +74,12 @@ async def get_registrations():
         logger.info(f"Received {len(registration_events)} registration events")
         
         # Process contact events
+        print(f"Processing {len(contact_events)} contact events...")
         for event in contact_events:
             aor = event.get('AOR', '')
             uri = event.get('URI', '')
             status = event.get('Status', '')
+            print(f"  Contact: AOR={aor}, URI={uri}, Status={status}")
             
             # Extract DN from AOR
             dn = aor.split('/')[0] if '/' in aor else aor
@@ -100,11 +105,13 @@ async def get_registrations():
                 })
         
         # Process registration events
+        print(f"Processing {len(registration_events)} registration events...")
         for event in registration_events:
             reg_name = event.get('ObjectName', '')
             status = event.get('Status', '')
             server_uri = event.get('ServerURI', '')
             client_uri = event.get('ClientURI', '')
+            print(f"  Registration: Name={reg_name}, Status={status}")
             
             # Extract DN from registration name
             if 'genesys_reg_' in reg_name:
@@ -134,9 +141,14 @@ async def get_registrations():
 @app.route('/api/registrations', methods=['GET'])
 def registrations():
     """Get current registrations"""
+    print("=" * 60)
+    print("API REQUEST: /api/registrations")
+    print("=" * 60)
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     result = loop.run_until_complete(get_registrations())
+    print(f"RESULT: {result}")
+    print("=" * 60)
     loop.close()
     return jsonify(result)
 
