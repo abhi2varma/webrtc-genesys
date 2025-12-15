@@ -46,20 +46,19 @@ async def get_registrations():
         registration_events = []
         
         def handle_contact_event(manager, event):
-            logger.debug(f"Contact event: {event}")
-            if event.get('Event') == 'ContactStatusDetail':
+            print(f"Contact event received: {event.get('Event')}")
+            if event.get('Event') == 'ContactList':  # Changed from ContactStatusDetail
                 contact_events.append(event)
-                logger.info(f"Added contact event for AOR: {event.get('AOR')}")
+                print(f"Added contact event for Endpoint: {event.get('Endpoint')}")
         
         def handle_registration_event(manager, event):
-            logger.debug(f"Registration event: {event}")
+            print(f"Registration event received: {event.get('Event')}")
             if event.get('Event') == 'OutboundRegistrationDetail':
                 registration_events.append(event)
-                logger.info(f"Added registration event for: {event.get('ObjectName')}")
+                print(f"Added registration event for: {event.get('ObjectName')}")
         
         # Register listeners
-        manager.register_event('*', lambda m, e: logger.debug(f"AMI Event: {e.get('Event')}"))
-        manager.register_event('ContactStatusDetail', handle_contact_event)
+        manager.register_event('ContactList', handle_contact_event)  # Changed event name
         manager.register_event('OutboundRegistrationDetail', handle_registration_event)
         
         logger.info("Sending PJSIPShowContacts action...")
@@ -76,13 +75,13 @@ async def get_registrations():
         # Process contact events
         print(f"Processing {len(contact_events)} contact events...")
         for event in contact_events:
-            aor = event.get('AOR', '')
-            uri = event.get('URI', '')
+            endpoint = event.get('Endpoint', '')  # Changed from AOR
+            uri = event.get('Uri', '')  # Capital U in Uri
             status = event.get('Status', '')
-            print(f"  Contact: AOR={aor}, URI={uri}, Status={status}")
+            print(f"  Contact: Endpoint={endpoint}, URI={uri}, Status={status}")
             
-            # Extract DN from AOR
-            dn = aor.split('/')[0] if '/' in aor else aor
+            # DN is the endpoint name
+            dn = endpoint
             
             # Extract IP and port from URI
             ip = ''
