@@ -41,36 +41,33 @@ async def get_registrations():
         await manager.connect()
         print("Connected to AMI!")
         
-        # Register event listeners to collect data
+        # Query contacts - iterate response directly
+        print("Sending PJSIPShowContacts action...")
+        contact_response = await manager.send_action({'Action': 'PJSIPShowContacts'})
+        
         contact_events = []
-        registration_events = []
-        
-        def handle_contact_event(manager, event):
-            print(f"Contact event received: {event.get('Event')}")
-            if event.get('Event') == 'ContactList':  # Changed from ContactStatusDetail
+        print(f"Iterating contact response...")
+        for event in contact_response:
+            print(f"  Event type: {event.get('Event')}")
+            if event.get('Event') == 'ContactList':
                 contact_events.append(event)
-                print(f"Added contact event for Endpoint: {event.get('Endpoint')}")
+                print(f"  Added contact for Endpoint: {event.get('Endpoint')}")
         
-        def handle_registration_event(manager, event):
-            print(f"Registration event received: {event.get('Event')}")
+        print(f"Total contacts collected: {len(contact_events)}")
+        
+        # Query registrations - iterate response directly  
+        print("Sending PJSIPShowRegistrationsOutbound action...")
+        registration_response = await manager.send_action({'Action': 'PJSIPShowRegistrationsOutbound'})
+        
+        registration_events = []
+        print(f"Iterating registration response...")
+        for event in registration_response:
+            print(f"  Event type: {event.get('Event')}")
             if event.get('Event') == 'OutboundRegistrationDetail':
                 registration_events.append(event)
-                print(f"Added registration event for: {event.get('ObjectName')}")
+                print(f"  Added registration for: {event.get('ObjectName')}")
         
-        # Register listeners
-        manager.register_event('ContactList', handle_contact_event)  # Changed event name
-        manager.register_event('OutboundRegistrationDetail', handle_registration_event)
-        
-        logger.info("Sending PJSIPShowContacts action...")
-        # Send actions and wait for responses
-        await manager.send_action({'Action': 'PJSIPShowContacts'})
-        await asyncio.sleep(1.0)  # Wait for events to arrive
-        logger.info(f"Received {len(contact_events)} contact events")
-        
-        logger.info("Sending PJSIPShowRegistrationsOutbound action...")
-        await manager.send_action({'Action': 'PJSIPShowRegistrationsOutbound'})
-        await asyncio.sleep(1.0)  # Wait for events to arrive
-        logger.info(f"Received {len(registration_events)} registration events")
+        print(f"Total registrations collected: {len(registration_events)}")
         
         # Process contact events
         print(f"Processing {len(contact_events)} contact events...")
