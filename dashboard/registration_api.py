@@ -92,7 +92,8 @@ async def get_registrations():
                             'client_uri': client_uri
                         })
         
-        await manager.close()
+        # Note: panoramisk Manager will close connection automatically
+        # No explicit close needed
         
         return {
             'success': True,
