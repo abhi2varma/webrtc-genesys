@@ -92,7 +92,7 @@ async def get_registrations():
                             'client_uri': client_uri
                         })
         
-        await manager.disconnect()
+        await manager.close()
         
         return {
             'success': True,
