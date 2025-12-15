@@ -1,0 +1,201 @@
+---
+# Asterisk Headless Service (for StatefulSet DNS)
+apiVersion: v1
+kind: Service
+metadata:
+  name: asterisk
+  namespace: webrtc-gateway
+  labels:
+    app: asterisk
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - port: 5060
+    targetPort: 5060
+    protocol: UDP
+    name: sip-udp
+  - port: 8088
+    targetPort: 8088
+    protocol: TCP
+    name: ws
+  - port: 5038
+    targetPort: 5038
+    protocol: TCP
+    name: ami
+  selector:
+    app: asterisk
+
+---
+# Asterisk Load Balanced Service (for external access)
+apiVersion: v1
+kind: Service
+metadata:
+  name: asterisk-lb
+  namespace: webrtc-gateway
+  labels:
+    app: asterisk
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 5060
+    targetPort: 5060
+    protocol: UDP
+    name: sip-udp
+  - port: 8088
+    targetPort: 8088
+    protocol: TCP
+    name: ws
+  selector:
+    app: asterisk
+
+---
+# Redis Headless Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: webrtc-gateway
+  labels:
+    app: redis
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - port: 6379
+    targetPort: 6379
+    protocol: TCP
+    name: redis
+  selector:
+    app: redis
+
+---
+# Redis Master Service (for writes)
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-master
+  namespace: webrtc-gateway
+  labels:
+    app: redis
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6379
+    targetPort: 6379
+    protocol: TCP
+    name: redis
+  selector:
+    app: redis
+
+---
+# Kamailio Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: kamailio
+  namespace: webrtc-gateway
+  labels:
+    app: kamailio
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 5060
+    targetPort: 5060
+    protocol: UDP
+    name: sip-udp
+  - port: 5060
+    targetPort: 5060
+    protocol: TCP
+    name: sip-tcp
+  selector:
+    app: kamailio
+
+---
+# Nginx Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: webrtc-gateway
+  labels:
+    app: nginx
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  - port: 443
+    targetPort: 443
+    protocol: TCP
+    name: https
+  selector:
+    app: nginx
+
+---
+# Nginx External LoadBalancer
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-external
+  namespace: webrtc-gateway
+  labels:
+    app: nginx
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  - port: 443
+    targetPort: 443
+    protocol: TCP
+    name: https
+  selector:
+    app: nginx
+
+---
+# Dashboard API Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashboard-api
+  namespace: webrtc-gateway
+  labels:
+    app: dashboard-api
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5000
+    targetPort: 5000
+    protocol: TCP
+    name: api
+  selector:
+    app: dashboard-api
+
+---
+# Coturn Service (TURN/STUN)
+apiVersion: v1
+kind: Service
+metadata:
+  name: coturn
+  namespace: webrtc-gateway
+  labels:
+    app: coturn
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 3478
+    targetPort: 3478
+    protocol: UDP
+    name: turn-udp
+  - port: 3478
+    targetPort: 3478
+    protocol: TCP
+    name: turn-tcp
+  selector:
+    app: coturn
+

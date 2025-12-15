@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registration-monitor
+  namespace: webrtc-gateway
+  labels:
+    app: registration-monitor
+    component: monitor
+spec:
+  # One monitor per Asterisk pod
+  replicas: 10
+  selector:
+    matchLabels:
+      app: registration-monitor
+  template:
+    metadata:
+      labels:
+        app: registration-monitor
+        component: monitor
+    spec:
+      containers:
+      - name: registration-monitor
+        image: webrtc-registration-monitor:latest
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        env:
+        # Monitor connects to all Asterisk pods via headless service
+        - name: ASTERISK_HOST
+          value: "asterisk.webrtc-gateway.svc.cluster.local"
+        - name: ASTERISK_AMI_PORT
+          value: "5038"
+        - name: ASTERISK_AMI_USER
+          valueFrom:
+            secretKeyRef:
+              name: asterisk-secrets
+              key: ami-user
+        - name: ASTERISK_AMI_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: asterisk-secrets
+              key: ami-password
+        - name: GENESYS_SIP_HOST
+          value: "192.168.210.81"
+        - name: GENESYS_SIP_PORT
+          value: "5060"
+        - name: DN_RANGE_START
+          value: "5001"
+        - name: DN_RANGE_END
+          value: "5020"
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: REDIS_HOST
+          value: "redis-master.webrtc-gateway.svc.cluster.local"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: ASTERISK_INSTANCE_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - "ps aux | grep -v grep | grep registration_monitor.py"
+          initialDelaySeconds: 30
+          periodSeconds: 30
+

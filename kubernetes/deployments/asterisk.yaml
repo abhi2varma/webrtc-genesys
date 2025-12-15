@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: asterisk
+  namespace: webrtc-gateway
+  labels:
+    app: asterisk
+    component: sip-gateway
+spec:
+  serviceName: asterisk
+  replicas: 10
+  selector:
+    matchLabels:
+      app: asterisk
+  template:
+    metadata:
+      labels:
+        app: asterisk
+        component: sip-gateway
+    spec:
+      containers:
+      - name: asterisk
+        image: andrius/asterisk:latest
+        ports:
+        - containerPort: 5060
+          name: sip-udp
+          protocol: UDP
+        - containerPort: 8088
+          name: ws
+          protocol: TCP
+        - containerPort: 5038
+          name: ami
+          protocol: TCP
+        - containerPort: 10000
+          name: rtp-start
+          protocol: UDP
+        - containerPort: 10100
+          name: rtp-end
+          protocol: UDP
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "2000m"
+          limits:
+            memory: "8Gi"
+            cpu: "4000m"
+        env:
+        - name: ASTERISK_UID
+          value: "1000"
+        - name: ASTERISK_GID
+          value: "1000"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        volumeMounts:
+        - name: asterisk-config
+          mountPath: /etc/asterisk
+        - name: asterisk-logs
+          mountPath: /var/log/asterisk
+        - name: asterisk-sounds
+          mountPath: /var/lib/asterisk/sounds
+        livenessProbe:
+          exec:
+            command:
+            - asterisk
+            - -rx
+            - core show version
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: 5060
+          initialDelaySeconds: 10
+          periodSeconds: 10
+      volumes:
+      - name: asterisk-config
+        configMap:
+          name: asterisk-config
+      - name: asterisk-sounds
+        emptyDir: {}
+  volumeClaimTemplates:
+  - metadata:
+      name: asterisk-logs
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
+

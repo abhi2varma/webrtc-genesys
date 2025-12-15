@@ -1,0 +1,62 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: webrtc-ingress
+  namespace: webrtc-gateway
+  annotations:
+    # Use cert-manager for automatic SSL certificates
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    # Redirect HTTP to HTTPS
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # WebSocket support
+    nginx.ingress.kubernetes.io/websocket-services: "asterisk-lb"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    # CORS support
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    # Client body size (for file uploads if needed)
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - webrtc.yourcompany.com
+    secretName: webrtc-tls
+  rules:
+  - host: webrtc.yourcompany.com
+    http:
+      paths:
+      # WebRTC Client (main page)
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx
+            port:
+              number: 80
+      # WebSocket for SIP (Asterisk)
+      - path: /ws
+        pathType: Prefix
+        backend:
+          service:
+            name: asterisk-lb
+            port:
+              number: 8088
+      # Dashboard API
+      - path: /api/
+        pathType: Prefix
+        backend:
+          service:
+            name: dashboard-api
+            port:
+              number: 5000
+      # Dashboard HTML
+      - path: /dashboard.html
+        pathType: Exact
+        backend:
+          service:
+            name: nginx
+            port:
+              number: 80
+

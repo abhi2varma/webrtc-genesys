@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kamailio
+  namespace: webrtc-gateway
+  labels:
+    app: kamailio
+    component: sip-proxy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kamailio
+  template:
+    metadata:
+      labels:
+        app: kamailio
+        component: sip-proxy
+    spec:
+      containers:
+      - name: kamailio
+        image: kamailio/kamailio:5.7-alpine
+        ports:
+        - containerPort: 5060
+          name: sip-udp
+          protocol: UDP
+        - containerPort: 5060
+          name: sip-tcp
+          protocol: TCP
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "1000m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+        volumeMounts:
+        - name: kamailio-config
+          mountPath: /etc/kamailio/kamailio.cfg
+          subPath: kamailio.cfg
+        - name: kamailio-config
+          mountPath: /etc/kamailio/dispatcher.list
+          subPath: dispatcher.list
+        - name: kamailio-logs
+          mountPath: /var/log/kamailio
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - pidof kamailio
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          tcpSocket:
+            port: 5060
+          initialDelaySeconds: 10
+          periodSeconds: 10
+      volumes:
+      - name: kamailio-config
+        configMap:
+          name: kamailio-config
+      - name: kamailio-logs
+        emptyDir: {}
+
