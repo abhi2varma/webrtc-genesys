@@ -20,7 +20,7 @@ from typing import Dict, Set
 import signal
 
 try:
-    from asterisk.ami import AMIClient, SimpleAction
+    from panoramisk import Manager
 except ImportError:
     print("ERROR: panoramisk library not found!")
     print("Install with: pip install panoramisk")
@@ -61,7 +61,7 @@ class RegistrationMonitor:
         logger.info(f"Connecting to Asterisk AMI at {ASTERISK_HOST}:{ASTERISK_AMI_PORT}")
         
         try:
-            self.ami_client = AMIClient(
+            self.ami_client = Manager(
                 host=ASTERISK_HOST,
                 port=ASTERISK_AMI_PORT,
                 username=ASTERISK_AMI_USER,
