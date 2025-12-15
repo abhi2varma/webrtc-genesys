@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Registration Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f8f9ff;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status.online {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.offline {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status.registered {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status.unregistered {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+
+        .auto-refresh {
+            margin-left: 20px;
+        }
+
+        .auto-refresh label {
+            color: #333;
+            margin-left: 5px;
+        }
+
+        .last-updated {
+            color: #999;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 18px;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .dn-cell {
+            font-weight: bold;
+            font-size: 18px;
+            color: #667eea;
+        }
+
+        .ip-cell {
+            font-family: 'Courier New', monospace;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            table {
+                font-size: 14px;
+            }
+            
+            th, td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 WebRTC Registration Dashboard</h1>
+            <p class="subtitle">Real-time monitoring of WebRTC client and Genesys SIP registrations</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="activeWebRTC">-</div>
+                <div class="stat-label">Active WebRTC Clients</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="activeGenesys">-</div>
+                <div class="stat-label">Registered to Genesys</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalDNs">20</div>
+                <div class="stat-label">Total DNs Configured</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <button class="refresh-btn" onclick="loadData()">🔄 Refresh Now</button>
+            <span class="auto-refresh">
+                <input type="checkbox" id="autoRefresh" checked>
+                <label for="autoRefresh">Auto-refresh every 5s</label>
+            </span>
+            <div class="last-updated" id="lastUpdated">Never updated</div>
+        </div>
+
+        <div id="errorContainer"></div>
+
+        <div class="section">
+            <h2>📱 Active WebRTC Client Registrations</h2>
+            <div id="webrtcContent" class="loading">Loading...</div>
+        </div>
+
+        <div class="section">
+            <h2>🌐 Genesys SIP Server Registrations</h2>
+            <div id="genesysContent" class="loading">Loading...</div>
+        </div>
+    </div>
+
+    <script>
+        let autoRefreshInterval = null;
+
+        function formatTime(date) {
+            return date.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit' 
+            });
+        }
+
+        function updateStats(data) {
+            const activeWebRTC = data.contacts ? data.contacts.filter(c => c.status !== 'Unreachable').length : 0;
+            const activeGenesys = data.genesys_registrations ? 
+                data.genesys_registrations.filter(r => r.status === 'Registered').length : 0;
+
+            document.getElementById('activeWebRTC').textContent = activeWebRTC;
+            document.getElementById('activeGenesys').textContent = activeGenesys;
+        }
+
+        function renderWebRTCTable(contacts) {
+            if (!contacts || contacts.length === 0) {
+                return '<p style="text-align: center; color: #999; padding: 20px;">No active WebRTC registrations</p>';
+            }
+
+            let html = '<table><thead><tr>';
+            html += '<th>DN</th><th>IP Address</th><th>Port</th><th>Status</th><th>Full URI</th>';
+            html += '</tr></thead><tbody>';
+
+            contacts.forEach(contact => {
+                const statusClass = contact.status === 'Unreachable' ? 'offline' : 'online';
+                html += '<tr>';
+                html += `<td class="dn-cell">${contact.dn}</td>`;
+                html += `<td class="ip-cell">${contact.ip || 'N/A'}</td>`;
+                html += `<td>${contact.port || 'N/A'}</td>`;
+                html += `<td><span class="status ${statusClass}">${contact.status}</span></td>`;
+                html += `<td style="font-size: 12px; color: #666;">${contact.uri}</td>`;
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            return html;
+        }
+
+        function renderGenesysTable(registrations) {
+            if (!registrations || registrations.length === 0) {
+                return '<p style="text-align: center; color: #999; padding: 20px;">No Genesys registrations</p>';
+            }
+
+            let html = '<table><thead><tr>';
+            html += '<th>DN</th><th>Status</th><th>Server URI</th><th>Client URI</th>';
+            html += '</tr></thead><tbody>';
+
+            registrations.forEach(reg => {
+                const statusClass = reg.status === 'Registered' ? 'registered' : 'unregistered';
+                html += '<tr>';
+                html += `<td class="dn-cell">${reg.dn}</td>`;
+                html += `<td><span class="status ${statusClass}">${reg.status}</span></td>`;
+                html += `<td class="ip-cell">${reg.server_uri || 'N/A'}</td>`;
+                html += `<td style="font-size: 12px; color: #666;">${reg.client_uri || 'N/A'}</td>`;
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            return html;
+        }
+
+        async function loadData() {
+            try {
+                document.getElementById('errorContainer').innerHTML = '';
+                
+                const response = await fetch('/api/registrations');
+                const data = await response.json();
+
+                if (data.success) {
+                    updateStats(data);
+                    document.getElementById('webrtcContent').innerHTML = renderWebRTCTable(data.contacts);
+                    document.getElementById('genesysContent').innerHTML = renderGenesysTable(data.genesys_registrations);
+                    document.getElementById('lastUpdated').textContent = `Last updated: ${formatTime(new Date())}`;
+                } else {
+                    throw new Error(data.error || 'Unknown error');
+                }
+            } catch (error) {
+                document.getElementById('errorContainer').innerHTML = 
+                    `<div class="error">❌ Error loading data: ${error.message}</div>`;
+                console.error('Error loading data:', error);
+            }
+        }
+
+        function startAutoRefresh() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+            autoRefreshInterval = setInterval(loadData, 5000);
+        }
+
+        function stopAutoRefresh() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+                autoRefreshInterval = null;
+            }
+        }
+
+        document.getElementById('autoRefresh').addEventListener('change', (e) => {
+            if (e.target.checked) {
+                startAutoRefresh();
+            } else {
+                stopAutoRefresh();
+            }
+        });
+
+        // Initial load
+        loadData();
+        startAutoRefresh();
+    </script>
+</body>
+</html>
+

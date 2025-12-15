@@ -66,6 +66,21 @@ services:
     depends_on:
       - asterisk
 
+  dashboard-api:
+    image: webrtc-dashboard-api
+    build: ./dashboard
+    container_name: webrtc-dashboard-api
+    hostname: dashboard-api
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      - ASTERISK_HOST=127.0.0.1
+      - ASTERISK_AMI_PORT=5038
+      - ASTERISK_AMI_USER=admin
+      - ASTERISK_AMI_SECRET=admin123
+    depends_on:
+      - asterisk
+
 
 
 
