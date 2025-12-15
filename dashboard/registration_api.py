@@ -9,6 +9,11 @@ from flask_cors import CORS
 import asyncio
 import os
 from panoramisk import Manager
+import logging
+
+# Setup logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 CORS(app)
@@ -38,23 +43,32 @@ async def get_registrations():
         registration_events = []
         
         def handle_contact_event(manager, event):
+            logger.debug(f"Contact event: {event}")
             if event.get('Event') == 'ContactStatusDetail':
                 contact_events.append(event)
+                logger.info(f"Added contact event for AOR: {event.get('AOR')}")
         
         def handle_registration_event(manager, event):
+            logger.debug(f"Registration event: {event}")
             if event.get('Event') == 'OutboundRegistrationDetail':
                 registration_events.append(event)
+                logger.info(f"Added registration event for: {event.get('ObjectName')}")
         
         # Register listeners
+        manager.register_event('*', lambda m, e: logger.debug(f"AMI Event: {e.get('Event')}"))
         manager.register_event('ContactStatusDetail', handle_contact_event)
         manager.register_event('OutboundRegistrationDetail', handle_registration_event)
         
+        logger.info("Sending PJSIPShowContacts action...")
         # Send actions and wait for responses
         await manager.send_action({'Action': 'PJSIPShowContacts'})
-        await asyncio.sleep(0.5)  # Wait for events to arrive
+        await asyncio.sleep(1.0)  # Wait for events to arrive
+        logger.info(f"Received {len(contact_events)} contact events")
         
+        logger.info("Sending PJSIPShowRegistrationsOutbound action...")
         await manager.send_action({'Action': 'PJSIPShowRegistrationsOutbound'})
-        await asyncio.sleep(0.5)  # Wait for events to arrive
+        await asyncio.sleep(1.0)  # Wait for events to arrive
+        logger.info(f"Received {len(registration_events)} registration events")
         
         # Process contact events
         for event in contact_events:
