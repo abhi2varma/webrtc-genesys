@@ -18,6 +18,10 @@ nginx/logs/
 coturn/logs/
 registration-monitor/logs/
 dashboard/logs/
+redis/logs/
+
+# Redis data
+redis/data/
 
 # Database
 *.sql

@@ -82,8 +82,13 @@ services:
       - DN_RANGE_START=5001
       - DN_RANGE_END=5020
       - LOG_LEVEL=INFO
+      - REDIS_HOST=127.0.0.1
+      - REDIS_PORT=6379
+      - ASTERISK_INSTANCE_ID=54
+      - ASTERISK_INSTANCE_IP=192.168.210.54
     depends_on:
       - asterisk
+      - redis
     logging:
       driver: "json-file"
       options:
@@ -105,6 +110,41 @@ services:
       - ASTERISK_AMI_USER=admin
       - ASTERISK_AMI_SECRET=admin123
     depends_on:
+      - asterisk
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+  redis:
+    image: redis:7-alpine
+    container_name: webrtc-redis
+    hostname: redis
+    network_mode: host
+    restart: unless-stopped
+    command: redis-server --appendonly yes --port 6379
+    volumes:
+      - ./redis/data:/data
+      - ./redis/logs:/var/log/redis
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+  kamailio:
+    image: kamailio/kamailio:5.7-alpine
+    container_name: webrtc-kamailio
+    hostname: kamailio
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ./kamailio/kamailio.cfg:/etc/kamailio/kamailio.cfg:ro
+      - ./kamailio/dispatcher.list:/etc/kamailio/dispatcher.list:ro
+      - ./kamailio/logs:/var/log/kamailio
+    depends_on:
+      - redis
       - asterisk
     logging:
       driver: "json-file"
