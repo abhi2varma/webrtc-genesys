@@ -6,15 +6,45 @@ Helper scripts for building and pushing Docker images to container registries.
 
 ## 📦 Available Scripts
 
-### **1. push-images.sh** (Linux/macOS/Git Bash)
+### **1. setup-node-kubeadm.sh** (kubeadm Node Preparation)
+Prepares CentOS/RHEL nodes for Kubernetes with kubeadm.
+- Disables SELinux and swap
+- Installs containerd, kubeadm, kubelet, kubectl
+- Configures kernel modules and sysctl
+- Run on ALL nodes (masters + workers)
+
+### **2. push-images.sh** (Linux/macOS/Git Bash)
 Builds and pushes Docker images to your chosen registry.
 
-### **2. push-images.ps1** (PowerShell/Windows)
+### **3. push-images.ps1** (PowerShell/Windows)
 Same functionality for Windows PowerShell.
 
 ---
 
-## 🚀 Quick Start
+## 🎯 For On-Premise kubeadm Setup
+
+### **Prepare All Kubernetes Nodes:**
+
+```bash
+# Copy script to all nodes (masters + workers)
+scp setup-node-kubeadm.sh root@master-1:/root/
+scp setup-node-kubeadm.sh root@worker-1:/root/
+# ... repeat for all nodes
+
+# SSH to each node and run:
+ssh root@master-1
+cd /root
+chmod +x setup-node-kubeadm.sh
+sudo ./setup-node-kubeadm.sh
+
+# Repeat for ALL nodes (3 masters + 20 workers)
+```
+
+**Then follow:** `kubernetes/KUBEADM_ONPREMISE_GUIDE.md` for cluster initialization and WebRTC deployment.
+
+---
+
+## 🚀 Quick Start - Docker Images
 
 ### **Option 1: Docker Hub** (Free, Public)
 

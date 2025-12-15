@@ -82,13 +82,15 @@
 
 ### **Kubernetes Cluster:**
 - **Option 1:** Managed Kubernetes
-  - AWS EKS (Recommended)
+  - AWS EKS (Recommended for cloud)
   - Azure AKS
   - Google GKE
-- **Option 2:** On-Premise
-  - Kubernetes 1.25+
-  - 10-20 worker nodes (4 CPU, 16 GB RAM each)
-  - Storage class for persistent volumes
+- **Option 2:** On-Premise with kubeadm ⭐ **RECOMMENDED FOR YOUR SETUP**
+  - Kubernetes 1.28+ (installed via kubeadm)
+  - 3 master nodes + 20 worker nodes
+  - CentOS/RHEL 7.9
+  - NFS storage for persistent volumes
+  - **See:** `KUBEADM_ONPREMISE_GUIDE.md` for complete setup
 
 ### **Tools Required:**
 ```bash
