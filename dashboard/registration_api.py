@@ -33,63 +33,75 @@ async def get_registrations():
         
         await manager.connect()
         
-        # Query contacts (WebRTC client registrations)
-        response = await manager.send_action({
-            'Action': 'PJSIPShowContacts'
-        })
+        # Register event listeners to collect data
+        contact_events = []
+        registration_events = []
         
-        # Collect all ContactStatusDetail events
-        async for event in response:
+        def handle_contact_event(manager, event):
             if event.get('Event') == 'ContactStatusDetail':
-                aor = event.get('AOR', '')
-                uri = event.get('URI', '')
-                status = event.get('Status', '')
-                
-                # Extract DN from AOR
-                dn = aor.split('/')[0] if '/' in aor else aor
-                
-                # Extract IP and port from URI
-                ip = ''
-                port = ''
-                if 'sip:' in uri:
-                    # Format: sip:user@ip:port;params
-                    parts = uri.split('@')
-                    if len(parts) > 1:
-                        ip_port = parts[1].split(';')[0].split(':')
-                        ip = ip_port[0] if len(ip_port) > 0 else ''
-                        port = ip_port[1] if len(ip_port) > 1 else ''
-                
-                if dn and dn.startswith('500'):  # Only show 5001-5020
-                    contacts.append({
-                        'dn': dn,
-                        'ip': ip,
-                        'port': port,
-                        'status': status,
-                        'uri': uri
-                    })
+                contact_events.append(event)
         
-        # Query outbound registrations (to Genesys)
-        response = await manager.send_action({
-            'Action': 'PJSIPShowRegistrationsOutbound'
-        })
-        
-        async for event in response:
+        def handle_registration_event(manager, event):
             if event.get('Event') == 'OutboundRegistrationDetail':
-                reg_name = event.get('ObjectName', '')
-                status = event.get('Status', '')
-                server_uri = event.get('ServerURI', '')
-                client_uri = event.get('ClientURI', '')
+                registration_events.append(event)
+        
+        # Register listeners
+        manager.register_event('ContactStatusDetail', handle_contact_event)
+        manager.register_event('OutboundRegistrationDetail', handle_registration_event)
+        
+        # Send actions and wait for responses
+        await manager.send_action({'Action': 'PJSIPShowContacts'})
+        await asyncio.sleep(0.5)  # Wait for events to arrive
+        
+        await manager.send_action({'Action': 'PJSIPShowRegistrationsOutbound'})
+        await asyncio.sleep(0.5)  # Wait for events to arrive
+        
+        # Process contact events
+        for event in contact_events:
+            aor = event.get('AOR', '')
+            uri = event.get('URI', '')
+            status = event.get('Status', '')
+            
+            # Extract DN from AOR
+            dn = aor.split('/')[0] if '/' in aor else aor
+            
+            # Extract IP and port from URI
+            ip = ''
+            port = ''
+            if 'sip:' in uri:
+                # Format: sip:user@ip:port;params
+                parts = uri.split('@')
+                if len(parts) > 1:
+                    ip_port = parts[1].split(';')[0].split(':')
+                    ip = ip_port[0] if len(ip_port) > 0 else ''
+                    port = ip_port[1] if len(ip_port) > 1 else ''
+            
+            if dn and dn.startswith('500'):  # Only show 5001-5020
+                contacts.append({
+                    'dn': dn,
+                    'ip': ip,
+                    'port': port,
+                    'status': status,
+                    'uri': uri
+                })
+        
+        # Process registration events
+        for event in registration_events:
+            reg_name = event.get('ObjectName', '')
+            status = event.get('Status', '')
+            server_uri = event.get('ServerURI', '')
+            client_uri = event.get('ClientURI', '')
+            
+            # Extract DN from registration name
+            if 'genesys_reg_' in reg_name:
+                dn = reg_name.replace('genesys_reg_', '')
                 
-                # Extract DN from registration name
-                if 'genesys_reg_' in reg_name:
-                    dn = reg_name.replace('genesys_reg_', '')
-                    
-                    registrations.append({
-                        'dn': dn,
-                        'status': status,
-                        'server_uri': server_uri,
-                        'client_uri': client_uri
-                    })
+                registrations.append({
+                    'dn': dn,
+                    'status': status,
+                    'server_uri': server_uri,
+                    'client_uri': client_uri
+                })
         
         return {
             'success': True,
