@@ -19,6 +19,11 @@ services:
       - SYS_NICE
     depends_on:
       - coturn
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
 
   coturn:
     image: coturn/coturn:latest
@@ -32,6 +37,11 @@ services:
     command:
       - "-c"
       - "/etc/turnserver.conf"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
 
   nginx:
     image: nginx:alpine
@@ -46,6 +56,11 @@ services:
       - ./certs:/etc/certs:ro
     depends_on:
       - asterisk
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
 
   registration-monitor:
     image: webrtc-registration-monitor
@@ -65,6 +80,11 @@ services:
       - LOG_LEVEL=INFO
     depends_on:
       - asterisk
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
 
   dashboard-api:
     image: webrtc-dashboard-api
@@ -80,6 +100,11 @@ services:
       - ASTERISK_AMI_SECRET=admin123
     depends_on:
       - asterisk
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
 
 
 
