@@ -2,9 +2,9 @@
 
 ## Failsafe Version
 
-**Tag:** `v1.0-failsafe-hybrid-mode`  
-**Commit:** `2634bd1`  
-**Status:** ✅ Working - Hybrid Mode (Outbound Registration + Inbound Trunk)
+**Tag:** `v2.0-failsafe-all-host-mode`  
+**Commit:** `961dd28`  
+**Status:** ✅ Working - All containers host mode, registrations to Genesys working
 
 ---
 
@@ -15,7 +15,7 @@
 ```bash
 cd /opt/gcti_apps/webrtc-genesys
 git fetch --all --tags
-git reset --hard v1.0-failsafe-hybrid-mode
+git reset --hard v2.0-failsafe-all-host-mode
 sudo docker-compose down
 sudo docker-compose up -d
 ```
@@ -25,7 +25,7 @@ sudo docker-compose up -d
 ```powershell
 cd D:\Abhi\WebRTC\webrtc-genesys
 git fetch --all --tags
-git reset --hard v1.0-failsafe-hybrid-mode
+git reset --hard v2.0-failsafe-all-host-mode
 ```
 
 ---
@@ -36,7 +36,7 @@ git reset --hard v1.0-failsafe-hybrid-mode
 # Clone and checkout failsafe
 git clone https://github.com/abhi2varma/webrtc-genesys.git
 cd webrtc-genesys
-git checkout v1.0-failsafe-hybrid-mode
+git checkout v2.0-failsafe-all-host-mode
 
 # Build images
 sudo docker build -t webrtc-registration-monitor ./registration-monitor
