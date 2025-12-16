@@ -1,0 +1,61 @@
+# ============================================
+# Docker Compose Override for Windows Local Testing
+# ============================================
+# This file overrides docker-compose.yml for local Windows development
+# Main changes:
+# - Disable network_mode: host (doesn't work on Windows)
+# - Add explicit port mappings
+# - Use Docker service names for inter-container communication
+# ============================================
+
+# NOTE: network_mode: host from base docker-compose.yml has been commented out
+# for Windows local testing. This override file adds the necessary port mappings
+# and updates hostnames to use Docker service names.
+
+services:
+  asterisk:
+    ports:
+      - "5060:5060/udp"
+      - "5060:5060/tcp"
+      - "8088:8088/tcp"
+      - "10000-10100:10000-10100/udp"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+
+  coturn:
+    ports:
+      - "3478:3478/udp"
+      - "3478:3478/tcp"
+      - "49152-49200:49152-49200/udp"
+
+  nginx:
+    ports:
+      - "80:80"
+      - "443:443"
+
+  kamailio:
+    ports:
+      - "5070:5070/udp"
+      - "5070:5070/tcp"
+
+  redis:
+    ports:
+      - "6379:6379"
+
+  dashboard-api:
+    ports:
+      - "5000:5000"
+    environment:
+      - ASTERISK_HOST=asterisk
+
+  registration-monitor:
+    # DISABLED: Not needed for inbound trunk mode
+    # Genesys trunks TO Asterisk, no registration required
+    deploy:
+      replicas: 0
+    environment:
+      - ASTERISK_HOST=asterisk
+      - REDIS_HOST=redis
+      - ASTERISK_INSTANCE_IP=10.81.64.3
+      - ASTERISK_INSTANCE_ID=77

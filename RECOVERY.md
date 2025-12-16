@@ -177,9 +177,9 @@ sudo docker build -t webrtc-registration-monitor ./registration-monitor
 sudo docker build -t webrtc-dashboard-api ./dashboard
 sudo docker build -t webrtc-kamailio ./kamailio
 
-# Create and set log directory permissions
-sudo mkdir -p registration-monitor/logs dashboard/logs kamailio/logs asterisk/logs nginx/logs coturn/logs
-sudo chmod -R 777 registration-monitor/logs dashboard/logs kamailio/logs asterisk/logs nginx/logs coturn/logs
+# Create and set log/data directory permissions (BUG FIX #1: Added redis/data)
+sudo mkdir -p registration-monitor/logs dashboard/logs kamailio/logs asterisk/logs nginx/logs coturn/logs redis/data
+sudo chmod -R 777 registration-monitor/logs dashboard/logs kamailio/logs asterisk/logs nginx/logs coturn/logs redis/data
 
 # Start services
 sudo docker-compose up -d
@@ -213,11 +213,11 @@ sudo docker-compose up -d
 ### If Registration Monitor Fails
 
 ```bash
-# Fix log permissions
+# Fix log permissions (BUG FIX #2: Create all service log directories)
 cd /opt/gcti_apps/webrtc-genesys
-sudo rm -rf */logs/*
-sudo mkdir -p registration-monitor/logs dashboard/logs
-sudo chmod -R 777 registration-monitor/logs dashboard/logs
+sudo rm -rf */logs/* redis/data/*
+sudo mkdir -p registration-monitor/logs dashboard/logs kamailio/logs asterisk/logs nginx/logs coturn/logs redis/data
+sudo chmod -R 777 registration-monitor/logs dashboard/logs kamailio/logs asterisk/logs nginx/logs coturn/logs redis/data
 
 # Restart
 sudo docker-compose restart registration-monitor
@@ -227,8 +227,11 @@ sudo docker logs webrtc-registration-monitor --tail 20
 ### If Asterisk Fails to Start
 
 ```bash
-# Check configuration syntax
+# View current endpoints and status (BUG FIX #3: Corrected comment)
 sudo docker exec webrtc-asterisk asterisk -rx "pjsip show endpoints"
+
+# Validate PJSIP configuration syntax
+sudo docker exec webrtc-asterisk asterisk -rx "pjsip reload"
 
 # View Asterisk logs
 sudo docker logs webrtc-asterisk --tail 50
@@ -332,4 +335,3 @@ After recovery, verify these items:
 **Last Updated:** December 17, 2025  
 **Failsafe Version:** v1.0-failsafe-hybrid-mode  
 **Recovery Tested:** ✅ Yes
-
