@@ -65,6 +65,7 @@ services:
         max-file: "3"
 
   registration-monitor:
+    build: ./registration-monitor
     image: webrtc-registration-monitor
     container_name: webrtc-registration-monitor
     hostname: registration-monitor
