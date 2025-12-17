@@ -143,9 +143,16 @@ services:
     network_mode: host
     restart: unless-stopped
     volumes:
-      - ./kamailio/kamailio.cfg:/etc/kamailio/kamailio.cfg:ro
+      - ./kamailio/kamailio-proxy.cfg:/etc/kamailio/kamailio.cfg:ro
+      - ./kamailio/tls.cfg:/etc/kamailio/tls.cfg:ro
       - ./kamailio/dispatcher.list:/etc/kamailio/dispatcher.list:ro
       - ./kamailio/logs:/var/log/kamailio
+      - ./certs:/etc/certs:ro
+    environment:
+      - REDIS_HOST=127.0.0.1
+      - REDIS_PORT=6379
+      - ASTERISK_HOST=127.0.0.1
+      - ASTERISK_PORT=5060
     depends_on:
       - redis
       - asterisk

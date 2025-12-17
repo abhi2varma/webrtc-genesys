@@ -1,21 +1,11 @@
-# Kamailio Dispatcher List
-# Format: setid destination flags priority attributes
+# Dispatcher list for Asterisk backends
+# Format: setid(integer) destination(sip uri) flags(integer,opt) priority(integer,opt) attributes(string,opt)
+# 
+# setid = 1: Asterisk backends
+# flags = 0: active
+# flags = 1: inactive/disabled
 #
-# setid: 1 = Asterisk cluster
-# destination: sip:IP:PORT
-# flags: 0 = default
-# priority: 0 = equal priority
-# attributes: weight, socket, etc.
+# Current: Single Asterisk on localhost (host mode)
 
-# POC Configuration - Single Asterisk Instance
-# setid=1, Asterisk instances for WebRTC gateway
-
-# Asterisk #1 (192.168.210.54:5060)
-1 sip:192.168.210.54:5060 0 0 weight=100
-
-# For future scaling, add more Asterisk instances here:
-# 1 sip:192.168.210.101:5060 0 0 weight=50
-# 1 sip:192.168.210.102:5060 0 0 weight=50
-# 1 sip:192.168.210.103:5060 0 0 weight=50
-# ... and so on
-
+# Set 1: Asterisk backends
+1 sip:127.0.0.1:5060;transport=udp 0 0 asterisk1
