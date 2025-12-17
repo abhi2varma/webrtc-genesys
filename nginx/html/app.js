@@ -241,8 +241,12 @@ class WebRTCClient {
             },
             pcConfig: {
                 iceServers: [
-                    { urls: 'stun:stun.l.google.com:19302' },
-                    { urls: 'stun:stun1.l.google.com:19302' }
+                    { urls: 'stun:192.168.210.54:3478' },
+                    { 
+                        urls: 'turn:192.168.210.54:3478',
+                        username: 'webrtc',
+                        credential: 'Genesys2024!SecureTurn'
+                    }
                 ]
             }
         };
@@ -588,7 +592,12 @@ class WebRTCClient {
                 },
                 pcConfig: {
                     iceServers: [
-                        { urls: 'stun:stun.l.google.com:19302' }
+                        { urls: 'stun:192.168.210.54:3478' },
+                        { 
+                            urls: 'turn:192.168.210.54:3478',
+                            username: 'webrtc',
+                            credential: 'Genesys2024!SecureTurn'
+                        }
                     ]
                 }
             };
