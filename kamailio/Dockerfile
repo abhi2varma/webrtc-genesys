@@ -30,7 +30,11 @@ COPY tls.cfg /etc/kamailio/tls.cfg
 RUN echo '#!/bin/bash' > /start.sh && \
     echo 'rsyslogd' >> /start.sh && \
     echo 'sleep 2' >> /start.sh && \
-    echo 'exec kamailio -F -E -m 64 -M 8 -f /etc/kamailio/kamailio.cfg' >> /start.sh && \
+    echo '# Start Kamailio (will daemonize and fork children)' >> /start.sh && \
+    echo 'kamailio -m 64 -M 8 -f /etc/kamailio/kamailio.cfg' >> /start.sh && \
+    echo '# Keep container alive by monitoring Kamailio process' >> /start.sh && \
+    echo 'while pgrep -x kamailio > /dev/null; do sleep 5; done' >> /start.sh && \
+    echo 'echo "Kamailio stopped"' >> /start.sh && \
     chmod +x /start.sh
 
 # Expose SIP ports
