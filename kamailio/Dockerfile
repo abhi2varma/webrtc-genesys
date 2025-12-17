@@ -22,14 +22,15 @@ RUN echo "local0.* /var/log/kamailio/kamailio.log" > /etc/rsyslog.d/kamailio.con
     echo "\$UDPServerRun 514" >> /etc/rsyslog.conf
 
 # Copy configuration files
-COPY kamailio.cfg /etc/kamailio/kamailio.cfg
+COPY kamailio-proxy.cfg /etc/kamailio/kamailio.cfg
 COPY dispatcher.list /etc/kamailio/dispatcher.list
+COPY tls.cfg /etc/kamailio/tls.cfg
 
 # Create startup script
 RUN echo '#!/bin/bash' > /start.sh && \
     echo 'rsyslogd' >> /start.sh && \
     echo 'sleep 2' >> /start.sh && \
-    echo 'exec kamailio -DD -E -f /etc/kamailio/kamailio.cfg' >> /start.sh && \
+    echo 'exec kamailio -D -E -f /etc/kamailio/kamailio.cfg' >> /start.sh && \
     chmod +x /start.sh
 
 # Expose SIP ports
