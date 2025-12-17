@@ -30,7 +30,7 @@ COPY tls.cfg /etc/kamailio/tls.cfg
 RUN echo '#!/bin/bash' > /start.sh && \
     echo 'rsyslogd' >> /start.sh && \
     echo 'sleep 2' >> /start.sh && \
-    echo 'exec kamailio -E -m 64 -M 8 -f /etc/kamailio/kamailio.cfg' >> /start.sh && \
+    echo 'exec kamailio -F -E -m 64 -M 8 -f /etc/kamailio/kamailio.cfg' >> /start.sh && \
     chmod +x /start.sh
 
 # Expose SIP ports
