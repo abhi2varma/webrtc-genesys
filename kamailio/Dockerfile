@@ -26,11 +26,11 @@ COPY kamailio-proxy.cfg /etc/kamailio/kamailio.cfg
 COPY dispatcher.list /etc/kamailio/dispatcher.list
 COPY tls.cfg /etc/kamailio/tls.cfg
 
-# Create startup script
+# Create startup script  
 RUN echo '#!/bin/bash' > /start.sh && \
     echo 'rsyslogd' >> /start.sh && \
     echo 'sleep 2' >> /start.sh && \
-    echo 'exec kamailio -m 64 -M 8 -f /etc/kamailio/kamailio.cfg' >> /start.sh && \
+    echo 'exec kamailio -E -m 64 -M 8 -f /etc/kamailio/kamailio.cfg' >> /start.sh && \
     chmod +x /start.sh
 
 # Expose SIP ports
