@@ -17,10 +17,12 @@
 └──────────┬──────────┘
            │
            ↓
-┌─────────────────────┐     ┌─────────────────────┐
-│     Asterisk        │←───→│      Coturn         │
-│  (B2BUA/Gateway)    │     │   (STUN/TURN)       │
-└──────────┬──────────┘     └─────────────────────┘
+┌─────────────────────┐     ┌─────────────────────┐     ┌─────────────────────┐
+│     Asterisk        │←───→│      Coturn         │     │     Kamailio        │
+│  (B2BUA/Gateway)    │     │   (STUN/TURN)       │     │ (Load Balancer)     │
+│                     │     │                     │     │  Port 5070          │
+│  ALL MEDIA & ICE    │     │                     │     │  (Not in use)       │
+└──────────┬──────────┘     └─────────────────────┘     └─────────────────────┘
            │ sip:// (UDP)
            │ RTP (unencrypted media)
            ↓
@@ -219,6 +221,114 @@ DTLS-SRTP                             Plain RTP
 | **H) WebSocket Proxy** | **Nginx** | ✅ Proxies signaling only (no media) |
 | **I) SIP Registration** | **Asterisk** | ✅ Registers DNs to Genesys (outbound) |
 | **J) SIP Trunk** | **Asterisk** | ✅ Accepts calls from Genesys (inbound) |
+| **K) Load Balancing** | **Kamailio** | ⚠️ Deployed but NOT in active call path (POC single Asterisk) |
+
+---
+
+## ⚠️ Kamailio Status (Deployed but Unused)
+
+### **What Kamailio Is:**
+
+Kamailio is a **SIP load balancer and proxy** designed for:
+- ✅ Load balancing across multiple Asterisk instances
+- ✅ SIP routing and dispatcher
+- ✅ High availability (failover between Asterisk nodes)
+- ✅ NAT traversal (nathelper module)
+
+### **Current Configuration:**
+
+```ini
+# kamailio/kamailio.cfg
+Purpose: SIP load balancer and registrar for Asterisk cluster
+Listen: udp:192.168.210.54:5070
+Dispatcher: /etc/kamailio/dispatcher.list (single Asterisk)
+```
+
+### **Why It's NOT in the Call Path:**
+
+| Reason | Explanation |
+|--------|-------------|
+| **POC = Single Asterisk** | No need for load balancing with one instance |
+| **Direct WebRTC** | Browser → Nginx → Asterisk (WebSocket), bypasses Kamailio |
+| **Direct Genesys Trunk** | Genesys → Asterisk:5060 (UDP), bypasses Kamailio |
+| **Host Mode** | All containers on `192.168.210.54`, no NAT to traverse |
+| **Not Configured** | No Asterisk endpoints point to Kamailio:5070 |
+
+### **Evidence from Logs:**
+
+From the server logs you provided:
+```
+[2025-12-16 18:43:35] NOTICE: Request 'OPTIONS' from '<sip:kamailio@192.168.210.54>' 
+failed for '192.168.210.54:5070' - No matching endpoint found
+```
+
+**Translation:** Kamailio is sending health checks (OPTIONS) to Asterisk, but Asterisk has no endpoint configured to accept them. Kamailio is running but **not in use**.
+
+### **Current Call Flows (Without Kamailio):**
+
+#### **WebRTC Client Call:**
+```
+Browser → Nginx:443 (WebSocket) → Asterisk:8089 (wss://) → Genesys:5060 (SIP)
+        [Kamailio not involved ❌]
+```
+
+#### **Genesys Inbound Call:**
+```
+Genesys:5060 → Asterisk:5060 (UDP) → Asterisk:8089 → Nginx → Browser
+              [Kamailio not involved ❌]
+```
+
+#### **Genesys Outbound Registration:**
+```
+Asterisk:5060 → Genesys:5060 (REGISTER)
+              [Kamailio not involved ❌]
+```
+
+### **When Would You Use Kamailio?**
+
+**Future Production Scenarios:**
+
+1. **Multi-Asterisk Cluster:**
+   ```
+   Browser → Nginx → Kamailio:5070 → [Asterisk1, Asterisk2, Asterisk3]
+                     (Load balancer)
+   ```
+
+2. **NAT Traversal (if needed):**
+   ```
+   Remote Site → Internet → Kamailio (NAT helper) → Asterisk
+                            (rewrites Contact/Via)
+   ```
+
+3. **Advanced SIP Routing:**
+   ```
+   Kamailio: Route calls based on DN, time of day, load, etc.
+   ```
+
+4. **High Availability:**
+   ```
+   Kamailio monitors Asterisk health, fails over to backup
+   ```
+
+### **Should You Remove Kamailio?**
+
+#### **Option 1: Keep It (Recommended for POC)**
+✅ No harm - it's running but idle  
+✅ Ready for future expansion  
+✅ Useful for testing load balancing later  
+✅ Minimal resource usage (just health checks)  
+
+#### **Option 2: Remove It**
+⚠️ Only if you're certain you'll never scale beyond one Asterisk  
+⚠️ Requires updating `docker-compose.yml`  
+⚠️ Removes future flexibility  
+
+### **Recommendation:**
+
+**Keep Kamailio deployed but document its status.** It's not interfering with the current setup, and having it ready provides:
+- ✅ **Future scalability** (add more Asterisk instances easily)
+- ✅ **Testing capability** (test load balancing without new deployment)
+- ✅ **Minimal overhead** (just runs health checks every 10s)
 
 ---
 
@@ -249,6 +359,14 @@ Nginx only handles **HTTP/WebSocket**:
 - ✅ **HTTP server** - serves web client files
 - ❌ **NOT** touching media (RTP/SRTP/DTLS)
 - ❌ **NOT** involved in ICE/TURN/STUN
+
+### **Kamailio is the STANDBY 🔄**
+
+Kamailio is deployed but **not in the active call path**:
+- ⚠️ **Running** - listening on port 5070
+- ⚠️ **Unused** - no traffic routed through it
+- ✅ **Future-ready** - for multi-Asterisk load balancing
+- ✅ **No impact** - doesn't interfere with current calls
 
 ### **Genesys is LEGACY 📞**
 
@@ -334,29 +452,32 @@ iceServers: [
 **Your stack correctly implements the DMZ WebRTC gateway pattern:**
 
 ```
-┌─────────────────────────────────────────────────┐
-│  INTERNET/PUBLIC NETWORK                        │
-│  ┌──────────┐                                   │
-│  │ Browser  │ ← WebRTC Client                   │
-│  └────┬─────┘                                   │
-└───────┼─────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────┐
+│  INTERNET/PUBLIC NETWORK                                  │
+│  ┌──────────┐                                             │
+│  │ Browser  │ ← WebRTC Client                             │
+│  └────┬─────┘                                             │
+└───────┼───────────────────────────────────────────────────┘
         │ DTLS-SRTP (encrypted)
         │ ICE candidates via Coturn STUN/TURN
-┌───────┼─────────────────────────────────────────┐
-│  DMZ  │                                         │
-│  ┌────▼─────┐      ┌──────────┐                │
-│  │ Asterisk │◄────►│  Coturn  │                │
-│  │ (Gateway)│      │(STUN/TURN)│                │
-│  └────┬─────┘      └──────────┘                │
-└───────┼─────────────────────────────────────────┘
+┌───────┼───────────────────────────────────────────────────┐
+│  DMZ  │                                                   │
+│  ┌────▼─────┐    ┌──────────┐    ┌────────────┐         │
+│  │ Asterisk │◄──►│  Coturn  │    │  Kamailio  │         │
+│  │ (Gateway)│    │(STUN/TURN)│    │:5070 (idle)│         │
+│  │  :5060   │    │          │    │            │         │
+│  └────┬─────┘    └──────────┘    └────────────┘         │
+│       │                            (not in call path)    │
+└───────┼───────────────────────────────────────────────────┘
         │ Plain RTP (unencrypted)
-┌───────┼─────────────────────────────────────────┐
-│  VPN  │                                         │
-│  ┌────▼────────┐                                │
-│  │   Genesys   │ ← Traditional SIP              │
-│  │ (SIP Server)│                                │
-│  └─────────────┘                                │
-└─────────────────────────────────────────────────┘
+┌───────┼───────────────────────────────────────────────────┐
+│  VPN  │                                                   │
+│  ┌────▼────────┐                                          │
+│  │   Genesys   │ ← Traditional SIP                        │
+│  │ (SIP Server)│                                          │
+│  │   :5060     │                                          │
+│  └─────────────┘                                          │
+└───────────────────────────────────────────────────────────┘
 ```
 
 **✅ All A/B/C/D functions are correctly handled by Asterisk with Coturn assistance!**
