@@ -36,7 +36,7 @@ class WebRTCClient {
     }
     
     connectWebSocket() {
-        const wsUrl = `ws://${window.location.hostname}:8083`; // Custom signaling server
+        const wsUrl = `wss://${window.location.hostname}:8443/signaling`; // Custom signaling via Nginx WSS proxy
         this.log(`🔌 Connecting to ${wsUrl}...`);
         
         this.ws = new WebSocket(wsUrl);
