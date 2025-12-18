@@ -277,12 +277,26 @@ app.post('/api/webrtc/message', (req, res) => {
     // Store handler reference so we can remove it later
     callInfo.responseHandler = responseHandler;
     
-    // Listen to WebSocket messages
-    if (transport._ws && transport._ws.addEventListener) {
-        transport._ws.addEventListener('message', responseHandler);
+    // Debug: Log transport properties
+    console.log(`[DEBUG] Transport properties:`, Object.keys(transport));
+    console.log(`[DEBUG] Has _ws:`, !!transport._ws);
+    console.log(`[DEBUG] Has ws:`, !!transport.ws);
+    console.log(`[DEBUG] Has socket:`, !!transport.socket);
+    console.log(`[DEBUG] Has _socket:`, !!transport._socket);
+    
+    // Listen to WebSocket messages - try different property names
+    let wsSocket = transport._ws || transport.ws || transport.socket || transport._socket;
+    
+    if (wsSocket && typeof wsSocket.addEventListener === 'function') {
+        wsSocket.addEventListener('message', responseHandler);
         console.log(`[SIP] Attached response handler for call ${callId}`);
+    } else if (wsSocket && typeof wsSocket.on === 'function') {
+        // Try Node.js EventEmitter style
+        wsSocket.on('message', responseHandler);
+        console.log(`[SIP] Attached response handler (EventEmitter) for call ${callId}`);
     } else {
-        console.error(`[SIP] Cannot attach handler - WebSocket not available`);
+        console.error(`[SIP] Cannot attach handler - WebSocket not available or not compatible`);
+        console.error(`[DEBUG] wsSocket type:`, typeof wsSocket);
     }
     
     // Send INVITE
