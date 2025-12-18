@@ -188,6 +188,59 @@ class WebRTCClient {
         }
     }
 
+    // Helper function to remove Opus codec from SDP and force PCMU/PCMA
+    removeOpusCodec(sdp) {
+        const lines = sdp.split('\r\n');
+        const filteredLines = [];
+        const opusPayloadTypes = [];
+        
+        // First pass: identify Opus payload types
+        for (let line of lines) {
+            if (line.includes('opus/48000')) {
+                const match = line.match(/rtpmap:(\d+)/);
+                if (match) {
+                    opusPayloadTypes.push(match[1]);
+                    this.addDebugMessage(`Removing Opus payload type: ${match[1]}`, 'info');
+                }
+            }
+        }
+        
+        // Second pass: filter out Opus-related lines
+        for (let line of lines) {
+            // Skip Opus rtpmap lines
+            if (line.includes('opus/48000')) {
+                continue;
+            }
+            
+            // Skip Opus fmtp lines
+            let skipLine = false;
+            for (let pt of opusPayloadTypes) {
+                if (line.includes(`fmtp:${pt}`) || line.includes(`rtcp-fb:${pt}`)) {
+                    skipLine = true;
+                    break;
+                }
+            }
+            if (skipLine) continue;
+            
+            // Remove Opus from m=audio line
+            if (line.startsWith('m=audio')) {
+                for (let pt of opusPayloadTypes) {
+                    line = line.replace(new RegExp(` ${pt}(?= |$)`, 'g'), '');
+                }
+                // Also remove RED and other high-bitrate codecs, keep only PCMU(0), PCMA(8), G722(9), telephone-event
+                line = line.replace(/\s+\d{3}/g, ''); // Remove 3-digit payload types (111, 110, 126, etc)
+                line = line.replace(/\s+63/g, ''); // Remove RED
+                line = line.replace(/\s+13/g, ''); // Remove CN
+            }
+            
+            filteredLines.push(line);
+        }
+        
+        const modifiedSdp = filteredLines.join('\r\n');
+        this.addDebugMessage('SDP modified: Forced PCMU/PCMA codecs', 'success');
+        return modifiedSdp;
+    }
+
     makeCall() {
         const number = this.phoneNumber.value.trim();
         
@@ -248,14 +301,36 @@ class WebRTCClient {
                         credential: 'Genesys2024!SecureTurn'
                     }
                 ]
+            },
+            // Add SDP modifier to force PCMU/PCMA
+            rtcOfferConstraints: {
+                offerToReceiveAudio: true,
+                offerToReceiveVideo: false
             }
         };
 
-        this.addDebugMessage(`Calling ${number}...`, 'info');
+        this.addDebugMessage(`Calling ${number}... (PCMU/PCMA only)`, 'info');
         this.session = this.ua.call(`sip:${number}@${this.sipServer.value.replace(/^wss?:\/\//, '').split('/')[0]}`, options);
         
         this.session.on('peerconnection', (e) => {
             const peerconnection = e.peerconnection;
+            
+            // Intercept SDP to remove Opus
+            const origCreateOffer = peerconnection.createOffer.bind(peerconnection);
+            peerconnection.createOffer = (options) => {
+                return origCreateOffer(options).then((offer) => {
+                    offer.sdp = this.removeOpusCodec(offer.sdp);
+                    return offer;
+                });
+            };
+            
+            const origCreateAnswer = peerconnection.createAnswer.bind(peerconnection);
+            peerconnection.createAnswer = (options) => {
+                return origCreateAnswer(options).then((answer) => {
+                    answer.sdp = this.removeOpusCodec(answer.sdp);
+                    return answer;
+                });
+            };
             
             peerconnection.addEventListener('addstream', (e) => {
                 this.remoteAudio.srcObject = e.stream;
@@ -599,6 +674,10 @@ class WebRTCClient {
                             credential: 'Genesys2024!SecureTurn'
                         }
                     ]
+                },
+                rtcAnswerConstraints: {
+                    offerToReceiveAudio: true,
+                    offerToReceiveVideo: false
                 }
             };
 
@@ -607,13 +686,24 @@ class WebRTCClient {
             session.on('peerconnection', (e) => {
                 const peerconnection = e.peerconnection;
                 
+                // Intercept SDP to remove Opus for incoming calls
+                const origCreateAnswer = peerconnection.createAnswer.bind(peerconnection);
+                peerconnection.createAnswer = (options) => {
+                    return origCreateAnswer(options).then((answer) => {
+                        answer.sdp = this.removeOpusCodec(answer.sdp);
+                        return answer;
+                    });
+                };
+                
                 peerconnection.addEventListener('addstream', (e) => {
                     this.remoteAudio.srcObject = e.stream;
+                    this.addDebugMessage('Remote audio stream added (incoming)', 'success');
                 });
 
                 peerconnection.addEventListener('track', (e) => {
                     if (e.streams && e.streams[0]) {
                         this.remoteAudio.srcObject = e.streams[0];
+                        this.addDebugMessage('Remote audio track added (incoming)', 'success');
                     }
                 });
             });
@@ -630,6 +720,7 @@ class WebRTCClient {
             this.muteBtn.disabled = false;
             this.holdBtn.disabled = false;
             this.updateCallStatus(`In call with ${caller}`);
+            this.addDebugMessage('Incoming call answered (PCMU/PCMA only)', 'info');
         } else {
             session.terminate();
             this.addToCallLog(caller, 'missed', 0);
