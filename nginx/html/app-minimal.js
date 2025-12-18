@@ -175,9 +175,7 @@ class MinimalWebRTCClient {
                 video: false
             },
             pcConfig: {
-                iceServers: [
-                    { urls: 'stun:192.168.210.54:3478' }
-                ]
+                iceServers: []  // No STUN/TURN for local network = instant connection
             },
             rtcOfferConstraints: {
                 offerToReceiveAudio: true,
@@ -185,10 +183,8 @@ class MinimalWebRTCClient {
             }
         };
 
-        this.log('🔧 ICE Servers configured:');
-        options.pcConfig.iceServers.forEach((server, i) => {
-            this.log(`   ${i + 1}. ${server.urls}`);
-        });
+        this.log('🔧 ICE Configuration: Local network only (no STUN/TURN)');
+        this.log('⚡ This should be INSTANT on local network!');
 
         this.session = this.ua.call(`sip:${number}@192.168.210.54`, options);
         
