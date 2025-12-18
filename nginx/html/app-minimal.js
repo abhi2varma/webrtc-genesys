@@ -173,7 +173,7 @@ class MinimalWebRTCClient {
                     { 
                         urls: ['turn:192.168.210.54:3478'],
                         username: 'webrtc',
-                        credential: 'webrtc123'
+                        credential: 'Genesys2024!SecureTurn'
                     }
                 ],
                 iceTransportPolicy: 'all',
@@ -182,7 +182,9 @@ class MinimalWebRTCClient {
             rtcOfferConstraints: {
                 offerToReceiveAudio: true,
                 offerToReceiveVideo: false
-            }
+            },
+            // Send INVITE immediately, don't wait for ICE gathering
+            iceGatheringTimeout: 500  // Only wait 500ms for initial candidates
         };
 
         this.session = this.ua.call(`sip:${number}@192.168.210.54`, options);
@@ -205,7 +207,7 @@ class MinimalWebRTCClient {
                         { 
                             urls: ['turn:192.168.210.54:3478'],
                             username: 'webrtc',
-                            credential: 'webrtc123'
+                            credential: 'Genesys2024!SecureTurn'
                         }
                     ],
                     iceTransportPolicy: 'all',
