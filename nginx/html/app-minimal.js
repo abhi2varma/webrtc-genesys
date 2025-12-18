@@ -207,6 +207,14 @@ class MinimalWebRTCClient {
         }, 5000);
         
         this.setupSessionHandlers(this.session);
+        
+        // Also try to access PeerConnection directly if available
+        setTimeout(() => {
+            if (this.session && this.session.connection) {
+                this.log('🔌 PeerConnection accessed directly');
+                this.setupPeerConnectionHandlers(this.session.connection);
+            }
+        }, 100);
     }
 
     handleIncomingCall(session) {
@@ -281,116 +289,120 @@ class MinimalWebRTCClient {
         });
 
         session.on('peerconnection', (e) => {
-            const pc = e.peerconnection;
-            
-            this.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-            this.log('🔌 PeerConnection Created');
-            this.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-            
-            // Reset candidates array
-            this.iceCandidates = [];
-            
-            // Log ICE gathering state changes
-            pc.addEventListener('icegatheringstatechange', () => {
-                const state = pc.iceGatheringState;
-                let emoji = '⏳';
-                if (state === 'complete') emoji = '✅';
-                if (state === 'gathering') emoji = '🔍';
-                this.log(`${emoji} ICE Gathering: ${state}`);
-                
-                if (state === 'complete') {
-                    this.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-                    this.log('📊 ICE GATHERING SUMMARY:');
-                    this.log(`   Total candidates: ${this.iceCandidates.length}`);
-                    const hostCount = this.iceCandidates.filter(c => c.type === 'host').length;
-                    const srflxCount = this.iceCandidates.filter(c => c.type === 'srflx').length;
-                    const relayCount = this.iceCandidates.filter(c => c.type === 'relay').length;
-                    this.log(`   ├─ HOST:  ${hostCount} (local)`);
-                    this.log(`   ├─ SRFLX: ${srflxCount} (STUN/public)`);
-                    this.log(`   └─ RELAY: ${relayCount} (TURN)`);
-                    this.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-                }
-            });
-            
-            // Log ICE connection state changes
-            pc.addEventListener('iceconnectionstatechange', () => {
-                const state = pc.iceConnectionState;
-                let emoji = '⏳';
-                if (state === 'connected') emoji = '✅';
-                if (state === 'completed') emoji = '✅';
-                if (state === 'failed') emoji = '❌';
-                if (state === 'disconnected') emoji = '⚠️';
-                if (state === 'checking') emoji = '🔍';
-                this.log(`${emoji} ICE Connection: ${state}`);
-                
-                // When connected, show the selected path
-                if (state === 'connected' || state === 'completed') {
-                    setTimeout(() => this.showSelectedPath(pc), 500);
-                }
-            });
-            
-            // Log signaling state
-            pc.addEventListener('signalingstatechange', () => {
-                this.log(`📡 Signaling: ${pc.signalingState}`);
-            });
-            
-            // Log connection state
-            pc.addEventListener('connectionstatechange', () => {
-                const state = pc.connectionState;
-                let emoji = '⏳';
-                if (state === 'connected') emoji = '✅';
-                if (state === 'failed') emoji = '❌';
-                if (state === 'disconnected') emoji = '⚠️';
-                this.log(`${emoji} Connection: ${state}`);
-            });
-            
-            // Log ICE candidates with detailed info
-            pc.addEventListener('icecandidate', (event) => {
-                if (event.candidate) {
-                    const c = event.candidate;
-                    let type = 'unknown';
-                    let emoji = '📍';
-                    
-                    if (c.candidate.includes('typ host')) {
-                        type = 'host';
-                        emoji = '🏠';
-                    } else if (c.candidate.includes('typ srflx')) {
-                        type = 'srflx';
-                        emoji = '🌐';
-                    } else if (c.candidate.includes('typ relay')) {
-                        type = 'relay';
-                        emoji = '🔄';
-                    }
-                    
-                    // Extract IP and port
-                    const parts = c.candidate.split(' ');
-                    const ip = parts[4] || 'unknown';
-                    const port = parts[5] || 'unknown';
-                    const protocol = (c.protocol || 'unknown').toUpperCase();
-                    const priority = c.priority || 'unknown';
-                    
-                    // Store candidate info
-                    this.iceCandidates.push({
-                        type: type,
-                        ip: ip,
-                        port: port,
-                        protocol: protocol,
-                        priority: priority,
-                        foundation: c.foundation
-                    });
-                    
-                    this.log(`${emoji} Candidate #${this.iceCandidates.length} [${type.toUpperCase()}]`);
-                    this.log(`   └─ ${protocol} ${ip}:${port} (priority: ${priority})`);
-                } else {
-                    this.log('✅ No more candidates (ICE gathering finished)');
-                }
-            });
-            
-            pc.ontrack = (event) => {
-                this.log('🎵 Remote audio stream received');
-                this.remoteAudio.srcObject = event.streams[0];
-            };
+            this.setupPeerConnectionHandlers(e.peerconnection);
         });
+    }
+
+    setupPeerConnectionHandlers(pc) {
+        if (!pc) return;
+        
+        this.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        this.log('🔌 PeerConnection Created');
+        this.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        
+        // Reset candidates array
+        this.iceCandidates = [];
+        
+        // Log ICE gathering state changes
+        pc.addEventListener('icegatheringstatechange', () => {
+            const state = pc.iceGatheringState;
+            let emoji = '⏳';
+            if (state === 'complete') emoji = '✅';
+            if (state === 'gathering') emoji = '🔍';
+            this.log(`${emoji} ICE Gathering: ${state}`);
+            
+            if (state === 'complete') {
+                this.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+                this.log('📊 ICE GATHERING SUMMARY:');
+                this.log(`   Total candidates: ${this.iceCandidates.length}`);
+                const hostCount = this.iceCandidates.filter(c => c.type === 'host').length;
+                const srflxCount = this.iceCandidates.filter(c => c.type === 'srflx').length;
+                const relayCount = this.iceCandidates.filter(c => c.type === 'relay').length;
+                this.log(`   ├─ HOST:  ${hostCount} (local)`);
+                this.log(`   ├─ SRFLX: ${srflxCount} (STUN/public)`);
+                this.log(`   └─ RELAY: ${relayCount} (TURN)`);
+                this.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            }
+        });
+        
+        // Log ICE connection state changes
+        pc.addEventListener('iceconnectionstatechange', () => {
+            const state = pc.iceConnectionState;
+            let emoji = '⏳';
+            if (state === 'connected') emoji = '✅';
+            if (state === 'completed') emoji = '✅';
+            if (state === 'failed') emoji = '❌';
+            if (state === 'disconnected') emoji = '⚠️';
+            if (state === 'checking') emoji = '🔍';
+            this.log(`${emoji} ICE Connection: ${state}`);
+            
+            // When connected, show the selected path
+            if (state === 'connected' || state === 'completed') {
+                setTimeout(() => this.showSelectedPath(pc), 500);
+            }
+        });
+        
+        // Log signaling state
+        pc.addEventListener('signalingstatechange', () => {
+            this.log(`📡 Signaling: ${pc.signalingState}`);
+        });
+        
+        // Log connection state
+        pc.addEventListener('connectionstatechange', () => {
+            const state = pc.connectionState;
+            let emoji = '⏳';
+            if (state === 'connected') emoji = '✅';
+            if (state === 'failed') emoji = '❌';
+            if (state === 'disconnected') emoji = '⚠️';
+            this.log(`${emoji} Connection: ${state}`);
+        });
+        
+        // Log ICE candidates with detailed info
+        pc.addEventListener('icecandidate', (event) => {
+            if (event.candidate) {
+                const c = event.candidate;
+                let type = 'unknown';
+                let emoji = '📍';
+                
+                if (c.candidate.includes('typ host')) {
+                    type = 'host';
+                    emoji = '🏠';
+                } else if (c.candidate.includes('typ srflx')) {
+                    type = 'srflx';
+                    emoji = '🌐';
+                } else if (c.candidate.includes('typ relay')) {
+                    type = 'relay';
+                    emoji = '🔄';
+                }
+                
+                // Extract IP and port
+                const parts = c.candidate.split(' ');
+                const ip = parts[4] || 'unknown';
+                const port = parts[5] || 'unknown';
+                const protocol = (c.protocol || 'unknown').toUpperCase();
+                const priority = c.priority || 'unknown';
+                
+                // Store candidate info
+                this.iceCandidates.push({
+                    type: type,
+                    ip: ip,
+                    port: port,
+                    protocol: protocol,
+                    priority: priority,
+                    foundation: c.foundation
+                });
+                
+                this.log(`${emoji} Candidate #${this.iceCandidates.length} [${type.toUpperCase()}]`);
+                this.log(`   └─ ${protocol} ${ip}:${port} (priority: ${priority})`);
+            } else {
+                this.log('✅ No more candidates (ICE gathering finished)');
+            }
+        });
+        
+        pc.ontrack = (event) => {
+            this.log('🎵 Remote audio stream received');
+            this.remoteAudio.srcObject = event.streams[0];
+        };
     }
 
     hangup() {
