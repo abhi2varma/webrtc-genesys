@@ -232,14 +232,14 @@ app.post('/api/webrtc/message', async (req, res) => {
     
     const callId = `call-${Date.now()}`;
     const fromUri = `sip:${session.dn}@${SIP_DOMAIN}`;
-    const toUri = `sip:${to}@${SIP_DOMAIN}`;
+    const toUri = `sip:${to}@${SIP_DOMAIN}:${SIP_PORT}`;  // Include port in URI
     
     // Build INVITE request
     const invite = {
         method: 'INVITE',
         uri: toUri,
         headers: {
-            to: { uri: toUri },
+            to: { uri: `sip:${to}@${SIP_DOMAIN}` },
             from: { uri: fromUri, params: { tag: crypto.randomBytes(8).toString('hex') } },
             'call-id': callId,
             cseq: { seq: 1, method: 'INVITE' },
@@ -293,13 +293,9 @@ async function sendSIPRequest(request, session, authChallenge = null) {
         console.log(`[DEBUG] From:`, request.headers.from);
         console.log(`[DEBUG] To:`, request.headers.to);
         
-        // The sip.send() function needs an options object with hostname and port
-        const options = {
-            hostname: SIP_SERVER,
-            port: SIP_PORT
-        };
-        
-        sip.send(request, options, (response) => {
+        // Send the request - the sip module uses the uri to determine destination
+        // The callback is the second parameter
+        sip.send(request, (response) => {
             if (!response) {
                 return reject(new Error('No response received'));
             }
