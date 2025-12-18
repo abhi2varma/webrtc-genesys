@@ -368,6 +368,7 @@ function handleCall(ws, payload, msgId) {
     
     // Send INVITE
     try {
+        console.log(`[SIP] Sending INVITE:\n${invite.substring(0, 500)}...`);
         transport.send(invite);
         console.log(`[SIP] Sent INVITE for call ${callId} (SIP Call-ID: ${sipCallId})`);
     } catch (error) {
