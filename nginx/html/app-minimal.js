@@ -8,7 +8,7 @@ class MinimalWebRTCClient {
         
         this.initElements();
         this.attachListeners();
-        this.log('Client initialized');
+        this.log('✅ Client initialized');
     }
 
     initElements() {
@@ -60,7 +60,8 @@ class MinimalWebRTCClient {
 
     log(message) {
         const time = new Date().toLocaleTimeString();
-        this.debugLog.innerHTML += `[${time}] ${message}<br>`;
+        const logEntry = `<div style="margin: 2px 0;">[${time}] ${message}</div>`;
+        this.debugLog.innerHTML += logEntry;
         this.debugLog.scrollTop = this.debugLog.scrollHeight;
         console.log(message);
     }
@@ -75,7 +76,7 @@ class MinimalWebRTCClient {
             return;
         }
 
-        this.log(`Connecting to ${server} as ${username}...`);
+        this.log(`🔐 Connecting to ${server} as ${username}...`);
 
         const socket = new JsSIP.WebSocketInterface(server);
         
@@ -94,26 +95,26 @@ class MinimalWebRTCClient {
         this.ua = new JsSIP.UA(configuration);
 
         this.ua.on('connected', () => {
-            this.log('WebSocket connected');
+            this.log('🔌 WebSocket connected');
         });
 
         this.ua.on('disconnected', () => {
-            this.log('WebSocket disconnected');
+            this.log('🔌 WebSocket disconnected');
             this.updateConnectionStatus(false);
         });
 
         this.ua.on('registered', () => {
-            this.log('Registered successfully');
+            this.log('✅ Registered successfully');
             this.updateConnectionStatus(true);
         });
 
         this.ua.on('unregistered', () => {
-            this.log('Unregistered');
+            this.log('📴 Unregistered');
             this.updateConnectionStatus(false);
         });
 
         this.ua.on('registrationFailed', (e) => {
-            this.log('Registration failed: ' + e.cause);
+            this.log('❌ Registration failed: ' + e.cause);
             this.updateConnectionStatus(false);
         });
 
@@ -121,7 +122,7 @@ class MinimalWebRTCClient {
             const session = e.session;
             
             if (session.direction === 'incoming') {
-                this.log('Incoming call from: ' + session.remote_identity.uri.user);
+                this.log('📲 Incoming call from: ' + session.remote_identity.uri.user);
                 this.handleIncomingCall(session);
             }
         });
@@ -162,7 +163,7 @@ class MinimalWebRTCClient {
             return;
         }
 
-        this.log(`Calling ${number}...`);
+        this.log(`📞 Calling ${number}...`);
 
         const options = {
             mediaConstraints: {
@@ -210,22 +211,22 @@ class MinimalWebRTCClient {
 
     setupSessionHandlers(session) {
         session.on('sending', (e) => {
-            this.log('Sending INVITE...');
+            this.log('📤 Sending INVITE...');
             this.callStatus.textContent = 'Status: Connecting...';
         });
 
         session.on('progress', (e) => {
-            this.log('Call in progress...');
+            this.log('📞 Call in progress (ringing)...');
             this.callStatus.textContent = 'Status: Ringing...';
             
             // Handle early media
             if (e.response && e.response.body) {
-                this.log('Early media available');
+                this.log('🎵 Early media available');
             }
         });
 
         session.on('accepted', () => {
-            this.log('Call accepted');
+            this.log('✅ Call accepted');
             this.callStatus.textContent = 'Status: In call';
             this.callBtn.disabled = true;
             this.hangupBtn.disabled = false;
@@ -234,34 +235,118 @@ class MinimalWebRTCClient {
         });
 
         session.on('confirmed', () => {
-            this.log('Call confirmed');
+            this.log('✅ Call confirmed (ACK received)');
         });
 
         session.on('ended', () => {
-            this.log('Call ended');
+            this.log('📴 Call ended');
             this.endCall();
         });
 
         session.on('failed', (e) => {
-            this.log('Call failed: ' + e.cause);
+            this.log('❌ Call failed: ' + e.cause);
             this.endCall();
         });
 
         session.on('peerconnection', (e) => {
             const pc = e.peerconnection;
             
+            this.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            this.log('🔌 PeerConnection Created');
+            this.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            
             // Log ICE gathering state changes
             pc.addEventListener('icegatheringstatechange', () => {
-                this.log('ICE gathering state: ' + pc.iceGatheringState);
+                const state = pc.iceGatheringState;
+                let emoji = '⏳';
+                if (state === 'complete') emoji = '✅';
+                if (state === 'gathering') emoji = '🔍';
+                this.log(`${emoji} ICE Gathering: ${state}`);
             });
             
             // Log ICE connection state changes
             pc.addEventListener('iceconnectionstatechange', () => {
-                this.log('ICE connection state: ' + pc.iceConnectionState);
+                const state = pc.iceConnectionState;
+                let emoji = '⏳';
+                if (state === 'connected') emoji = '✅';
+                if (state === 'completed') emoji = '✅';
+                if (state === 'failed') emoji = '❌';
+                if (state === 'disconnected') emoji = '⚠️';
+                if (state === 'checking') emoji = '🔍';
+                this.log(`${emoji} ICE Connection: ${state}`);
+            });
+            
+            // Log signaling state
+            pc.addEventListener('signalingstatechange', () => {
+                this.log(`📡 Signaling: ${pc.signalingState}`);
+            });
+            
+            // Log connection state
+            pc.addEventListener('connectionstatechange', () => {
+                const state = pc.connectionState;
+                let emoji = '⏳';
+                if (state === 'connected') emoji = '✅';
+                if (state === 'failed') emoji = '❌';
+                if (state === 'disconnected') emoji = '⚠️';
+                this.log(`${emoji} Connection: ${state}`);
+            });
+            
+            // Log ICE candidates with detailed info
+            pc.addEventListener('icecandidate', (event) => {
+                if (event.candidate) {
+                    const c = event.candidate;
+                    let type = 'unknown';
+                    let emoji = '📍';
+                    
+                    if (c.candidate.includes('typ host')) {
+                        type = 'HOST (Local)';
+                        emoji = '🏠';
+                    } else if (c.candidate.includes('typ srflx')) {
+                        type = 'SRFLX (STUN/NAT)';
+                        emoji = '🌐';
+                    } else if (c.candidate.includes('typ relay')) {
+                        type = 'RELAY (TURN)';
+                        emoji = '🔄';
+                    }
+                    
+                    // Extract IP and port
+                    const parts = c.candidate.split(' ');
+                    const ip = parts[4] || 'unknown';
+                    const port = parts[5] || 'unknown';
+                    const protocol = c.protocol || 'unknown';
+                    const priority = c.priority || 'unknown';
+                    
+                    this.log(`${emoji} Candidate [${type}]`);
+                    this.log(`   └─ ${protocol.toUpperCase()} ${ip}:${port} (priority: ${priority})`);
+                } else {
+                    this.log('✅ ICE Candidate gathering complete');
+                }
+            });
+            
+            // Log selected candidate pair
+            pc.addEventListener('iceconnectionstatechange', async () => {
+                if (pc.iceConnectionState === 'connected') {
+                    try {
+                        const stats = await pc.getStats();
+                        stats.forEach(report => {
+                            if (report.type === 'candidate-pair' && report.state === 'succeeded') {
+                                this.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+                                this.log('✅ SELECTED ROUTE:');
+                                this.log(`   Local:  ${report.localCandidateId}`);
+                                this.log(`   Remote: ${report.remoteCandidateId}`);
+                                this.log(`   Bytes sent: ${report.bytesSent || 0}`);
+                                this.log(`   Bytes received: ${report.bytesReceived || 0}`);
+                                this.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+                            }
+                        });
+                    } catch (err) {
+                        this.log('⚠️ Could not get connection stats: ' + err.message);
+                    }
+                }
             });
             
             pc.ontrack = (event) => {
-                this.log('Remote stream received');
+                this.log('🎵 Remote audio stream received');
                 this.remoteAudio.srcObject = event.streams[0];
             };
         });
@@ -292,11 +377,11 @@ class MinimalWebRTCClient {
         if (this.isMuted) {
             this.session.unmute();
             this.muteBtn.textContent = 'Mute';
-            this.log('Unmuted');
+            this.log('🔊 Unmuted');
         } else {
             this.session.mute();
             this.muteBtn.textContent = 'Unmute';
-            this.log('Muted');
+            this.log('🔇 Muted');
         }
         this.isMuted = !this.isMuted;
     }
@@ -307,11 +392,11 @@ class MinimalWebRTCClient {
         if (this.isOnHold) {
             this.session.unhold();
             this.holdBtn.textContent = 'Hold';
-            this.log('Resumed');
+            this.log('▶️ Resumed');
         } else {
             this.session.hold();
             this.holdBtn.textContent = 'Resume';
-            this.log('On hold');
+            this.log('⏸️ On hold');
         }
         this.isOnHold = !this.isOnHold;
     }
