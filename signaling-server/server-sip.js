@@ -37,7 +37,7 @@ const pendingMessages = new Map(); // agentId -> [{ type, sdp, from, callId }]
 
 // SIP User Agent Configuration
 const sipStack = {
-    localPort: 5070,  // Local SIP port for our gateway
+    localPort: 5071,  // Local SIP port for our gateway (avoiding conflict with Asterisk 5070)
     hostname: SIP_SERVER,
     publicAddress: SIP_SERVER
 };

@@ -13,7 +13,7 @@ COPY server-sip.js ./server.js
 COPY env.example ./.env
 
 # Expose ports (HTTP API + SIP)
-EXPOSE 8084 5070
+EXPOSE 8084 5071
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
