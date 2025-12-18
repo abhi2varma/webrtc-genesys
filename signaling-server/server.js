@@ -239,7 +239,7 @@ app.post('/api/webrtc/message', (req, res) => {
     ].join('\r\n');
     
     // Store call session info
-    activeCalls.set(callId, {
+    const callInfo = {
         sipCallId,
         fromTag,
         branch,
@@ -250,28 +250,40 @@ app.post('/api/webrtc/message', (req, res) => {
         direction: 'outgoing',
         ua,
         sdpOffer  // Store the SDP offer for re-sending with auth
-    });
+    };
+    
+    activeCalls.set(callId, callInfo);
     
     // Store password in session for auth (already stored in sessions Map)
     // session.password is available from sign-in
     
     // Hook into UA's transport to intercept SIP responses
+    // Use addEventListener instead of overriding _onMessage
     const transport = ua._transport;
-    const existingHandler = transport._onMessage;
     
-    transport._onMessage = function(e) {
-        const message = e.data;
-        
-        // Check if this message is for our call
-        if (message.includes(sipCallId)) {
-            handleSIPResponse(message, callId, from);
-        }
-        
-        // Call original handler
-        if (existingHandler) {
-            existingHandler.call(transport, e);
+    // Create a handler for this specific call
+    const responseHandler = function(e) {
+        if (typeof e.data === 'string') {
+            const message = e.data;
+            
+            // Check if this message is for our call
+            if (message.includes(sipCallId)) {
+                console.log(`[SIP] Received message for call ${callId}`);
+                handleSIPResponse(message, callId, from);
+            }
         }
     };
+    
+    // Store handler reference so we can remove it later
+    callInfo.responseHandler = responseHandler;
+    
+    // Listen to WebSocket messages
+    if (transport._ws && transport._ws.addEventListener) {
+        transport._ws.addEventListener('message', responseHandler);
+        console.log(`[SIP] Attached response handler for call ${callId}`);
+    } else {
+        console.error(`[SIP] Cannot attach handler - WebSocket not available`);
+    }
     
     // Send INVITE
     try {
