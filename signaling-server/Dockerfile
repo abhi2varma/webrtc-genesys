@@ -9,11 +9,11 @@ COPY package*.json ./
 RUN npm install --production
 
 # Copy application files
-COPY server-sip.js ./server.js
+COPY server-ari.js ./server.js
 COPY env.example ./.env
 
-# Expose ports (HTTP API + SIP)
-EXPOSE 8084 5071
+# Expose ports (HTTP API)
+EXPOSE 8084
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
