@@ -277,20 +277,25 @@ app.post('/api/webrtc/message', (req, res) => {
     // Store handler reference so we can remove it later
     callInfo.responseHandler = responseHandler;
     
-    // Debug: Check if transport is an EventEmitter
-    console.log(`[DEBUG] Transport has 'on' method:`, typeof transport.on);
-    console.log(`[DEBUG] Transport has 'addListener' method:`, typeof transport.addListener);
-    console.log(`[DEBUG] Transport constructor:`, transport.constructor.name);
+    // Debug: Explore the socket object
+    console.log(`[DEBUG] socket type:`, typeof transport.socket);
+    console.log(`[DEBUG] socket constructor:`, transport.socket ? transport.socket.constructor.name : 'N/A');
+    console.log(`[DEBUG] socket.on:`, typeof (transport.socket && transport.socket.on));
+    console.log(`[DEBUG] socket.addEventListener:`, typeof (transport.socket && transport.socket.addEventListener));
     
-    // JsSIP Transport is an EventEmitter - listen to 'message' events
-    if (typeof transport.on === 'function') {
-        transport.on('message', (data) => {
-            console.log(`[DEBUG] Transport received message event`);
-            responseHandler({ data: data.data });
+    // The socket is from the 'ws' library in Node.js
+    // It has an 'on' method for events
+    if (transport.socket && typeof transport.socket.on === 'function') {
+        // Listen directly to the WebSocket 'message' event
+        transport.socket.on('message', (data) => {
+            console.log(`[DEBUG] Raw WebSocket message received`);
+            // The 'ws' library sends data as Buffer or string
+            const messageStr = typeof data === 'string' ? data : data.toString();
+            responseHandler({ data: messageStr });
         });
-        console.log(`[SIP] Attached response handler to transport for call ${callId}`);
+        console.log(`[SIP] Attached response handler to WebSocket for call ${callId}`);
     } else {
-        console.error(`[SIP] Cannot attach handler - transport is not an EventEmitter`);
+        console.error(`[SIP] Cannot attach handler - socket.on not available`);
     }
     
     // Send INVITE
