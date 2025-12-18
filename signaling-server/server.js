@@ -184,7 +184,7 @@ app.post('/api/webrtc/message', (req, res) => {
         return res.status(400).json({ error: 'Missing "to" parameter' });
     }
     
-    if (!sdpOffer) {
+    if (!sdpOffer || typeof sdpOffer !== 'string') {
         return res.status(400).json({ error: 'Missing SDP offer in body' });
     }
     
@@ -201,65 +201,153 @@ app.post('/api/webrtc/message', (req, res) => {
     }
     
     const callId = `call-${Date.now()}`;
+    const dn = session.dn;
     
-    // Initiate SIP call
+    // Generate SIP identifiers
+    const sipCallId = `${callId}-${Date.now()}`;
+    const fromTag = Math.random().toString(36).substring(2, 12);
+    const branch = `z9hG4bK${Math.random().toString(36).substring(2, 12)}`;
+    
+    // Get via and contact from UA
+    let via, contact;
     try {
-        const rtcSession = ua.call(`sip:${to}@${SIP_DOMAIN}`, {
-            mediaConstraints: { audio: true, video: false },
-            rtcOfferConstraints: {
-                offerToReceiveAudio: true,
-                offerToReceiveVideo: false
-            }
-        });
-        
-        // Override the SDP offer with the one from WWE
-        rtcSession.connection.setLocalDescription({
-            type: 'offer',
-            sdp: sdpOffer
-        });
-        
-        // Store call
-        activeCalls.set(callId, {
-            session: rtcSession,
-            agentId: from,
-            remote: to,
-            direction: 'outgoing'
-        });
-        
-        // Handle call events
-        rtcSession.on('accepted', () => {
-            console.log(`[CALL] Call ${callId} accepted`);
-            
-            // Get SDP answer
-            const answer = rtcSession.connection.remoteDescription.sdp;
-            
-            // Queue answer for agent to poll
-            const messages = pendingMessages.get(from) || [];
-            messages.push({
-                type: 'ANSWER',
-                sdp: answer,
-                callId
-            });
-            pendingMessages.set(from, messages);
-        });
-        
-        rtcSession.on('failed', (e) => {
-            console.error(`[CALL] Call ${callId} failed:`, e.cause);
-            activeCalls.delete(callId);
-        });
-        
-        rtcSession.on('ended', () => {
-            console.log(`[CALL] Call ${callId} ended`);
-            activeCalls.delete(callId);
-        });
-        
-        res.status(200).send('OK');
-        
+        via = ua._configuration.via_host || ua._configuration.uri._host;
+        contact = ua._contact.toString();
+        console.log(`[CALL] Via: ${via}, Contact: ${contact}`);
     } catch (error) {
-        console.error(`[CALL] Failed to initiate call:`, error);
-        res.status(500).json({ error: error.message });
+        console.error(`[CALL] Failed to get UA properties:`, error);
+        return res.status(500).json({ error: `Failed to get UA properties: ${error.message}` });
+    }
+    
+    // Build SIP INVITE message
+    const invite = [
+        `INVITE sip:${to}@${SIP_DOMAIN} SIP/2.0`,
+        `Via: SIP/2.0/WS ${via};branch=${branch}`,
+        `Max-Forwards: 69`,
+        `To: <sip:${to}@${SIP_DOMAIN}>`,
+        `From: "${dn}" <sip:${dn}@${SIP_DOMAIN}>;tag=${fromTag}`,
+        `Call-ID: ${sipCallId}`,
+        `CSeq: 1 INVITE`,
+        `Contact: ${contact}`,
+        `Allow: INVITE,ACK,CANCEL,BYE,UPDATE,MESSAGE,OPTIONS,REFER,INFO,NOTIFY`,
+        `Supported: path,gruu,outbound`,
+        `User-Agent: WebRTC-Gateway/1.0`,
+        `Content-Type: application/sdp`,
+        `Content-Length: ${sdpOffer.length}`,
+        ``,
+        sdpOffer
+    ].join('\r\n');
+    
+    // Store call session info
+    activeCalls.set(callId, {
+        sipCallId,
+        fromTag,
+        branch,
+        agentId: from,
+        dn,
+        to,
+        cseq: 1,
+        direction: 'outgoing',
+        ua
+    });
+    
+    // Hook into UA's transport to intercept SIP responses
+    const transport = ua._transport;
+    const existingHandler = transport._onMessage;
+    
+    transport._onMessage = function(e) {
+        const message = e.data;
+        
+        // Check if this message is for our call
+        if (message.includes(sipCallId)) {
+            handleSIPResponse(message, callId, from);
+        }
+        
+        // Call original handler
+        if (existingHandler) {
+            existingHandler.call(transport, e);
+        }
+    };
+    
+    // Send INVITE
+    try {
+        console.log(`[SIP] Sending INVITE for call ${callId}`);
+        transport.send(invite);
+        res.status(200).send('OK');
+    } catch (error) {
+        console.error(`[SIP] Failed to send INVITE:`, error);
+        activeCalls.delete(callId);
+        res.status(500).json({ error: `Failed to send INVITE: ${error.message}` });
     }
 });
+
+/**
+ * Handle SIP responses for manual INVITE
+ */
+function handleSIPResponse(sipMessage, callId, agentId) {
+    const call = activeCalls.get(callId);
+    if (!call) return;
+    
+    // Parse SIP status line
+    const statusMatch = sipMessage.match(/^SIP\/2\.0 (\d+) (.+)/m);
+    if (!statusMatch) return;
+    
+    const statusCode = parseInt(statusMatch[1]);
+    const statusText = statusMatch[2].trim();
+    
+    console.log(`[SIP] Call ${callId} received: ${statusCode} ${statusText}`);
+    
+    if (statusCode >= 100 && statusCode < 200) {
+        // 1xx Provisional responses
+        console.log(`[CALL] Call ${callId} - ${statusText}`);
+    } else if (statusCode === 200) {
+        // 200 OK - Call answered
+        // Extract SDP from response
+        const sdpMatch = sipMessage.match(/Content-Type: application\/sdp\r?\n\r?\n([\s\S]+)$/m);
+        if (sdpMatch) {
+            const answerSdp = sdpMatch[1].trim();
+            console.log(`[CALL] Call ${callId} answered, queuing SDP answer`);
+            
+            // Queue answer for agent to poll
+            const messages = pendingMessages.get(agentId) || [];
+            messages.push({
+                type: 'ANSWER',
+                sdp: answerSdp,
+                callId
+            });
+            pendingMessages.set(agentId, messages);
+            
+            // Send ACK
+            const ua = call.ua;
+            if (ua) {
+                const via = ua._configuration.via_host || ua._configuration.uri._host;
+                const ack = [
+                    `ACK sip:${call.to}@${SIP_DOMAIN} SIP/2.0`,
+                    `Via: SIP/2.0/WS ${via};branch=${call.branch}`,
+                    `Max-Forwards: 69`,
+                    `To: <sip:${call.to}@${SIP_DOMAIN}>`,
+                    `From: "${call.dn}" <sip:${call.dn}@${SIP_DOMAIN}>;tag=${call.fromTag}`,
+                    `Call-ID: ${call.sipCallId}`,
+                    `CSeq: 1 ACK`,
+                    `Content-Length: 0`,
+                    ``,
+                    ``
+                ].join('\r\n');
+                
+                try {
+                    ua._transport.send(ack);
+                    console.log(`[SIP] Sent ACK for call ${callId}`);
+                } catch (error) {
+                    console.error(`[SIP] Failed to send ACK:`, error);
+                }
+            }
+        }
+    } else if (statusCode >= 300) {
+        // Error responses
+        console.error(`[CALL] Call ${callId} failed: ${statusCode} ${statusText}`);
+        activeCalls.delete(callId);
+    }
+}
 
 // ==================================================
 // POLL FOR MESSAGES (Get SDP Answer)
