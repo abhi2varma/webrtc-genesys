@@ -248,8 +248,12 @@ app.post('/api/webrtc/message', (req, res) => {
         to,
         cseq: 1,
         direction: 'outgoing',
-        ua
+        ua,
+        sdpOffer  // Store the SDP offer for re-sending with auth
     });
+    
+    // Store password in session for auth (already stored in sessions Map)
+    // session.password is available from sign-in
     
     // Hook into UA's transport to intercept SIP responses
     const transport = ua._transport;
@@ -280,6 +284,38 @@ app.post('/api/webrtc/message', (req, res) => {
         res.status(500).json({ error: `Failed to send INVITE: ${error.message}` });
     }
 });
+
+/**
+ * Calculate SIP Digest Authentication Response
+ */
+function calculateDigestResponse(username, password, realm, nonce, method, uri, qop, nc, cnonce, algorithm = 'MD5') {
+    const ha1 = crypto.createHash('md5').update(`${username}:${realm}:${password}`).digest('hex');
+    const ha2 = crypto.createHash('md5').update(`${method}:${uri}`).digest('hex');
+    
+    let response;
+    if (qop === 'auth' || qop === 'auth-int') {
+        response = crypto.createHash('md5').update(`${ha1}:${nonce}:${nc}:${cnonce}:${qop}:${ha2}`).digest('hex');
+    } else {
+        response = crypto.createHash('md5').update(`${ha1}:${nonce}:${ha2}`).digest('hex');
+    }
+    
+    return response;
+}
+
+/**
+ * Parse WWW-Authenticate header
+ */
+function parseWWWAuthenticate(header) {
+    const auth = {};
+    const matches = header.match(/(\w+)="?([^",]+)"?/g);
+    if (matches) {
+        matches.forEach(match => {
+            const [key, value] = match.split('=');
+            auth[key] = value.replace(/"/g, '');
+        });
+    }
+    return auth;
+}
 
 /**
  * Handle SIP responses for manual INVITE
@@ -341,6 +377,111 @@ function handleSIPResponse(sipMessage, callId, agentId) {
                     console.error(`[SIP] Failed to send ACK:`, error);
                 }
             }
+        }
+    } else if (statusCode === 401 || statusCode === 407) {
+        // Authentication required
+        console.log(`[CALL] Call ${callId} requires authentication`);
+        
+        // Parse WWW-Authenticate header
+        const wwwAuthMatch = sipMessage.match(/WWW-Authenticate: (.+)/);
+        if (!wwwAuthMatch) {
+            console.error(`[CALL] No WWW-Authenticate header found`);
+            activeCalls.delete(callId);
+            return;
+        }
+        
+        const authParams = parseWWWAuthenticate(wwwAuthMatch[1]);
+        console.log(`[AUTH] Challenge:`, authParams);
+        
+        // Get session info
+        const session = sessions.get(agentId);
+        if (!session) {
+            console.error(`[AUTH] No session for agent ${agentId}`);
+            activeCalls.delete(callId);
+            return;
+        }
+        
+        // Calculate response
+        const nc = '00000001';
+        const cnonce = Math.random().toString(36).substring(2, 12);
+        const uri = `sip:${call.to}@${SIP_DOMAIN}`;
+        
+        const response = calculateDigestResponse(
+            call.dn,
+            session.password,
+            authParams.realm,
+            authParams.nonce,
+            'INVITE',
+            uri,
+            authParams.qop,
+            nc,
+            cnonce,
+            authParams.algorithm
+        );
+        
+        // Build Authorization header
+        let authHeader = `Digest username="${call.dn}", realm="${authParams.realm}", nonce="${authParams.nonce}", uri="${uri}", response="${response}", algorithm=${authParams.algorithm || 'MD5'}`;
+        
+        if (authParams.opaque) {
+            authHeader += `, opaque="${authParams.opaque}"`;
+        }
+        
+        if (authParams.qop) {
+            authHeader += `, qop=${authParams.qop}, nc=${nc}, cnonce="${cnonce}"`;
+        }
+        
+        // Increment CSeq
+        call.cseq++;
+        
+        // Get SDP from original call (we need to retrieve the original SDP offer)
+        const sdpMatch = sipMessage.match(/Content-Type: application\/sdp\r?\n\r?\n([\s\S]+)$/m);
+        let originalSdp = '';
+        
+        // If we don't have the original SDP in the response, we need to get it from storage
+        // For now, let's store it in the call object when we first create the INVITE
+        if (call.sdpOffer) {
+            originalSdp = call.sdpOffer;
+        } else {
+            console.error(`[AUTH] No SDP offer stored for call ${callId}`);
+            activeCalls.delete(callId);
+            return;
+        }
+        
+        // Build authenticated INVITE
+        const ua = call.ua;
+        const via = ua._configuration.via_host || ua._configuration.uri._host;
+        const newBranch = `z9hG4bK${Math.random().toString(36).substring(2, 12)}`;
+        
+        const authInvite = [
+            `INVITE ${uri} SIP/2.0`,
+            `Via: SIP/2.0/WS ${via};branch=${newBranch}`,
+            `Max-Forwards: 69`,
+            `To: <${uri}>`,
+            `From: "${call.dn}" <sip:${call.dn}@${SIP_DOMAIN}>;tag=${call.fromTag}`,
+            `Call-ID: ${call.sipCallId}`,
+            `CSeq: ${call.cseq} INVITE`,
+            `Contact: ${ua._contact.toString()}`,
+            `Authorization: ${authHeader}`,
+            `Allow: INVITE,ACK,CANCEL,BYE,UPDATE,MESSAGE,OPTIONS,REFER,INFO,NOTIFY`,
+            `Supported: path,gruu,outbound`,
+            `User-Agent: WebRTC-Gateway/1.0`,
+            `Content-Type: application/sdp`,
+            `Content-Length: ${originalSdp.length}`,
+            ``,
+            originalSdp
+        ].join('\r\n');
+        
+        // Update call with new branch
+        call.branch = newBranch;
+        activeCalls.set(callId, call);
+        
+        // Send authenticated INVITE
+        try {
+            console.log(`[AUTH] Sending authenticated INVITE for call ${callId}`);
+            ua._transport.send(authInvite);
+        } catch (error) {
+            console.error(`[AUTH] Failed to send authenticated INVITE:`, error);
+            activeCalls.delete(callId);
         }
     } else if (statusCode >= 300) {
         // Error responses
