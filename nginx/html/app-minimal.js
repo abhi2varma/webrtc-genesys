@@ -168,9 +168,7 @@ class MinimalWebRTCClient {
                 video: false
             },
             pcConfig: {
-                iceServers: [
-                    { urls: ['stun:192.168.210.54:3478'] }
-                ]
+                iceServers: []  // Empty for local network - instant connection
             },
             rtcOfferConstraints: {
                 offerToReceiveAudio: true,
@@ -193,9 +191,7 @@ class MinimalWebRTCClient {
                     video: false
                 },
                 pcConfig: {
-                    iceServers: [
-                        { urls: ['stun:192.168.210.54:3478'] }
-                    ]
+                    iceServers: []  // Empty for local network - instant connection
                 }
             };
             session.answer(options);
