@@ -303,8 +303,17 @@ function handleCall(ws, payload, msgId) {
     const sipCallId = `${callId}-${Date.now()}`;
     const fromTag = Math.random().toString(36).substring(2, 12);
     const branch = `z9hG4bK${Math.random().toString(36).substring(2, 12)}`;
-    const via = ua._transport._via_host;
-    const contact = ua._contact.toString();
+    
+    // Get via and contact from UA
+    let via, contact;
+    try {
+        via = ua._transport._via_host;
+        contact = ua._contact.toString();
+        console.log(`[CALL] Via: ${via}, Contact: ${contact}`);
+    } catch (error) {
+        console.error(`[CALL] Failed to get UA properties:`, error);
+        return sendError(ws, `Failed to get UA properties: ${error.message}`, msgId);
+    }
     
     // Build SIP INVITE message
     const invite = [
@@ -461,7 +470,32 @@ function handleHangup(ws, payload, msgId) {
     
     console.log(`[CALL] Hanging up ${callId}, reason: ${reason || 'user_initiated'}`);
     
-    call.session.terminate();
+    // Send BYE if call is active
+    if (call.sipCallId) {
+        const ua = sipUAs.get(call.dn);
+        if (ua && ua.isConnected()) {
+            const bye = [
+                `BYE sip:${call.to}@${SIP_DOMAIN} SIP/2.0`,
+                `Via: SIP/2.0/WS ${ua._transport._via_host};branch=${call.branch}`,
+                `Max-Forwards: 69`,
+                `To: <sip:${call.to}@${SIP_DOMAIN}>`,
+                `From: "${call.dn}" <sip:${call.dn}@${SIP_DOMAIN}>;tag=${call.fromTag}`,
+                `Call-ID: ${call.sipCallId}`,
+                `CSeq: ${call.cseq + 1} BYE`,
+                `Content-Length: 0`,
+                ``,
+                ``
+            ].join('\r\n');
+            
+            try {
+                ua._transport.send(bye);
+                console.log(`[SIP] Sent BYE for call ${callId}`);
+            } catch (error) {
+                console.error(`[SIP] Failed to send BYE:`, error);
+            }
+        }
+    }
+    
     activeCalls.delete(callId);
 }
 
