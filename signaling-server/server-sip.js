@@ -289,8 +289,21 @@ async function sendSIPRequest(request, session, authChallenge = null) {
         }
         
         console.log(`[SIP] Sending ${request.method} to ${SIP_SERVER}:${SIP_PORT}`);
+        console.log(`[DEBUG] Request URI:`, request.uri);
+        console.log(`[DEBUG] From:`, request.headers.from);
+        console.log(`[DEBUG] To:`, request.headers.to);
         
-        sip.send(request, (response) => {
+        // The sip.send() function needs an options object with hostname and port
+        const options = {
+            hostname: SIP_SERVER,
+            port: SIP_PORT
+        };
+        
+        sip.send(request, options, (response) => {
+            if (!response) {
+                return reject(new Error('No response received'));
+            }
+            
             console.log(`[SIP] Received ${response.status} ${response.reason}`);
             
             if (response.status === 401 || response.status === 407) {
