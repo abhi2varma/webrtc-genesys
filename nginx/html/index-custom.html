@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Client - Custom Signaling</title>
+</head>
+<body>
+    <h1>WebRTC Client - Custom Signaling (No JsSIP)</h1>
+    
+    <div id="status">Status: Disconnected</div>
+    
+    <h2>Registration</h2>
+    <form id="registerForm">
+        <label>DN: <input type="text" id="dn" value="5001"></label><br>
+        <label>Password: <input type="password" id="password" value="Genesys2024!WebRTC"></label><br>
+        <button type="submit">Register</button>
+        <button type="button" id="unregisterBtn">Unregister</button>
+    </form>
+    
+    <h2>Call Control</h2>
+    <div>
+        <label>Destination: <input type="text" id="destination" value="1003"></label><br>
+        <button id="callBtn">Call</button>
+        <button id="hangupBtn" disabled>Hangup</button>
+        <button id="muteBtn" disabled>Mute</button>
+        <button id="holdBtn" disabled>Hold</button>
+    </div>
+    
+    <h2>Dialpad</h2>
+    <div id="dialpad">
+        <button onclick="sendDTMF('1')">1</button>
+        <button onclick="sendDTMF('2')">2</button>
+        <button onclick="sendDTMF('3')">3</button><br>
+        <button onclick="sendDTMF('4')">4</button>
+        <button onclick="sendDTMF('5')">5</button>
+        <button onclick="sendDTMF('6')">6</button><br>
+        <button onclick="sendDTMF('7')">7</button>
+        <button onclick="sendDTMF('8')">8</button>
+        <button onclick="sendDTMF('9')">9</button><br>
+        <button onclick="sendDTMF('*')">*</button>
+        <button onclick="sendDTMF('0')">0</button>
+        <button onclick="sendDTMF('#')">#</button>
+    </div>
+    
+    <h2>Audio</h2>
+    <audio id="remoteAudio" autoplay></audio>
+    
+    <h2>Network Details</h2>
+    <div id="networkLog"></div>
+    
+    <h2>Log</h2>
+    <div id="log"></div>
+    
+    <script src="webrtc-custom.js?v=1.0"></script>
+</body>
+</html>
+
