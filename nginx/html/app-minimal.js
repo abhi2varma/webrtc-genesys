@@ -175,7 +175,14 @@ class MinimalWebRTCClient {
                 video: false
             },
             pcConfig: {
-                iceServers: []  // No STUN/TURN for local network = instant connection
+                iceServers: [
+                    { urls: 'stun:192.168.210.54:3478' },
+                    {
+                        urls: 'turn:192.168.210.54:3478',
+                        username: 'webrtc',
+                        credential: 'Genesys2024!SecureTurn'
+                    }
+                ]
             },
             rtcOfferConstraints: {
                 offerToReceiveAudio: true,
@@ -183,8 +190,9 @@ class MinimalWebRTCClient {
             }
         };
 
-        this.log('🔧 ICE Configuration: Local network only (no STUN/TURN)');
-        this.log('⚡ This should be INSTANT on local network!');
+        this.log('🔧 ICE Servers configured:');
+        this.log('   1. STUN: 192.168.210.54:3478');
+        this.log('   2. TURN: 192.168.210.54:3478');
 
         this.session = this.ua.call(`sip:${number}@192.168.210.54`, options);
         
