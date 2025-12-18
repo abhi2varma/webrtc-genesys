@@ -9,15 +9,15 @@ COPY package*.json ./
 RUN npm install --production
 
 # Copy application files
-COPY server.js ./
+COPY server-sip.js ./server.js
 COPY env.example ./.env
 
-# Expose ports
-EXPOSE 8081 8082
+# Expose ports (HTTP API + SIP)
+EXPOSE 8084 5070
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:8082/api/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"
+  CMD node -e "require('http').get('http://localhost:8084/api/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"
 
 # Run server
 CMD ["node", "server.js"]
