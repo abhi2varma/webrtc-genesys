@@ -36,7 +36,7 @@ class WebRTCClient {
     }
     
     connectWebSocket() {
-        const wsUrl = `wss://${window.location.hostname}:8443/ws`;
+        const wsUrl = `ws://${window.location.hostname}:8081`; // Custom signaling server
         this.log(`🔌 Connecting to ${wsUrl}...`);
         
         this.ws = new WebSocket(wsUrl);

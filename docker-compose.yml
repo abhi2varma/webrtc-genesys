@@ -163,6 +163,36 @@ services:
         max-size: "5m"
         max-file: "3"
 
+  signaling-server:
+    build: ./signaling-server
+    image: webrtc-signaling-server
+    container_name: webrtc-signaling-server
+    hostname: signaling-server
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ./signaling-server/logs:/app/logs
+    environment:
+      - WS_PORT=8081
+      - HTTP_PORT=8082
+      - SIP_SERVER=192.168.210.54
+      - SIP_PORT=5060
+      - SIP_WS_SERVER=ws://192.168.210.54:8080
+      - SIP_DOMAIN=192.168.210.54
+      - ASTERISK_HOST=192.168.210.54
+      - ASTERISK_PORT=5060
+      - GENESYS_HOST=192.168.210.81
+      - GENESYS_PORT=8080
+      - LOG_LEVEL=info
+    depends_on:
+      - kamailio
+      - asterisk
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+
 
 
 
