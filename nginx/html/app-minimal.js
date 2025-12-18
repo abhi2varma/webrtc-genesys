@@ -176,7 +176,6 @@ class MinimalWebRTCClient {
             },
             pcConfig: {
                 iceServers: [
-                    { urls: 'stun:192.168.210.54:3478' },
                     {
                         urls: 'turn:192.168.210.54:3478',
                         username: 'webrtc',
@@ -191,8 +190,7 @@ class MinimalWebRTCClient {
         };
 
         this.log('🔧 ICE Servers configured:');
-        this.log('   1. STUN: 192.168.210.54:3478');
-        this.log('   2. TURN: 192.168.210.54:3478');
+        this.log('   1. TURN: 192.168.210.54:3478 (with credentials)');
 
         this.session = this.ua.call(`sip:${number}@192.168.210.54`, options);
         
