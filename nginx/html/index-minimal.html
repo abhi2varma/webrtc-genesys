@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Client</title>
+</head>
+<body>
+    <h1>WebRTC SIP Client</h1>
+    
+    <!-- Connection Section -->
+    <div>
+        <h2>Connection</h2>
+        <label>SIP Server:</label>
+        <input type="text" id="sipServer" value="wss://192.168.210.54:8443/ws" size="50"><br><br>
+        
+        <label>DN (Extension):</label>
+        <input type="text" id="sipUsername" value="5001"><br><br>
+        
+        <label>Password:</label>
+        <input type="password" id="sipPassword" value="GenesysAgent5001!"><br><br>
+        
+        <button id="connectBtn">Connect</button>
+        <button id="disconnectBtn" disabled>Disconnect</button>
+        <br><br>
+        <div id="connectionStatus">Status: Disconnected</div>
+    </div>
+    
+    <hr>
+    
+    <!-- Call Section -->
+    <div>
+        <h2>Make a Call</h2>
+        <label>Phone Number:</label>
+        <input type="text" id="phoneNumber" placeholder="Enter number"><br><br>
+        
+        <button id="callBtn" disabled>Call</button>
+        <button id="hangupBtn" disabled>Hangup</button>
+        <button id="muteBtn" disabled>Mute</button>
+        <button id="holdBtn" disabled>Hold</button>
+        <br><br>
+        <div id="callStatus">Status: No active call</div>
+    </div>
+    
+    <hr>
+    
+    <!-- Dialpad -->
+    <div>
+        <h2>Dialpad</h2>
+        <table>
+            <tr>
+                <td><button class="dialpad-btn" data-digit="1">1</button></td>
+                <td><button class="dialpad-btn" data-digit="2">2</button></td>
+                <td><button class="dialpad-btn" data-digit="3">3</button></td>
+            </tr>
+            <tr>
+                <td><button class="dialpad-btn" data-digit="4">4</button></td>
+                <td><button class="dialpad-btn" data-digit="5">5</button></td>
+                <td><button class="dialpad-btn" data-digit="6">6</button></td>
+            </tr>
+            <tr>
+                <td><button class="dialpad-btn" data-digit="7">7</button></td>
+                <td><button class="dialpad-btn" data-digit="8">8</button></td>
+                <td><button class="dialpad-btn" data-digit="9">9</button></td>
+            </tr>
+            <tr>
+                <td><button class="dialpad-btn" data-digit="*">*</button></td>
+                <td><button class="dialpad-btn" data-digit="0">0</button></td>
+                <td><button class="dialpad-btn" data-digit="#">#</button></td>
+            </tr>
+        </table>
+    </div>
+    
+    <hr>
+    
+    <!-- Debug Log -->
+    <div>
+        <h2>Log</h2>
+        <div id="debugLog" style="border:1px solid black; padding:10px; height:200px; overflow-y:scroll; font-family:monospace; font-size:12px;"></div>
+    </div>
+    
+    <!-- Audio element for remote stream -->
+    <audio id="remoteAudio" autoplay></audio>
+    
+    <!-- JsSIP Library -->
+    <script src="jssip.min.js"></script>
+    <script src="app-minimal.js"></script>
+</body>
+</html>
+
