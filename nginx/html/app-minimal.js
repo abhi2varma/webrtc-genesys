@@ -7,6 +7,7 @@ class MinimalWebRTCClient {
         this.isOnHold = false;
         this.callStartTime = null;
         this.iceGatheringTimer = null;
+        this.iceCandidates = [];
         
         this.initElements();
         this.attachListeners();
@@ -282,6 +283,9 @@ class MinimalWebRTCClient {
             this.log('🔌 PeerConnection Created');
             this.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
             
+            // Reset candidates array
+            this.iceCandidates = [];
+            
             // Log ICE gathering state changes
             pc.addEventListener('icegatheringstatechange', () => {
                 const state = pc.iceGatheringState;
@@ -289,6 +293,19 @@ class MinimalWebRTCClient {
                 if (state === 'complete') emoji = '✅';
                 if (state === 'gathering') emoji = '🔍';
                 this.log(`${emoji} ICE Gathering: ${state}`);
+                
+                if (state === 'complete') {
+                    this.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+                    this.log('📊 ICE GATHERING SUMMARY:');
+                    this.log(`   Total candidates: ${this.iceCandidates.length}`);
+                    const hostCount = this.iceCandidates.filter(c => c.type === 'host').length;
+                    const srflxCount = this.iceCandidates.filter(c => c.type === 'srflx').length;
+                    const relayCount = this.iceCandidates.filter(c => c.type === 'relay').length;
+                    this.log(`   ├─ HOST:  ${hostCount} (local)`);
+                    this.log(`   ├─ SRFLX: ${srflxCount} (STUN/public)`);
+                    this.log(`   └─ RELAY: ${relayCount} (TURN)`);
+                    this.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+                }
             });
             
             // Log ICE connection state changes
@@ -301,6 +318,11 @@ class MinimalWebRTCClient {
                 if (state === 'disconnected') emoji = '⚠️';
                 if (state === 'checking') emoji = '🔍';
                 this.log(`${emoji} ICE Connection: ${state}`);
+                
+                // When connected, show the selected path
+                if (state === 'connected' || state === 'completed') {
+                    setTimeout(() => this.showSelectedPath(pc), 500);
+                }
             });
             
             // Log signaling state
@@ -326,13 +348,13 @@ class MinimalWebRTCClient {
                     let emoji = '📍';
                     
                     if (c.candidate.includes('typ host')) {
-                        type = 'HOST (Local)';
+                        type = 'host';
                         emoji = '🏠';
                     } else if (c.candidate.includes('typ srflx')) {
-                        type = 'SRFLX (STUN/NAT)';
+                        type = 'srflx';
                         emoji = '🌐';
                     } else if (c.candidate.includes('typ relay')) {
-                        type = 'RELAY (TURN)';
+                        type = 'relay';
                         emoji = '🔄';
                     }
                     
@@ -340,35 +362,23 @@ class MinimalWebRTCClient {
                     const parts = c.candidate.split(' ');
                     const ip = parts[4] || 'unknown';
                     const port = parts[5] || 'unknown';
-                    const protocol = c.protocol || 'unknown';
+                    const protocol = (c.protocol || 'unknown').toUpperCase();
                     const priority = c.priority || 'unknown';
                     
-                    this.log(`${emoji} Candidate [${type}]`);
-                    this.log(`   └─ ${protocol.toUpperCase()} ${ip}:${port} (priority: ${priority})`);
+                    // Store candidate info
+                    this.iceCandidates.push({
+                        type: type,
+                        ip: ip,
+                        port: port,
+                        protocol: protocol,
+                        priority: priority,
+                        foundation: c.foundation
+                    });
+                    
+                    this.log(`${emoji} Candidate #${this.iceCandidates.length} [${type.toUpperCase()}]`);
+                    this.log(`   └─ ${protocol} ${ip}:${port} (priority: ${priority})`);
                 } else {
-                    this.log('✅ ICE Candidate gathering complete');
-                }
-            });
-            
-            // Log selected candidate pair
-            pc.addEventListener('iceconnectionstatechange', async () => {
-                if (pc.iceConnectionState === 'connected') {
-                    try {
-                        const stats = await pc.getStats();
-                        stats.forEach(report => {
-                            if (report.type === 'candidate-pair' && report.state === 'succeeded') {
-                                this.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-                                this.log('✅ SELECTED ROUTE:');
-                                this.log(`   Local:  ${report.localCandidateId}`);
-                                this.log(`   Remote: ${report.remoteCandidateId}`);
-                                this.log(`   Bytes sent: ${report.bytesSent || 0}`);
-                                this.log(`   Bytes received: ${report.bytesReceived || 0}`);
-                                this.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-                            }
-                        });
-                    } catch (err) {
-                        this.log('⚠️ Could not get connection stats: ' + err.message);
-                    }
+                    this.log('✅ No more candidates (ICE gathering finished)');
                 }
             });
             
@@ -430,6 +440,92 @@ class MinimalWebRTCClient {
             this.log('⏸️ On hold');
         }
         this.isOnHold = !this.isOnHold;
+    }
+
+    async showSelectedPath(pc) {
+        try {
+            const stats = await pc.getStats();
+            let localCandidate = null;
+            let remoteCandidate = null;
+            let candidatePair = null;
+            
+            // Find the selected candidate pair
+            stats.forEach(report => {
+                if (report.type === 'candidate-pair' && report.state === 'succeeded') {
+                    candidatePair = report;
+                }
+                if (report.type === 'local-candidate') {
+                    if (!localCandidate || report.id === candidatePair?.localCandidateId) {
+                        localCandidate = report;
+                    }
+                }
+                if (report.type === 'remote-candidate') {
+                    if (!remoteCandidate || report.id === candidatePair?.remoteCandidateId) {
+                        remoteCandidate = report;
+                    }
+                }
+            });
+            
+            if (candidatePair && localCandidate && remoteCandidate) {
+                this.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+                this.log('🎯 SELECTED NETWORK PATH:');
+                this.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+                
+                // Local candidate details
+                const localType = localCandidate.candidateType || 'unknown';
+                const localTypeEmoji = localType === 'host' ? '🏠' : localType === 'srflx' ? '🌐' : '🔄';
+                this.log(`${localTypeEmoji} LOCAL [${localType.toUpperCase()}]:`);
+                this.log(`   ├─ IP: ${localCandidate.address || localCandidate.ip}`);
+                this.log(`   ├─ Port: ${localCandidate.port}`);
+                this.log(`   ├─ Protocol: ${localCandidate.protocol?.toUpperCase()}`);
+                this.log(`   └─ Priority: ${localCandidate.priority}`);
+                
+                this.log('');
+                this.log('         ↕ ACTIVE CONNECTION ↕');
+                this.log('');
+                
+                // Remote candidate details
+                const remoteType = remoteCandidate.candidateType || 'unknown';
+                const remoteTypeEmoji = remoteType === 'host' ? '🏠' : remoteType === 'srflx' ? '🌐' : '🔄';
+                this.log(`${remoteTypeEmoji} REMOTE [${remoteType.toUpperCase()}]:`);
+                this.log(`   ├─ IP: ${remoteCandidate.address || remoteCandidate.ip}`);
+                this.log(`   ├─ Port: ${remoteCandidate.port}`);
+                this.log(`   ├─ Protocol: ${remoteCandidate.protocol?.toUpperCase()}`);
+                this.log(`   └─ Priority: ${remoteCandidate.priority}`);
+                
+                this.log('');
+                this.log('📈 CONNECTION STATS:');
+                this.log(`   ├─ Bytes sent: ${candidatePair.bytesSent || 0}`);
+                this.log(`   ├─ Bytes received: ${candidatePair.bytesReceived || 0}`);
+                this.log(`   ├─ RTT: ${candidatePair.currentRoundTripTime ? (candidatePair.currentRoundTripTime * 1000).toFixed(2) + ' ms' : 'N/A'}`);
+                this.log(`   └─ Nominated: ${candidatePair.nominated ? 'Yes' : 'No'}`);
+                
+                // Determine connection type
+                this.log('');
+                this.log('🔍 PATH ANALYSIS:');
+                if (localType === 'host' && remoteType === 'host') {
+                    this.log('   ✅ Direct local network connection');
+                    this.log('   ✅ Fastest possible (same LAN)');
+                    this.log('   ✅ No NAT traversal needed');
+                } else if (localType === 'srflx' && remoteType === 'srflx') {
+                    this.log('   ✅ Direct internet connection');
+                    this.log('   ✅ Via NAT (STUN-assisted)');
+                    this.log('   ⚡ Good performance');
+                } else if (localType === 'relay' || remoteType === 'relay') {
+                    this.log('   ⚠️  Relayed connection (via TURN)');
+                    this.log('   ⚠️  Higher latency');
+                    this.log('   ⚠️  Last resort path');
+                } else {
+                    this.log(`   ℹ️  Mixed connection: ${localType} ↔ ${remoteType}`);
+                }
+                
+                this.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            } else {
+                this.log('⚠️ Could not determine selected path');
+            }
+        } catch (err) {
+            this.log('❌ Error getting connection stats: ' + err.message);
+        }
     }
 }
 
