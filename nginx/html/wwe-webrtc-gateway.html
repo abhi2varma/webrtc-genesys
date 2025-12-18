@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Gateway - WWE Integration</title>
+    <script src="https://cdn.jsdelivr.net/npm/jssip@3.10.1/dist/jssip.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .status {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .status.disconnected { background: #fee; color: #c33; }
+        .status.connecting { background: #fef3cd; color: #856404; }
+        .status.connected { background: #d4edda; color: #155724; }
+        .status.calling { background: #cce5ff; color: #004085; }
+        .status.incall { background: #d1ecf1; color: #0c5460; }
+
+        .info {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #0066cc;
+        }
+
+        .info h3 {
+            margin-bottom: 10px;
+            color: #0066cc;
+        }
+
+        .info p {
+            margin: 5px 0;
+            color: #333;
+        }
+
+        .logs {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        .log-entry {
+            padding: 4px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        .log-entry.info { color: #0066cc; }
+        .log-entry.success { color: #28a745; }
+        .log-entry.error { color: #dc3545; }
+        .log-entry.event { color: #6c757d; }
+
+        audio {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎧 WebRTC Gateway</h1>
+        
+        <div id="status" class="status disconnected">
+            Disconnected
+        </div>
+
+        <div class="info">
+            <h3>Integration Status</h3>
+            <p><strong>Agent ID:</strong> <span id="agentId">Not signed in</span></p>
+            <p><strong>DN:</strong> <span id="agentDn">-</span></p>
+            <p><strong>SIP Status:</strong> <span id="sipStatus">Disconnected</span></p>
+            <p><strong>Active Call:</strong> <span id="activeCall">None</span></p>
+        </div>
+
+        <audio id="remoteAudio" autoplay></audio>
+
+        <div class="logs">
+            <div id="logContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // WebRTC Gateway - WWE Integration via postMessage
+        class WebRTCGateway {
+            constructor() {
+                this.ua = null;
+                this.currentSession = null;
+                this.agentId = null;
+                this.agentDn = null;
+                this.sipServer = null;
+                this.isRegistered = false;
+                
+                this.remoteAudio = document.getElementById('remoteAudio');
+                
+                // Listen for postMessage commands from parent (WWE)
+                window.addEventListener('message', (event) => this.handleMessage(event));
+                
+                // Notify parent that we're ready
+                this.sendEvent('ready', { version: '1.0.0' });
+                this.log('WebRTC Gateway initialized', 'info');
+            }
+
+            handleMessage(event) {
+                const { command, data } = event.data;
+                
+                if (!command) return;
+                
+                this.log(`Received command: ${command}`, 'event');
+                
+                switch (command) {
+                    case 'sign_in':
+                        this.signIn(data);
+                        break;
+                    case 'sign_out':
+                        this.signOut();
+                        break;
+                    case 'make_call':
+                        this.makeCall(data);
+                        break;
+                    case 'answer_call':
+                        this.answerCall();
+                        break;
+                    case 'hangup':
+                        this.hangup();
+                        break;
+                    case 'mute':
+                        this.setMute(true);
+                        break;
+                    case 'unmute':
+                        this.setMute(false);
+                        break;
+                    default:
+                        this.log(`Unknown command: ${command}`, 'error');
+                }
+            }
+
+            signIn({ agentId, dn, password, sipServer }) {
+                this.log(`Signing in agent ${agentId} (DN: ${dn})`, 'info');
+                
+                this.agentId = agentId;
+                this.agentDn = dn;
+                this.sipServer = sipServer || 'ws://192.168.210.54:8080';
+                
+                // Update UI
+                document.getElementById('agentId').textContent = agentId;
+                document.getElementById('agentDn').textContent = dn;
+                this.updateStatus('connecting');
+                
+                // Configure JsSIP
+                const socket = new JsSIP.WebSocketInterface(this.sipServer);
+                const configuration = {
+                    sockets: [socket],
+                    uri: `sip:${dn}@${this.sipServer.replace(/^wss?:\/\//, '').split(':')[0]}`,
+                    password: password,
+                    display_name: dn,
+                    session_timers: false,
+                    register: true
+                };
+
+                this.ua = new JsSIP.UA(configuration);
+
+                // Set up UA event handlers
+                this.ua.on('connected', () => {
+                    this.log('SIP connected', 'success');
+                    document.getElementById('sipStatus').textContent = 'Connected';
+                    this.sendEvent('sip_connected');
+                });
+
+                this.ua.on('disconnected', () => {
+                    this.log('SIP disconnected', 'error');
+                    document.getElementById('sipStatus').textContent = 'Disconnected';
+                    this.updateStatus('disconnected');
+                    this.sendEvent('sip_disconnected');
+                });
+
+                this.ua.on('registered', () => {
+                    this.log('SIP registered', 'success');
+                    this.isRegistered = true;
+                    this.updateStatus('connected');
+                    this.sendEvent('registered', { agentId, dn });
+                });
+
+                this.ua.on('unregistered', () => {
+                    this.log('SIP unregistered', 'info');
+                    this.isRegistered = false;
+                    this.sendEvent('unregistered');
+                });
+
+                this.ua.on('registrationFailed', (e) => {
+                    this.log(`Registration failed: ${e.cause}`, 'error');
+                    this.sendEvent('registration_failed', { cause: e.cause });
+                });
+
+                this.ua.on('newRTCSession', (e) => {
+                    this.handleNewSession(e.session, e.originator);
+                });
+
+                // Start UA
+                this.ua.start();
+            }
+
+            signOut() {
+                this.log('Signing out', 'info');
+                
+                if (this.currentSession) {
+                    this.currentSession.terminate();
+                }
+                
+                if (this.ua) {
+                    this.ua.stop();
+                    this.ua = null;
+                }
+                
+                this.agentId = null;
+                this.agentDn = null;
+                this.isRegistered = false;
+                
+                document.getElementById('agentId').textContent = 'Not signed in';
+                document.getElementById('agentDn').textContent = '-';
+                document.getElementById('sipStatus').textContent = 'Disconnected';
+                this.updateStatus('disconnected');
+                
+                this.sendEvent('signed_out');
+            }
+
+            makeCall({ destination }) {
+                if (!this.isRegistered) {
+                    this.log('Cannot make call: not registered', 'error');
+                    this.sendEvent('call_failed', { reason: 'Not registered' });
+                    return;
+                }
+
+                this.log(`Making call to ${destination}`, 'info');
+                this.updateStatus('calling');
+                document.getElementById('activeCall').textContent = `Calling ${destination}`;
+
+                const options = {
+                    mediaConstraints: {
+                        audio: true,
+                        video: false
+                    },
+                    pcConfig: {
+                        iceServers: [
+                            { urls: 'stun:stun.l.google.com:19302' }
+                        ]
+                    }
+                };
+
+                const session = this.ua.call(`sip:${destination}@${this.sipServer.replace(/^wss?:\/\//, '').split(':')[0]}`, options);
+                this.setupSessionHandlers(session, 'outgoing', destination);
+            }
+
+            answerCall() {
+                if (!this.currentSession) {
+                    this.log('No incoming call to answer', 'error');
+                    return;
+                }
+
+                this.log('Answering call', 'info');
+                
+                const options = {
+                    mediaConstraints: {
+                        audio: true,
+                        video: false
+                    }
+                };
+
+                this.currentSession.answer(options);
+            }
+
+            hangup() {
+                if (!this.currentSession) {
+                    this.log('No active call to hangup', 'error');
+                    return;
+                }
+
+                this.log('Hanging up', 'info');
+                this.currentSession.terminate();
+            }
+
+            setMute(muted) {
+                if (!this.currentSession) return;
+                
+                if (muted) {
+                    this.currentSession.mute();
+                    this.log('Muted', 'info');
+                    this.sendEvent('muted');
+                } else {
+                    this.currentSession.unmute();
+                    this.log('Unmuted', 'info');
+                    this.sendEvent('unmuted');
+                }
+            }
+
+            handleNewSession(session, originator) {
+                this.currentSession = session;
+
+                if (originator === 'remote') {
+                    // Incoming call
+                    const callerNumber = session.remote_identity.uri.user;
+                    this.log(`Incoming call from ${callerNumber}`, 'info');
+                    document.getElementById('activeCall').textContent = `Incoming: ${callerNumber}`;
+                    
+                    this.sendEvent('incoming_call', {
+                        from: callerNumber,
+                        displayName: session.remote_identity.display_name
+                    });
+                    
+                    this.setupSessionHandlers(session, 'incoming', callerNumber);
+                }
+            }
+
+            setupSessionHandlers(session, direction, otherParty) {
+                this.currentSession = session;
+
+                session.on('peerconnection', (e) => {
+                    const pc = e.peerconnection;
+                    
+                    pc.addEventListener('addstream', (e) => {
+                        this.remoteAudio.srcObject = e.stream;
+                        this.log('Remote audio stream added', 'success');
+                    });
+
+                    pc.addEventListener('track', (e) => {
+                        if (e.streams && e.streams[0]) {
+                            this.remoteAudio.srcObject = e.streams[0];
+                            this.log('Remote audio track added', 'success');
+                        }
+                    });
+                });
+
+                session.on('progress', () => {
+                    this.log('Call progress (ringing)', 'info');
+                    this.sendEvent('call_progress');
+                });
+
+                session.on('accepted', () => {
+                    this.log('Call accepted', 'success');
+                    this.updateStatus('incall');
+                    document.getElementById('activeCall').textContent = `In call with ${otherParty}`;
+                    this.sendEvent('call_accepted', { direction, otherParty });
+                });
+
+                session.on('confirmed', () => {
+                    this.log('Call confirmed', 'success');
+                    this.sendEvent('call_confirmed');
+                });
+
+                session.on('ended', () => {
+                    this.log('Call ended', 'info');
+                    this.updateStatus('connected');
+                    document.getElementById('activeCall').textContent = 'None';
+                    this.currentSession = null;
+                    this.sendEvent('call_ended');
+                });
+
+                session.on('failed', (e) => {
+                    this.log(`Call failed: ${e.cause}`, 'error');
+                    this.updateStatus('connected');
+                    document.getElementById('activeCall').textContent = 'None';
+                    this.currentSession = null;
+                    this.sendEvent('call_failed', { cause: e.cause });
+                });
+            }
+
+            updateStatus(status) {
+                const statusEl = document.getElementById('status');
+                statusEl.className = `status ${status}`;
+                
+                const statusText = {
+                    'disconnected': 'Disconnected',
+                    'connecting': 'Connecting...',
+                    'connected': 'Connected & Ready',
+                    'calling': 'Calling...',
+                    'incall': 'In Call'
+                };
+                
+                statusEl.textContent = statusText[status] || status;
+            }
+
+            sendEvent(event, data = {}) {
+                const message = {
+                    event,
+                    data,
+                    timestamp: Date.now()
+                };
+                
+                // Send to parent window (WWE)
+                if (window.parent !== window) {
+                    window.parent.postMessage(message, '*');
+                }
+                
+                this.log(`Event: ${event}`, 'event');
+            }
+
+            log(message, type = 'info') {
+                const container = document.getElementById('logContainer');
+                const entry = document.createElement('div');
+                entry.className = `log-entry ${type}`;
+                const time = new Date().toLocaleTimeString();
+                entry.textContent = `[${time}] ${message}`;
+                container.appendChild(entry);
+                container.scrollTop = container.scrollHeight;
+            }
+        }
+
+        // Initialize gateway
+        const gateway = new WebRTCGateway();
+    </script>
+</body>
+</html>
+

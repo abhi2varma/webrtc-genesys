@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WWE - WebRTC Integration Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1e1e1e;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #00b4d8;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 600px;
+            gap: 20px;
+        }
+
+        .panel {
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .panel h2 {
+            color: #00b4d8;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .control-group input {
+            width: 100%;
+            padding: 10px;
+            background: #1e1e1e;
+            border: 1px solid #444;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .btn-primary {
+            background: #00b4d8;
+            color: white;
+        }
+
+        .btn-success {
+            background: #06d6a0;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #ef476f;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #444;
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .status-badge.connected {
+            background: #06d6a0;
+            color: white;
+        }
+
+        .status-badge.disconnected {
+            background: #ef476f;
+            color: white;
+        }
+
+        .status-badge.calling {
+            background: #ffd60a;
+            color: #000;
+        }
+
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #444;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .events-log {
+            background: #1e1e1e;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        .event-entry {
+            padding: 4px 0;
+            border-bottom: 1px solid #333;
+            color: #aaa;
+        }
+
+        .event-entry:last-child {
+            border-bottom: none;
+        }
+
+        .event-entry strong {
+            color: #00b4d8;
+        }
+
+        .call-controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎧 WWE WebRTC Integration Demo</h1>
+        
+        <div class="layout">
+            <div class="panel">
+                <h2>
+                    Control Panel
+                    <span id="statusBadge" class="status-badge disconnected">Disconnected</span>
+                </h2>
+
+                <div class="control-group">
+                    <label>Agent ID</label>
+                    <input type="text" id="agentId" value="agent123" placeholder="Enter agent ID">
+                </div>
+
+                <div class="control-group">
+                    <label>DN (Extension)</label>
+                    <input type="text" id="agentDn" value="5001" placeholder="Enter DN">
+                </div>
+
+                <div class="control-group">
+                    <label>Password</label>
+                    <input type="password" id="agentPassword" value="Genesys2024!WebRTC" placeholder="Enter password">
+                </div>
+
+                <div class="control-group">
+                    <label>SIP Server (WebSocket)</label>
+                    <input type="text" id="sipServer" value="ws://192.168.210.54:8080" placeholder="ws://server:port">
+                </div>
+
+                <button class="btn btn-primary" id="signInBtn" onclick="signIn()">Sign In</button>
+                <button class="btn btn-secondary" id="signOutBtn" onclick="signOut()" disabled>Sign Out</button>
+
+                <hr style="margin: 30px 0; border-color: #444;">
+
+                <h2>Call Controls</h2>
+
+                <div class="control-group">
+                    <label>Destination Number</label>
+                    <input type="text" id="destination" value="5002" placeholder="Enter number to call">
+                </div>
+
+                <div class="call-controls">
+                    <button class="btn btn-success" id="makeCallBtn" onclick="makeCall()" disabled>📞 Make Call</button>
+                    <button class="btn btn-success" id="answerBtn" onclick="answerCall()" disabled style="display:none;">📞 Answer</button>
+                    <button class="btn btn-danger" id="hangupBtn" onclick="hangup()" disabled>❌ Hangup</button>
+                    <button class="btn btn-secondary" id="muteBtn" onclick="toggleMute()" disabled>🔇 Mute</button>
+                </div>
+
+                <div class="events-log">
+                    <div id="eventsContainer"></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>WebRTC Gateway (Iframe)</h2>
+                <iframe id="webrtcFrame" src="wwe-webrtc-gateway.html"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isMuted = false;
+        let isSignedIn = false;
+        let inCall = false;
+
+        // Listen for events from the WebRTC Gateway iframe
+        window.addEventListener('message', (event) => {
+            const { event: eventType, data } = event.data;
+            
+            if (!eventType) return;
+            
+            logEvent(eventType, data);
+            
+            switch (eventType) {
+                case 'ready':
+                    logEvent('Gateway ready', data);
+                    break;
+                    
+                case 'registered':
+                    isSignedIn = true;
+                    updateUI('connected');
+                    logEvent('Registered successfully', data);
+                    break;
+                    
+                case 'registration_failed':
+                    updateUI('disconnected');
+                    alert(`Registration failed: ${data.cause}`);
+                    break;
+                    
+                case 'incoming_call':
+                    logEvent(`Incoming call from ${data.from}`, data);
+                    document.getElementById('answerBtn').style.display = 'block';
+                    document.getElementById('answerBtn').disabled = false;
+                    document.getElementById('hangupBtn').disabled = false;
+                    break;
+                    
+                case 'call_accepted':
+                    inCall = true;
+                    updateUI('incall');
+                    document.getElementById('answerBtn').style.display = 'none';
+                    logEvent('Call accepted', data);
+                    break;
+                    
+                case 'call_ended':
+                case 'call_failed':
+                    inCall = false;
+                    updateUI('connected');
+                    document.getElementById('answerBtn').style.display = 'none';
+                    logEvent('Call ended or failed', data);
+                    break;
+                    
+                case 'signed_out':
+                    isSignedIn = false;
+                    updateUI('disconnected');
+                    break;
+            }
+        });
+
+        function sendCommand(command, data = {}) {
+            const iframe = document.getElementById('webrtcFrame');
+            iframe.contentWindow.postMessage({ command, data }, '*');
+            logEvent(`Command sent: ${command}`, data);
+        }
+
+        function signIn() {
+            const agentId = document.getElementById('agentId').value;
+            const dn = document.getElementById('agentDn').value;
+            const password = document.getElementById('agentPassword').value;
+            const sipServer = document.getElementById('sipServer').value;
+            
+            if (!agentId || !dn || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            sendCommand('sign_in', { agentId, dn, password, sipServer });
+        }
+
+        function signOut() {
+            sendCommand('sign_out');
+        }
+
+        function makeCall() {
+            const destination = document.getElementById('destination').value;
+            
+            if (!destination) {
+                alert('Please enter a destination number');
+                return;
+            }
+            
+            sendCommand('make_call', { destination });
+        }
+
+        function answerCall() {
+            sendCommand('answer_call');
+        }
+
+        function hangup() {
+            sendCommand('hangup');
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            sendCommand(isMuted ? 'mute' : 'unmute');
+            document.getElementById('muteBtn').textContent = isMuted ? '🔊 Unmute' : '🔇 Mute';
+        }
+
+        function updateUI(state) {
+            const statusBadge = document.getElementById('statusBadge');
+            const signInBtn = document.getElementById('signInBtn');
+            const signOutBtn = document.getElementById('signOutBtn');
+            const makeCallBtn = document.getElementById('makeCallBtn');
+            const hangupBtn = document.getElementById('hangupBtn');
+            const muteBtn = document.getElementById('muteBtn');
+            
+            switch (state) {
+                case 'disconnected':
+                    statusBadge.textContent = 'Disconnected';
+                    statusBadge.className = 'status-badge disconnected';
+                    signInBtn.disabled = false;
+                    signOutBtn.disabled = true;
+                    makeCallBtn.disabled = true;
+                    hangupBtn.disabled = true;
+                    muteBtn.disabled = true;
+                    break;
+                    
+                case 'connected':
+                    statusBadge.textContent = 'Connected';
+                    statusBadge.className = 'status-badge connected';
+                    signInBtn.disabled = true;
+                    signOutBtn.disabled = false;
+                    makeCallBtn.disabled = false;
+                    hangupBtn.disabled = true;
+                    muteBtn.disabled = true;
+                    break;
+                    
+                case 'incall':
+                    statusBadge.textContent = 'In Call';
+                    statusBadge.className = 'status-badge calling';
+                    signInBtn.disabled = true;
+                    signOutBtn.disabled = true;
+                    makeCallBtn.disabled = true;
+                    hangupBtn.disabled = false;
+                    muteBtn.disabled = false;
+                    break;
+            }
+        }
+
+        function logEvent(event, data = {}) {
+            const container = document.getElementById('eventsContainer');
+            const entry = document.createElement('div');
+            entry.className = 'event-entry';
+            const time = new Date().toLocaleTimeString();
+            entry.innerHTML = `[${time}] <strong>${event}</strong> ${JSON.stringify(data)}`;
+            container.appendChild(entry);
+            container.scrollTop = container.scrollHeight;
+        }
+    </script>
+</body>
+</html>
+
