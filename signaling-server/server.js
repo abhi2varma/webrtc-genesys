@@ -277,26 +277,20 @@ app.post('/api/webrtc/message', (req, res) => {
     // Store handler reference so we can remove it later
     callInfo.responseHandler = responseHandler;
     
-    // Debug: Log transport properties
-    console.log(`[DEBUG] Transport properties:`, Object.keys(transport));
-    console.log(`[DEBUG] Has _ws:`, !!transport._ws);
-    console.log(`[DEBUG] Has ws:`, !!transport.ws);
-    console.log(`[DEBUG] Has socket:`, !!transport.socket);
-    console.log(`[DEBUG] Has _socket:`, !!transport._socket);
+    // Debug: Check if transport is an EventEmitter
+    console.log(`[DEBUG] Transport has 'on' method:`, typeof transport.on);
+    console.log(`[DEBUG] Transport has 'addListener' method:`, typeof transport.addListener);
+    console.log(`[DEBUG] Transport constructor:`, transport.constructor.name);
     
-    // Listen to WebSocket messages - try different property names
-    let wsSocket = transport._ws || transport.ws || transport.socket || transport._socket;
-    
-    if (wsSocket && typeof wsSocket.addEventListener === 'function') {
-        wsSocket.addEventListener('message', responseHandler);
-        console.log(`[SIP] Attached response handler for call ${callId}`);
-    } else if (wsSocket && typeof wsSocket.on === 'function') {
-        // Try Node.js EventEmitter style
-        wsSocket.on('message', responseHandler);
-        console.log(`[SIP] Attached response handler (EventEmitter) for call ${callId}`);
+    // JsSIP Transport is an EventEmitter - listen to 'message' events
+    if (typeof transport.on === 'function') {
+        transport.on('message', (data) => {
+            console.log(`[DEBUG] Transport received message event`);
+            responseHandler({ data: data.data });
+        });
+        console.log(`[SIP] Attached response handler to transport for call ${callId}`);
     } else {
-        console.error(`[SIP] Cannot attach handler - WebSocket not available or not compatible`);
-        console.error(`[DEBUG] wsSocket type:`, typeof wsSocket);
+        console.error(`[SIP] Cannot attach handler - transport is not an EventEmitter`);
     }
     
     // Send INVITE
