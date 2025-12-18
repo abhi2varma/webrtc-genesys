@@ -16,6 +16,9 @@ const http = require('http');
 const JsSIP = require('jssip');
 const { v4: uuidv4 } = require('uuid');
 
+// Make WebSocket available globally for JsSIP
+global.WebSocket = WebSocket;
+
 // Configuration
 const WS_PORT = process.env.WS_PORT || 8081;
 const HTTP_PORT = process.env.HTTP_PORT || 8082;
