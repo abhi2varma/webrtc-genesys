@@ -5,6 +5,8 @@ class MinimalWebRTCClient {
         this.session = null;
         this.isMuted = false;
         this.isOnHold = false;
+        this.callStartTime = null;
+        this.iceGatheringTimer = null;
         
         this.initElements();
         this.attachListeners();
@@ -163,7 +165,8 @@ class MinimalWebRTCClient {
             return;
         }
 
-        this.log(`📞 Calling ${number}...`);
+        this.log('📞 Calling ' + number + '...');
+        this.log('⏳ Preparing WebRTC connection...');
 
         const options = {
             mediaConstraints: {
@@ -182,7 +185,23 @@ class MinimalWebRTCClient {
             }
         };
 
+        this.log('🔧 ICE Servers configured:');
+        options.pcConfig.iceServers.forEach((server, i) => {
+            this.log(`   ${i + 1}. ${server.urls}`);
+        });
+
         this.session = this.ua.call(`sip:${number}@192.168.210.54`, options);
+        
+        this.callStartTime = Date.now();
+        this.log('⏳ Waiting for ICE gathering (this may take up to 40 seconds)...');
+        this.log('💡 Tip: The delay is ICE trying to find the best network route');
+        
+        // Show elapsed time every 5 seconds
+        this.iceGatheringTimer = setInterval(() => {
+            const elapsed = Math.floor((Date.now() - this.callStartTime) / 1000);
+            this.log(`⏱️  Elapsed time: ${elapsed} seconds...`);
+        }, 5000);
+        
         this.setupSessionHandlers(this.session);
     }
 
@@ -211,7 +230,12 @@ class MinimalWebRTCClient {
 
     setupSessionHandlers(session) {
         session.on('sending', (e) => {
-            this.log('📤 Sending INVITE...');
+            if (this.iceGatheringTimer) {
+                clearInterval(this.iceGatheringTimer);
+                this.iceGatheringTimer = null;
+            }
+            const elapsed = Math.floor((Date.now() - this.callStartTime) / 1000);
+            this.log(`📤 Sending INVITE (after ${elapsed} seconds)`);
             this.callStatus.textContent = 'Status: Connecting...';
         });
 
@@ -359,6 +383,10 @@ class MinimalWebRTCClient {
     }
 
     endCall() {
+        if (this.iceGatheringTimer) {
+            clearInterval(this.iceGatheringTimer);
+            this.iceGatheringTimer = null;
+        }
         this.callStatus.textContent = 'Status: No active call';
         this.callBtn.disabled = false;
         this.hangupBtn.disabled = true;
