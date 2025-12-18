@@ -307,7 +307,8 @@ function handleCall(ws, payload, msgId) {
     // Get via and contact from UA
     let via, contact;
     try {
-        via = ua._transport._via_host;
+        // Use the UA's configured via_host instead of transport's
+        via = ua._configuration.via_host || ua._configuration.uri._host;
         contact = ua._contact.toString();
         console.log(`[CALL] Via: ${via}, Contact: ${contact}`);
     } catch (error) {
@@ -424,9 +425,10 @@ function handleSIPResponse(sipMessage, callId, ws, msgId) {
             // Send ACK
             const ua = sipUAs.get(call.dn);
             if (ua) {
+                const via = ua._configuration.via_host || ua._configuration.uri._host;
                 const ack = [
                     `ACK sip:${call.to}@${SIP_DOMAIN} SIP/2.0`,
-                    `Via: SIP/2.0/WS ${ua._transport._via_host};branch=${call.branch}`,
+                    `Via: SIP/2.0/WS ${via};branch=${call.branch}`,
                     `Max-Forwards: 69`,
                     `To: <sip:${call.to}@${SIP_DOMAIN}>`,
                     `From: "${call.dn}" <sip:${call.dn}@${SIP_DOMAIN}>;tag=${call.fromTag}`,
@@ -474,9 +476,10 @@ function handleHangup(ws, payload, msgId) {
     if (call.sipCallId) {
         const ua = sipUAs.get(call.dn);
         if (ua && ua.isConnected()) {
+            const via = ua._configuration.via_host || ua._configuration.uri._host;
             const bye = [
                 `BYE sip:${call.to}@${SIP_DOMAIN} SIP/2.0`,
-                `Via: SIP/2.0/WS ${ua._transport._via_host};branch=${call.branch}`,
+                `Via: SIP/2.0/WS ${via};branch=${call.branch}`,
                 `Max-Forwards: 69`,
                 `To: <sip:${call.to}@${SIP_DOMAIN}>`,
                 `From: "${call.dn}" <sip:${call.dn}@${SIP_DOMAIN}>;tag=${call.fromTag}`,
