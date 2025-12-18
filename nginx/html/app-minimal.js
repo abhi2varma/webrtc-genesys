@@ -169,8 +169,19 @@ class MinimalWebRTCClient {
             },
             pcConfig: {
                 iceServers: [
-                    { urls: ['stun:stun.l.google.com:19302'] }
-                ]
+                    { urls: ['stun:192.168.210.54:3478'] },
+                    { 
+                        urls: ['turn:192.168.210.54:3478'],
+                        username: 'webrtc',
+                        credential: 'webrtc123'
+                    }
+                ],
+                iceTransportPolicy: 'all',
+                iceCandidatePoolSize: 0
+            },
+            rtcOfferConstraints: {
+                offerToReceiveAudio: true,
+                offerToReceiveVideo: false
             }
         };
 
@@ -187,6 +198,18 @@ class MinimalWebRTCClient {
                 mediaConstraints: {
                     audio: true,
                     video: false
+                },
+                pcConfig: {
+                    iceServers: [
+                        { urls: ['stun:192.168.210.54:3478'] },
+                        { 
+                            urls: ['turn:192.168.210.54:3478'],
+                            username: 'webrtc',
+                            credential: 'webrtc123'
+                        }
+                    ],
+                    iceTransportPolicy: 'all',
+                    iceCandidatePoolSize: 0
                 }
             };
             session.answer(options);
@@ -196,9 +219,19 @@ class MinimalWebRTCClient {
     }
 
     setupSessionHandlers(session) {
-        session.on('progress', () => {
+        session.on('sending', (e) => {
+            this.log('Sending INVITE...');
+            this.callStatus.textContent = 'Status: Connecting...';
+        });
+
+        session.on('progress', (e) => {
             this.log('Call in progress...');
             this.callStatus.textContent = 'Status: Ringing...';
+            
+            // Handle early media
+            if (e.response && e.response.body) {
+                this.log('Early media available');
+            }
         });
 
         session.on('accepted', () => {
