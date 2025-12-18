@@ -175,8 +175,7 @@ class MinimalWebRTCClient {
             },
             pcConfig: {
                 iceServers: [
-                    { urls: 'stun:stun.l.google.com:19302' },
-                    { urls: 'stun:stun1.l.google.com:19302' }
+                    { urls: 'stun:192.168.210.54:3478' }
                 ]
             },
             rtcOfferConstraints: {
@@ -250,6 +249,10 @@ class MinimalWebRTCClient {
         });
 
         session.on('accepted', () => {
+            if (this.iceGatheringTimer) {
+                clearInterval(this.iceGatheringTimer);
+                this.iceGatheringTimer = null;
+            }
             this.log('✅ Call accepted');
             this.callStatus.textContent = 'Status: In call';
             this.callBtn.disabled = true;
