@@ -86,7 +86,9 @@ class MinimalWebRTCClient {
             display_name: username,
             register: true,
             session_timers: false,
-            use_preloaded_route: false
+            use_preloaded_route: false,
+            connection_recovery_min_interval: 2,
+            connection_recovery_max_interval: 30
         };
 
         this.ua = new JsSIP.UA(configuration);
@@ -168,7 +170,10 @@ class MinimalWebRTCClient {
                 video: false
             },
             pcConfig: {
-                iceServers: []  // Empty for local network - instant connection
+                iceServers: [
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    { urls: 'stun:stun1.l.google.com:19302' }
+                ]
             },
             rtcOfferConstraints: {
                 offerToReceiveAudio: true,
@@ -191,7 +196,10 @@ class MinimalWebRTCClient {
                     video: false
                 },
                 pcConfig: {
-                    iceServers: []  // Empty for local network - instant connection
+                    iceServers: [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        { urls: 'stun:stun1.l.google.com:19302' }
+                    ]
                 }
             };
             session.answer(options);
@@ -241,6 +249,16 @@ class MinimalWebRTCClient {
 
         session.on('peerconnection', (e) => {
             const pc = e.peerconnection;
+            
+            // Log ICE gathering state changes
+            pc.addEventListener('icegatheringstatechange', () => {
+                this.log('ICE gathering state: ' + pc.iceGatheringState);
+            });
+            
+            // Log ICE connection state changes
+            pc.addEventListener('iceconnectionstatechange', () => {
+                this.log('ICE connection state: ' + pc.iceConnectionState);
+            });
             
             pc.ontrack = (event) => {
                 this.log('Remote stream received');
