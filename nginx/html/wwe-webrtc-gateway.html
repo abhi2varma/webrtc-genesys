@@ -124,6 +124,9 @@
     </div>
 
     <script>
+        // Enable JsSIP debug logging
+        JsSIP.debug.enable('JsSIP:*');
+        
         // WebRTC Gateway - WWE Integration via postMessage
         class WebRTCGateway {
             constructor() {
@@ -141,7 +144,46 @@
                 
                 // Notify parent that we're ready
                 this.sendEvent('ready', { version: '1.0.0' });
-                this.log('WebRTC Gateway initialized', 'info');
+                this.log('🟢 PHASE 0 - WebRTC Gateway initialized', 'info');
+                
+                // Log WebSocket events
+                this.setupDebugLogging();
+            }
+            
+            setupDebugLogging() {
+                // Intercept WebSocket for detailed logging
+                const originalWebSocket = window.WebSocket;
+                const self = this;
+                
+                window.WebSocket = function(url, protocols) {
+                    self.log(`🟢 PHASE 1 - WebSocket connecting to: ${url}`, 'info');
+                    const ws = new originalWebSocket(url, protocols);
+                    
+                    ws.addEventListener('open', () => {
+                        self.log('✅ WebSocket OPEN', 'success');
+                    });
+                    
+                    ws.addEventListener('message', (event) => {
+                        self.log(`⬇️ WS RX: ${event.data.substring(0, 200)}`, 'info');
+                    });
+                    
+                    ws.addEventListener('close', (event) => {
+                        self.log(`❌ WebSocket CLOSED: ${event.code} ${event.reason}`, 'error');
+                    });
+                    
+                    ws.addEventListener('error', (event) => {
+                        self.log('❌ WebSocket ERROR', 'error');
+                    });
+                    
+                    // Intercept send
+                    const originalSend = ws.send.bind(ws);
+                    ws.send = function(data) {
+                        self.log(`⬆️ WS TX: ${data.substring(0, 200)}`, 'info');
+                        return originalSend(data);
+                    };
+                    
+                    return ws;
+                };
             }
 
             handleMessage(event) {
@@ -179,7 +221,7 @@
             }
 
             signIn({ agentId, dn, password, sipServer }) {
-                this.log(`Signing in agent ${agentId} (DN: ${dn})`, 'info');
+                this.log(`🟢 PHASE 1 - Signing in agent ${agentId} (DN: ${dn})`, 'info');
                 
                 this.agentId = agentId;
                 this.agentDn = dn;
@@ -189,6 +231,8 @@
                 document.getElementById('agentId').textContent = agentId;
                 document.getElementById('agentDn').textContent = dn;
                 this.updateStatus('connecting');
+                
+                this.log(`📡 Connecting to SIP server: ${this.sipServer}`, 'info');
                 
                 // Configure JsSIP
                 const socket = new JsSIP.WebSocketInterface(this.sipServer);
@@ -201,45 +245,48 @@
                     register: true
                 };
 
+                this.log(`🔧 JsSIP Configuration: ${JSON.stringify(configuration, null, 2)}`, 'info');
                 this.ua = new JsSIP.UA(configuration);
 
                 // Set up UA event handlers
                 this.ua.on('connected', () => {
-                    this.log('SIP connected', 'success');
+                    this.log('✅ SIP WebSocket connected', 'success');
                     document.getElementById('sipStatus').textContent = 'Connected';
                     this.sendEvent('sip_connected');
                 });
 
                 this.ua.on('disconnected', () => {
-                    this.log('SIP disconnected', 'error');
+                    this.log('❌ SIP disconnected', 'error');
                     document.getElementById('sipStatus').textContent = 'Disconnected';
                     this.updateStatus('disconnected');
                     this.sendEvent('sip_disconnected');
                 });
 
                 this.ua.on('registered', () => {
-                    this.log('SIP registered', 'success');
+                    this.log('✅ SIP registered successfully', 'success');
                     this.isRegistered = true;
                     this.updateStatus('connected');
                     this.sendEvent('registered', { agentId, dn });
                 });
 
                 this.ua.on('unregistered', () => {
-                    this.log('SIP unregistered', 'info');
+                    this.log('ℹ️ SIP unregistered', 'info');
                     this.isRegistered = false;
                     this.sendEvent('unregistered');
                 });
 
                 this.ua.on('registrationFailed', (e) => {
-                    this.log(`Registration failed: ${e.cause}`, 'error');
+                    this.log(`❌ Registration failed: ${e.cause}`, 'error');
                     this.sendEvent('registration_failed', { cause: e.cause });
                 });
 
                 this.ua.on('newRTCSession', (e) => {
+                    this.log(`📞 New RTC Session: ${e.originator}`, 'info');
                     this.handleNewSession(e.session, e.originator);
                 });
 
                 // Start UA
+                this.log('🚀 Starting JsSIP UA...', 'info');
                 this.ua.start();
             }
 
@@ -269,15 +316,17 @@
 
             makeCall({ destination }) {
                 if (!this.isRegistered) {
-                    this.log('Cannot make call: not registered', 'error');
+                    this.log('❌ Cannot make call: not registered', 'error');
                     this.sendEvent('call_failed', { reason: 'Not registered' });
                     return;
                 }
 
-                this.log(`Making call to ${destination}`, 'info');
+                this.log(`🟢 PHASE 3 - Making call to ${destination}`, 'info');
                 this.updateStatus('calling');
                 document.getElementById('activeCall').textContent = `Calling ${destination}`;
 
+                this.log('🟢 PHASE 2 - Requesting microphone access', 'info');
+                
                 const options = {
                     mediaConstraints: {
                         audio: true,
@@ -301,6 +350,9 @@
                     iceGatheringTimeout: 500
                 };
 
+                this.log(`🔧 Call options: ${JSON.stringify(options, null, 2)}`, 'info');
+                this.log('🟢 PHASE 4 - Creating SDP offer', 'info');
+                
                 const session = this.ua.call(`sip:${destination}@${this.sipServer.replace(/^wss?:\/\//, '').split(':')[0]}`, options);
                 this.setupSessionHandlers(session, 'outgoing', destination);
             }
@@ -380,40 +432,70 @@
                 this.currentSession = session;
 
                 session.on('peerconnection', (e) => {
+                    this.log('🟢 PHASE 9 - PeerConnection created', 'info');
                     const pc = e.peerconnection;
+                    
+                    // Log ICE connection state changes
+                    pc.oniceconnectionstatechange = () => {
+                        this.log(`🧊 ICE Connection State: ${pc.iceConnectionState}`, 'info');
+                    };
+                    
+                    // Log ICE gathering state
+                    pc.onicegatheringstatechange = () => {
+                        this.log(`🟢 PHASE 5 - ICE Gathering State: ${pc.iceGatheringState}`, 'info');
+                    };
+                    
+                    // Log each ICE candidate
+                    pc.onicecandidate = (event) => {
+                        if (event.candidate) {
+                            this.log(`🧊 ICE Candidate: ${event.candidate.candidate}`, 'info');
+                        } else {
+                            this.log('🧊 ICE Candidate gathering complete', 'success');
+                        }
+                    };
+                    
+                    // Log connection state
+                    pc.onconnectionstatechange = () => {
+                        this.log(`🔗 Connection State: ${pc.connectionState}`, 'info');
+                    };
+                    
+                    // Log signaling state
+                    pc.onsignalingstatechange = () => {
+                        this.log(`📡 Signaling State: ${pc.signalingState}`, 'info');
+                    };
                     
                     pc.addEventListener('addstream', (e) => {
                         this.remoteAudio.srcObject = e.stream;
-                        this.log('Remote audio stream added', 'success');
+                        this.log('🟢 PHASE 11 - Remote audio stream added', 'success');
                     });
 
                     pc.addEventListener('track', (e) => {
                         if (e.streams && e.streams[0]) {
                             this.remoteAudio.srcObject = e.streams[0];
-                            this.log('Remote audio track added', 'success');
+                            this.log('🟢 PHASE 11 - Remote audio track added', 'success');
                         }
                     });
                 });
 
                 session.on('progress', () => {
-                    this.log('Call progress (ringing)', 'info');
+                    this.log('📞 Call progress (ringing)', 'info');
                     this.sendEvent('call_progress');
                 });
 
                 session.on('accepted', () => {
-                    this.log('Call accepted', 'success');
+                    this.log('✅ Call accepted', 'success');
                     this.updateStatus('incall');
                     document.getElementById('activeCall').textContent = `In call with ${otherParty}`;
                     this.sendEvent('call_accepted', { direction, otherParty });
                 });
 
                 session.on('confirmed', () => {
-                    this.log('Call confirmed', 'success');
+                    this.log('🟢 PHASE 10 - Call confirmed (DTLS handshake complete)', 'success');
                     this.sendEvent('call_confirmed');
                 });
 
                 session.on('ended', () => {
-                    this.log('Call ended', 'info');
+                    this.log('📴 Call ended', 'info');
                     this.updateStatus('connected');
                     document.getElementById('activeCall').textContent = 'None';
                     this.currentSession = null;
@@ -421,11 +503,17 @@
                 });
 
                 session.on('failed', (e) => {
-                    this.log(`Call failed: ${e.cause}`, 'error');
+                    this.log(`❌ Call failed: ${e.cause}`, 'error');
                     this.updateStatus('connected');
                     document.getElementById('activeCall').textContent = 'None';
                     this.currentSession = null;
                     this.sendEvent('call_failed', { cause: e.cause });
+                });
+                
+                // Log SDP
+                session.on('sdp', (e) => {
+                    this.log(`🟢 PHASE ${e.type === 'offer' ? '4' : '8'} - SDP ${e.type.toUpperCase()}:`, 'info');
+                    this.log(e.sdp, 'info');
                 });
             }
 
