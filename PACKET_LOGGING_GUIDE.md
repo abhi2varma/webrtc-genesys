@@ -66,10 +66,16 @@ Make Call:
 ✅ SIP WebSocket connected
 ```
 
-You'll see actual SIP messages:
+You'll see actual SIP messages with **METHOD, IP:PORT details**:
 ```
-⬆️ WS TX: REGISTER sip:192.168.210.81 SIP/2.0...
-⬇️ WS RX: SIP/2.0 200 OK...
+⬆️ TX [REGISTER] 5001@192.168.210.54 → 5001@192.168.210.81
+   Via: SIP/2.0/WS 192.168.1.100:54321 (actual: 203.0.113.45:54321)
+   Call-ID: abc123def456...
+
+⬇️ RX [200 OK] 5001@192.168.210.81 → 5001@192.168.210.54
+   Via: SIP/2.0/UDP 192.168.210.54:5060
+   Call-ID: abc123def456...
+
 ✅ SIP registered successfully
 ```
 
@@ -96,33 +102,43 @@ s=WebRTC Session
 m=audio 12345 UDP/TLS/RTP/SAVPF 111 103 104
 a=rtpmap:111 opus/48000/2
 a=fingerprint:sha-256 AB:CD:EF:...
+
+🎤 OFFER Media Endpoint: 192.168.1.100:54322
 ```
 
 ### 🟢 **PHASE 5** — ICE Candidate Gathering
 ```
 🟢 PHASE 5 - ICE Gathering State: gathering
-🧊 ICE Candidate: candidate:842163049 1 udp 1677729535 192.168.210.54 54321 typ srflx...
-🧊 ICE Candidate: candidate:842163050 1 udp 2130706431 192.168.1.10 54322 typ host...
+🧊 ICE Candidate [srflx]: 203.0.113.45:62014 (udp) priority=1694498815
+🧊 ICE Candidate [host]: 192.168.1.100:54322 (udp) priority=2130706431
+🧊 ICE Candidate [relay]: 198.51.100.10:3478 (udp) priority=16777215
 🟢 PHASE 5 - ICE Gathering State: complete
 🧊 ICE Candidate gathering complete
 ```
 
 ### 🟢 **PHASE 6** — SIP INVITE Sent
 ```
+⬆️ TX [INVITE] 5001@192.168.210.54 → 1003@192.168.210.81
+   Via: SIP/2.0/WS 192.168.1.100:54321 (actual: 203.0.113.45:54321)
+   Call-ID: xyz789abc123...
 ⬆️ WS TX: INVITE sip:1003@192.168.210.81:5060 SIP/2.0
-Via: SIP/2.0/WS ...
-From: <sip:5001@192.168.210.54>
-To: <sip:1003@192.168.210.81>
-Content-Type: application/sdp
-...
+   Via: SIP/2.0/WS ...
+   From: <sip:5001@192.168.210.54>
+   To: <sip:1003@192.168.210.81>
+   Content-Type: application/sdp
+   ...
 ```
 
 ### 🟢 **PHASE 7** — SIP Response
 ```
-⬇️ WS RX: SIP/2.0 180 Ringing
+⬇️ RX [180 Ringing] 1003@192.168.210.81 → 5001@192.168.210.54
+   Via: SIP/2.0/UDP 192.168.210.54:5060
+   Call-ID: xyz789abc123...
 📞 Call progress (ringing)
 
-⬇️ WS RX: SIP/2.0 200 OK
+⬇️ RX [200 OK] 1003@192.168.210.81 → 5001@192.168.210.54
+   Via: SIP/2.0/UDP 192.168.210.54:5060
+   Call-ID: xyz789abc123...
 ✅ Call accepted
 ```
 
@@ -134,6 +150,8 @@ o=Genesys 1234567890 1 IN IP4 192.168.210.124
 ...
 m=audio 8000 RTP/AVP 0 101
 a=rtpmap:0 pcmu/8000
+
+🎤 ANSWER Media Endpoint: 192.168.210.124:8000
 ```
 
 ### 🟢 **PHASE 9** — ICE Connectivity Checks
@@ -143,6 +161,12 @@ a=rtpmap:0 pcmu/8000
 🧊 ICE Connection State: connected
 🔗 Connection State: connecting
 🔗 Connection State: connected
+
+✅ Selected Candidate Pair:
+   Local: candidate-1234
+   Remote: candidate-5678
+   📍 Local Endpoint: 192.168.1.100:54322 (udp)
+   📍 Remote Endpoint: 192.168.210.54:18765 (udp)
 ```
 
 ### 🟢 **PHASE 10** — DTLS Handshake
@@ -158,6 +182,83 @@ a=rtpmap:0 pcmu/8000
 ```
 
 **At this point, you should hear audio!** 🎤🔊
+
+---
+
+## 🌐 **IP Address & Port Tracking**
+
+### Understanding the Network Flow
+
+Every log entry now shows **which endpoints are communicating**:
+
+#### **SIP Signaling Path**
+```
+Browser (WebRTC)     WebSocket     Kamailio          UDP        Asterisk          UDP         Genesys
+192.168.1.100    →   :8443/ws   →  192.168.210.54  →  :5060  →  192.168.210.54  →  :5060  →  192.168.210.81
+   :54321                             :8080                          :5060                          :5060
+```
+
+#### **Media (RTP) Path**
+```
+Browser (SRTP)                     DTLS/ICE                    Gateway (RTP)              Genesys
+192.168.1.100:54322  ←──────────────────────────────→  192.168.210.54:18765  ←────→  192.168.210.124:8000
+```
+
+### Key Indicators in Logs
+
+| Log Entry | Meaning |
+|-----------|---------|
+| `⬆️ TX [INVITE] 5001@192.168.210.54 → 1003@192.168.210.81` | **Outgoing SIP message**: Browser (5001) calling Genesys extension (1003) |
+| `Via: SIP/2.0/WS 192.168.1.100:54321 (actual: 203.0.113.45:54321)` | **Client endpoint**: Private IP + NAT public IP |
+| `🎤 LOCAL Media Endpoint: 192.168.1.100:54322` | **Browser's RTP port** for audio |
+| `🎤 REMOTE Media Endpoint: 192.168.210.124:8000` | **Genesys agent's RTP port** |
+| `🧊 ICE Candidate [srflx]: 203.0.113.45:62014` | **NAT-translated address** (server-reflexive) |
+| `🧊 ICE Candidate [host]: 192.168.1.100:54322` | **Direct LAN address** |
+| `📍 Local Endpoint: 192.168.1.100:54322 (udp)` | **Actual media path** selected by ICE |
+
+### Example: Complete Call Flow with IPs
+
+```
+[12:00:00.100] 🟢 PHASE 1 - WebSocket connecting to: wss://192.168.210.54:8443/ws
+[12:00:00.120] ✅ WebSocket OPEN
+
+[12:00:00.200] ⬆️ TX [REGISTER] 5001@192.168.210.54 → 5001@192.168.210.81
+                   Via: SIP/2.0/WS 192.168.1.100:54321 (actual: 203.0.113.45:54321)
+                   
+[12:00:00.250] ⬇️ RX [200 OK] 5001@192.168.210.81 → 5001@192.168.210.54
+                   Via: SIP/2.0/UDP 192.168.210.54:5060
+
+[12:00:05.100] 🟢 PHASE 3 - Making call to 1003
+[12:00:05.200] 🟢 PHASE 4 - SDP OFFER
+[12:00:05.210] 🎤 OFFER Media Endpoint: 192.168.1.100:54322
+
+[12:00:05.350] 🧊 ICE Candidate [host]: 192.168.1.100:54322 (udp) priority=2130706431
+[12:00:05.450] 🧊 ICE Candidate [srflx]: 203.0.113.45:62014 (udp) priority=1694498815
+
+[12:00:05.600] ⬆️ TX [INVITE] 5001@192.168.210.54 → 1003@192.168.210.81
+                   Via: SIP/2.0/WS 192.168.1.100:54321 (actual: 203.0.113.45:54321)
+
+[12:00:06.500] ⬇️ RX [200 OK] 1003@192.168.210.81 → 5001@192.168.210.54
+                   Via: SIP/2.0/UDP 192.168.210.54:5060
+                   
+[12:00:06.520] 🟢 PHASE 8 - SDP ANSWER
+[12:00:06.530] 🎤 ANSWER Media Endpoint: 192.168.210.124:8000
+
+[12:00:06.750] 🧊 ICE Connection State: connected
+[12:00:06.760] ✅ Selected Candidate Pair:
+[12:00:06.761]    📍 Local Endpoint: 192.168.1.100:54322 (udp)
+[12:00:06.762]    📍 Remote Endpoint: 192.168.210.54:18765 (udp)
+
+[12:00:06.850] 🟢 PHASE 11 - Remote audio stream added
+```
+
+**This shows you:**
+- Browser is at `192.168.1.100` (private LAN)
+- NAT translates it to `203.0.113.45` (public IP)
+- WebSocket signaling goes through `192.168.210.54:8443`
+- SIP server is `192.168.210.81:5060`
+- Media flows directly `192.168.1.100:54322 ↔ 192.168.210.54:18765`
+- Final destination agent at `192.168.210.124:8000`
 
 ---
 
