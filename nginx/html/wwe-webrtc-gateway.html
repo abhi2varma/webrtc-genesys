@@ -285,9 +285,20 @@
                     },
                     pcConfig: {
                         iceServers: [
-                            { urls: 'stun:stun.l.google.com:19302' }
-                        ]
-                    }
+                            { urls: 'stun:stun.l.google.com:19302' },
+                            { urls: `stun:${this.sipServer.replace(/^wss?:\/\//, '').split(':')[0]}:3478` }
+                        ],
+                        iceTransportPolicy: 'all',
+                        bundlePolicy: 'max-bundle',
+                        rtcpMuxPolicy: 'require'
+                    },
+                    // Send INVITE after 500ms or when first candidate is ready
+                    rtcOfferConstraints: {
+                        offerToReceiveAudio: true,
+                        offerToReceiveVideo: false
+                    },
+                    // Don't wait for all ICE candidates - send INVITE immediately
+                    iceGatheringTimeout: 500
                 };
 
                 const session = this.ua.call(`sip:${destination}@${this.sipServer.replace(/^wss?:\/\//, '').split(':')[0]}`, options);
@@ -306,7 +317,18 @@
                     mediaConstraints: {
                         audio: true,
                         video: false
-                    }
+                    },
+                    pcConfig: {
+                        iceServers: [
+                            { urls: 'stun:stun.l.google.com:19302' },
+                            { urls: `stun:${this.sipServer.replace(/^wss?:\/\//, '').split(':')[0]}:3478` }
+                        ],
+                        iceTransportPolicy: 'all',
+                        bundlePolicy: 'max-bundle',
+                        rtcpMuxPolicy: 'require'
+                    },
+                    // Send answer after 500ms or when first candidate is ready
+                    iceGatheringTimeout: 500
                 };
 
                 this.currentSession.answer(options);
