@@ -164,7 +164,14 @@
                     });
                     
                     ws.addEventListener('message', (event) => {
-                        self.log(`⬇️ WS RX: ${event.data.substring(0, 200)}`, 'info');
+                        // Parse SIP message
+                        const sipInfo = self.parseSIPMessage(event.data, 'RX');
+                        if (sipInfo) {
+                            self.log(`⬇️ RX [${sipInfo.method}] ${sipInfo.from} → ${sipInfo.to}`, 'info');
+                            self.log(`   Via: ${sipInfo.via}`, 'info');
+                            self.log(`   Call-ID: ${sipInfo.callId}`, 'info');
+                        }
+                        self.log(`⬇️ WS RX: ${event.data.substring(0, 500)}`, 'info');
                     });
                     
                     ws.addEventListener('close', (event) => {
@@ -178,12 +185,105 @@
                     // Intercept send
                     const originalSend = ws.send.bind(ws);
                     ws.send = function(data) {
-                        self.log(`⬆️ WS TX: ${data.substring(0, 200)}`, 'info');
+                        // Parse SIP message
+                        const sipInfo = self.parseSIPMessage(data, 'TX');
+                        if (sipInfo) {
+                            self.log(`⬆️ TX [${sipInfo.method}] ${sipInfo.from} → ${sipInfo.to}`, 'success');
+                            self.log(`   Via: ${sipInfo.via}`, 'success');
+                            self.log(`   Call-ID: ${sipInfo.callId}`, 'success');
+                        }
+                        self.log(`⬆️ WS TX: ${data.substring(0, 500)}`, 'success');
                         return originalSend(data);
                     };
                     
                     return ws;
                 };
+            }
+            
+            parseSIPMessage(data, direction) {
+                try {
+                    const lines = data.split('\r\n');
+                    const firstLine = lines[0];
+                    
+                    let method = '';
+                    let from = '';
+                    let to = '';
+                    let via = '';
+                    let callId = '';
+                    let contactIP = '';
+                    
+                    // Parse request line (INVITE, REGISTER, etc.) or response (SIP/2.0 200 OK)
+                    if (firstLine.startsWith('SIP/2.0')) {
+                        const parts = firstLine.split(' ');
+                        method = `${parts[1]} ${parts.slice(2).join(' ')}`;  // "200 OK", "180 Ringing", etc.
+                    } else {
+                        const parts = firstLine.split(' ');
+                        method = parts[0];  // INVITE, REGISTER, ACK, BYE, etc.
+                    }
+                    
+                    // Parse headers
+                    for (const line of lines) {
+                        if (line.startsWith('From:') || line.startsWith('f:')) {
+                            from = this.extractSIPAddress(line);
+                        } else if (line.startsWith('To:') || line.startsWith('t:')) {
+                            to = this.extractSIPAddress(line);
+                        } else if (line.startsWith('Via:') || line.startsWith('v:')) {
+                            via = this.extractViaInfo(line);
+                        } else if (line.startsWith('Call-ID:') || line.startsWith('i:')) {
+                            callId = line.split(':')[1].trim().substring(0, 30) + '...';
+                        } else if (line.startsWith('Contact:') || line.startsWith('m:')) {
+                            contactIP = this.extractSIPAddress(line);
+                        }
+                    }
+                    
+                    return {
+                        method,
+                        from: from || 'unknown',
+                        to: to || 'unknown',
+                        via: via || 'unknown',
+                        callId: callId || 'unknown',
+                        direction
+                    };
+                } catch (e) {
+                    return null;
+                }
+            }
+            
+            extractSIPAddress(line) {
+                // Extract SIP address from headers like "From: <sip:user@host:port>"
+                const match = line.match(/<sip:([^>]+)>/);
+                if (match) {
+                    return match[1];
+                }
+                // Try without brackets
+                const match2 = line.match(/sip:([^\s;]+)/);
+                if (match2) {
+                    return match2[1];
+                }
+                return line.split(':')[1]?.trim() || 'unknown';
+            }
+            
+            extractViaInfo(line) {
+                // Extract Via info like "Via: SIP/2.0/WS client:port;received=ip"
+                // Format: protocol transport ip:port
+                const parts = line.split(' ');
+                if (parts.length >= 3) {
+                    const transport = parts[1];  // SIP/2.0/WS or SIP/2.0/UDP
+                    const endpoint = parts[2].split(';')[0];  // ip:port
+                    
+                    // Check for received parameter
+                    const receivedMatch = line.match(/received=([^\s;]+)/);
+                    const rprtMatch = line.match(/rport=(\d+)/);
+                    
+                    if (receivedMatch || rprtMatch) {
+                        const receivedIP = receivedMatch ? receivedMatch[1] : '';
+                        const receivedPort = rprtMatch ? rprtMatch[1] : '';
+                        return `${transport} ${endpoint} (actual: ${receivedIP}:${receivedPort})`;
+                    }
+                    
+                    return `${transport} ${endpoint}`;
+                }
+                return line;
             }
 
             handleMessage(event) {
@@ -435,6 +535,14 @@
                     this.log('🟢 PHASE 9 - PeerConnection created', 'info');
                     const pc = e.peerconnection;
                     
+                    // Log local/remote descriptions when set
+                    if (pc.localDescription) {
+                        this.logMediaEndpoints(pc.localDescription.sdp, 'LOCAL');
+                    }
+                    if (pc.remoteDescription) {
+                        this.logMediaEndpoints(pc.remoteDescription.sdp, 'REMOTE');
+                    }
+                    
                     // Log ICE connection state changes
                     pc.oniceconnectionstatechange = () => {
                         this.log(`🧊 ICE Connection State: ${pc.iceConnectionState}`, 'info');
@@ -445,10 +553,11 @@
                         this.log(`🟢 PHASE 5 - ICE Gathering State: ${pc.iceGatheringState}`, 'info');
                     };
                     
-                    // Log each ICE candidate
+                    // Log each ICE candidate with details
                     pc.onicecandidate = (event) => {
                         if (event.candidate) {
-                            this.log(`🧊 ICE Candidate: ${event.candidate.candidate}`, 'info');
+                            const c = event.candidate;
+                            this.log(`🧊 ICE Candidate [${c.type}]: ${c.address}:${c.port} (${c.protocol}) priority=${c.priority}`, 'info');
                         } else {
                             this.log('🧊 ICE Candidate gathering complete', 'success');
                         }
@@ -457,6 +566,25 @@
                     // Log connection state
                     pc.onconnectionstatechange = () => {
                         this.log(`🔗 Connection State: ${pc.connectionState}`, 'info');
+                        
+                        // Log selected candidate pair when connected
+                        if (pc.connectionState === 'connected') {
+                            pc.getStats().then(stats => {
+                                stats.forEach(report => {
+                                    if (report.type === 'candidate-pair' && report.state === 'succeeded') {
+                                        this.log(`✅ Selected Candidate Pair:`, 'success');
+                                        this.log(`   Local: ${report.localCandidateId}`, 'success');
+                                        this.log(`   Remote: ${report.remoteCandidateId}`, 'success');
+                                    }
+                                    if (report.type === 'local-candidate' && report.id === report.localCandidateId) {
+                                        this.log(`   📍 Local Endpoint: ${report.address || report.ip}:${report.port} (${report.protocol})`, 'success');
+                                    }
+                                    if (report.type === 'remote-candidate' && report.id === report.remoteCandidateId) {
+                                        this.log(`   📍 Remote Endpoint: ${report.address || report.ip}:${report.port} (${report.protocol})`, 'success');
+                                    }
+                                });
+                            });
+                        }
                     };
                     
                     // Log signaling state
@@ -514,7 +642,31 @@
                 session.on('sdp', (e) => {
                     this.log(`🟢 PHASE ${e.type === 'offer' ? '4' : '8'} - SDP ${e.type.toUpperCase()}:`, 'info');
                     this.log(e.sdp, 'info');
+                    this.logMediaEndpoints(e.sdp, e.type.toUpperCase());
                 });
+            }
+            
+            logMediaEndpoints(sdp, label) {
+                // Extract media endpoints from SDP
+                const lines = sdp.split('\n');
+                let connectionIP = '';
+                let mediaPort = '';
+                
+                for (const line of lines) {
+                    if (line.startsWith('c=')) {
+                        // c=IN IP4 192.168.210.54
+                        const parts = line.split(' ');
+                        connectionIP = parts[2];
+                    } else if (line.startsWith('m=audio')) {
+                        // m=audio 12345 RTP/AVP 0 8
+                        const parts = line.split(' ');
+                        mediaPort = parts[1];
+                    }
+                }
+                
+                if (connectionIP && mediaPort) {
+                    this.log(`🎤 ${label} Media Endpoint: ${connectionIP}:${mediaPort}`, 'info');
+                }
             }
 
             updateStatus(status) {
