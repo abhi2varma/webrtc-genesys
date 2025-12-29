@@ -1,0 +1,39 @@
+[Unit]
+Description=WebRTC Gateway Bridge
+After=network.target
+
+[Service]
+Type=simple
+User=webrtc-bridge
+Group=webrtc-bridge
+WorkingDirectory=/opt/webrtc-gateway-bridge
+Environment="NODE_ENV=production"
+Environment="BRIDGE_HOST=0.0.0.0"
+Environment="BRIDGE_PORT=8000"
+Environment="GATEWAY_URL=https://192.168.210.54:8443"
+Environment="IFRAME_URL=https://192.168.210.54:8443/wwe-webrtc-gateway.html"
+Environment="SIP_SERVER=wss://192.168.210.54:8443/ws"
+Environment="WWE_ORIGINS=http://192.168.210.54:8090,https://192.168.210.54:8090"
+Environment="AGENT_PASSWORD=Genesys2024!WebRTC"
+Environment="DATA_DIR=/var/lib/webrtc-bridge"
+Environment="LOG_LEVEL=info"
+ExecStart=/usr/bin/node /opt/webrtc-gateway-bridge/server.js
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=webrtc-bridge
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/webrtc-bridge
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+
+[Install]
+WantedBy=multi-user.target
+

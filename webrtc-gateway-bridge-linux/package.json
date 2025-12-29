@@ -1,0 +1,31 @@
+{
+  "name": "webrtc-gateway-bridge-linux",
+  "version": "1.0.0",
+  "description": "Bridge service between Genesys WWE and WebRTC Gateway (Linux)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "NODE_ENV=development node server.js",
+    "install-service": "sudo node install-service.js",
+    "uninstall-service": "sudo systemctl stop webrtc-bridge && sudo systemctl disable webrtc-bridge && sudo rm /etc/systemd/system/webrtc-bridge.service"
+  },
+  "keywords": [
+    "webrtc",
+    "genesys",
+    "wwe",
+    "sip",
+    "bridge"
+  ],
+  "author": "Your Organization",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "winston": "^3.11.0",
+    "puppeteer": "^21.6.1",
+    "selfsigned": "^2.4.1",
+    "ws": "^8.14.2"
+  }
+}
+
