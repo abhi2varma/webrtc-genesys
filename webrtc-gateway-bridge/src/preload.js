@@ -1,0 +1,29 @@
+const { contextBridge, ipcRenderer } = require('electron');
+
+// Expose protected methods that allow the renderer process to use
+// the ipcRenderer without exposing the entire object
+contextBridge.exposeInMainWorld('api', {
+  send: (channel, data) => {
+    // whitelist channels
+    let validChannels = ['webrtc-command'];
+    if (validChannels.includes(channel)) {
+      ipcRenderer.send(channel, data);
+    }
+  },
+  receive: (channel, func) => {
+    let validChannels = ['webrtc-event'];
+    if (validChannels.includes(channel)) {
+      // Deliberately strip event as it includes `sender` 
+      ipcRenderer.on(channel, (event, ...args) => func(...args));
+    }
+  }
+});
+
+// Listen for messages from the iframe and forward to main process
+window.addEventListener('message', (event) => {
+  // Check if message is from our WebRTC gateway
+  if (event.data && event.data.event) {
+    ipcRenderer.send('webrtc-event', event.data);
+  }
+});
+

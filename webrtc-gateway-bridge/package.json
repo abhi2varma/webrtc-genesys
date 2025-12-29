@@ -1,0 +1,67 @@
+{
+  "name": "webrtc-gateway-bridge",
+  "version": "1.0.0",
+  "description": "Bridge service between Genesys WWE and WebRTC Gateway",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "keywords": [
+    "webrtc",
+    "genesys",
+    "wwe",
+    "sip",
+    "bridge"
+  ],
+  "author": "Your Organization",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "winston": "^3.11.0",
+    "electron-store": "^8.1.0",
+    "selfsigned": "^2.4.1"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.yourorg.webrtc-gateway-bridge",
+    "productName": "WebRTC Gateway Bridge",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "WebRTC Gateway Bridge"
+    },
+    "directories": {
+      "output": "dist",
+      "buildResources": "assets"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ]
+  }
+}
+
