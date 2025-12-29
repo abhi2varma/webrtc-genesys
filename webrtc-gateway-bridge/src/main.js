@@ -9,6 +9,9 @@ const Store = require('electron-store');
 const winston = require('winston');
 const selfsigned = require('selfsigned');
 
+// Disable certificate verification for self-signed certs
+app.commandLine.appendSwitch('ignore-certificate-errors');
+
 // Configuration
 const store = new Store();
 const config = {
@@ -128,15 +131,60 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    show: false, // Hidden by default
+    show: true, // Show for debugging
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+      webSecurity: false // Allow self-signed certificates
     }
   });
 
+  // Open DevTools for debugging
+  mainWindow.webContents.openDevTools();
+
+  // Ignore certificate errors for the gateway URL
+  mainWindow.webContents.session.setCertificateVerifyProc((request, callback) => {
+    callback(0); // 0 means accept the certificate
+  });
+
   mainWindow.loadURL(config.gateway.iframeUrl);
+  
+  mainWindow.webContents.on('did-finish-load', () => {
+    logger.info('WebRTC gateway loaded successfully');
+    
+    // Inject initialization script to set up message communication
+    mainWindow.webContents.executeJavaScript(`
+      (function() {
+        console.log('[Bridge] Setting up WebRTC gateway communication');
+        
+        // Override postMessage listener to handle commands from Electron
+        window.addEventListener('message', function(event) {
+          console.log('[Bridge] Received message in gateway:', event.data);
+          
+          // Forward to the actual gateway message handler if it exists
+          if (window.handleWebRTCCommand) {
+            window.handleWebRTCCommand(event.data);
+          }
+        });
+        
+        // Set up event forwarding back to Electron
+        window.sendEventToElectron = function(eventData) {
+          console.log('[Bridge] Sending event to Electron:', eventData);
+          // This will be intercepted by the preload script
+          window.postMessage({ event: eventData }, '*');
+        };
+        
+        console.log('[Bridge] WebRTC gateway communication ready');
+      })();
+    `).catch(err => {
+      logger.error('Failed to inject initialization script:', err);
+    });
+  });
+  
+  mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
+    logger.error('Failed to load WebRTC gateway:', { errorCode, errorDescription });
+  });
   
   // Handle messages from iframe
   mainWindow.webContents.on('ipc-message', (event, channel, ...args) => {
@@ -194,18 +242,26 @@ function sendWebRTCCommand(command, data) {
   return new Promise((resolve, reject) => {
     const message = {
       command: command,
-      ...data
+      data: data
     };
     
     logger.info('Sending WebRTC command:', message);
     
-    // Send via postMessage to iframe
+    // Send via postMessage to the loaded page
+    // The gateway HTML listens for postMessage events
     mainWindow.webContents.executeJavaScript(`
-      window.postMessage(${JSON.stringify(message)}, '*');
-    `);
-    
-    // Wait for response (simplified - in production use proper event system)
-    setTimeout(() => resolve({ success: true }), 100);
+      (function() {
+        console.log('[Bridge] Sending command:', ${JSON.stringify(JSON.stringify(message))});
+        window.postMessage(${JSON.stringify(message)}, '*');
+        return true;
+      })();
+    `).then(() => {
+      logger.info('Command sent to WebRTC gateway');
+      resolve({ success: true });
+    }).catch((err) => {
+      logger.error('Failed to send command:', err);
+      reject(err);
+    });
   });
 }
 
@@ -509,6 +565,11 @@ function createTray() {
 }
 
 function updateTrayMenu() {
+  if (!tray) {
+    logger.warn('Tray not initialized yet');
+    return;
+  }
+  
   const contextMenu = Menu.buildFromTemplate([
     {
       label: `Status: ${webrtcStatus.registered ? 'Online' : 'Offline'}`,
@@ -553,6 +614,11 @@ function updateTrayMenu() {
 }
 
 function updateTrayTooltip() {
+  if (!tray) {
+    logger.warn('Tray not initialized yet');
+    return;
+  }
+  
   let tooltip = 'WebRTC Gateway Bridge\n';
   tooltip += `Status: ${webrtcStatus.registered ? 'Online' : 'Offline'}`;
   
@@ -574,6 +640,11 @@ function updateTrayTooltip() {
 // App lifecycle
 app.on('ready', () => {
   logger.info('WebRTC Gateway Bridge starting...');
+  
+  // Set up IPC listeners for communication from the preload script
+  ipcMain.on('webrtc-event', (event, data) => {
+    handleWebRTCEvent(data);
+  });
   
   createWindow();
   createAPIServer();
