@@ -691,9 +691,12 @@
                     timestamp: Date.now()
                 };
                 
-                // Send to parent window (WWE)
+                // Send to parent window (WWE) or to self if no parent (Electron)
                 if (window.parent !== window) {
                     window.parent.postMessage(message, '*');
+                } else {
+                    // Running in Electron - send to window for preload script to catch
+                    window.postMessage(message, '*');
                 }
                 
                 this.log(`Event: ${event}`, 'event');
