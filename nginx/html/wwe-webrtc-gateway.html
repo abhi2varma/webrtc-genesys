@@ -691,11 +691,17 @@
                     timestamp: Date.now()
                 };
                 
-                // Send to parent window (WWE) or to self if no parent (Electron)
+                // Send to parent window (WWE) or to Electron bridge
                 if (window.parent !== window) {
+                    // Running in WWE iframe - send to parent
                     window.parent.postMessage(message, '*');
+                } else if (window.electronBridge && window.electronBridge.sendEvent) {
+                    // Running in Electron - use exposed bridge
+                    console.log('[Gateway] Sending event to Electron bridge:', message);
+                    window.electronBridge.sendEvent(message);
                 } else {
-                    // Running in Electron - send to window for preload script to catch
+                    // Fallback - send to window for preload script to catch
+                    console.log('[Gateway] Sending event via postMessage:', message);
                     window.postMessage(message, '*');
                 }
                 

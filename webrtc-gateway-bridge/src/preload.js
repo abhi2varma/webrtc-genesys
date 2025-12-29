@@ -19,10 +19,19 @@ contextBridge.exposeInMainWorld('api', {
   }
 });
 
-// Listen for messages from the iframe and forward to main process
+// Expose a function to the page context for sending events to Electron
+contextBridge.exposeInMainWorld('electronBridge', {
+  sendEvent: (eventData) => {
+    console.log('[Preload] Forwarding event to main process:', eventData);
+    ipcRenderer.send('webrtc-event', eventData);
+  }
+});
+
+// Also listen for postMessage events as a fallback
 window.addEventListener('message', (event) => {
   // Check if message is from our WebRTC gateway
   if (event.data && event.data.event) {
+    console.log('[Preload] Received postMessage event:', event.data);
     ipcRenderer.send('webrtc-event', event.data);
   }
 });
