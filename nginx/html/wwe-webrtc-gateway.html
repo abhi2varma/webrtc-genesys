@@ -434,20 +434,20 @@
                     },
                     pcConfig: {
                         iceServers: [
-                            { urls: 'stun:stun.l.google.com:19302' },
                             { urls: `stun:${this.sipServer.replace(/^wss?:\/\//, '').split(':')[0]}:3478` }
                         ],
                         iceTransportPolicy: 'all',
                         bundlePolicy: 'max-bundle',
-                        rtcpMuxPolicy: 'require'
+                        rtcpMuxPolicy: 'require',
+                        iceCandidatePoolSize: 0
                     },
-                    // Send INVITE after 500ms or when first candidate is ready
+                    // Send INVITE after 2 seconds or when first candidate is ready
                     rtcOfferConstraints: {
                         offerToReceiveAudio: true,
                         offerToReceiveVideo: false
                     },
-                    // Don't wait for all ICE candidates - send INVITE immediately
-                    iceGatheringTimeout: 500
+                    // Reduced timeout - send INVITE with available candidates
+                    iceGatheringTimeout: 2000
                 };
 
                 this.log(`🔧 Call options: ${JSON.stringify(options, null, 2)}`, 'info');
@@ -472,15 +472,15 @@
                     },
                     pcConfig: {
                         iceServers: [
-                            { urls: 'stun:stun.l.google.com:19302' },
                             { urls: `stun:${this.sipServer.replace(/^wss?:\/\//, '').split(':')[0]}:3478` }
                         ],
                         iceTransportPolicy: 'all',
                         bundlePolicy: 'max-bundle',
-                        rtcpMuxPolicy: 'require'
+                        rtcpMuxPolicy: 'require',
+                        iceCandidatePoolSize: 0
                     },
-                    // Send answer after 500ms or when first candidate is ready
-                    iceGatheringTimeout: 500
+                    // Send answer after 2 seconds or when first candidate is ready
+                    iceGatheringTimeout: 2000
                 };
 
                 this.currentSession.answer(options);
