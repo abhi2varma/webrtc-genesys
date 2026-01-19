@@ -453,13 +453,13 @@
                         rtcpMuxPolicy: 'require',
                         iceCandidatePoolSize: 0
                     },
-                    // Send INVITE after 2 seconds or when first candidate is ready
+                    // Send INVITE after 5 seconds or when first candidate is ready
                     rtcOfferConstraints: {
                         offerToReceiveAudio: true,
                         offerToReceiveVideo: false
                     },
-                    // Reduced timeout - send INVITE with available candidates
-                    iceGatheringTimeout: 2000
+                    // Increased timeout to allow TURN candidates to be gathered
+                    iceGatheringTimeout: 5000
                 };
 
                 this.log(`🔧 Call options: ${JSON.stringify(options, null, 2)}`, 'info');
@@ -503,8 +503,8 @@
                         rtcpMuxPolicy: 'require',
                         iceCandidatePoolSize: 0
                     },
-                    // Send answer after 2 seconds or when first candidate is ready
-                    iceGatheringTimeout: 2000
+                    // Send answer after 5 seconds or when first candidate is ready
+                    iceGatheringTimeout: 5000
                 };
 
                 this.currentSession.answer(options);
