@@ -193,6 +193,29 @@ services:
         max-size: "5m"
         max-file: "3"
 
+  sip-dashboard:
+    build: ./sip-dashboard
+    image: webrtc-sip-dashboard
+    container_name: webrtc-sip-dashboard
+    hostname: sip-dashboard
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: //192.168.210.81/D$/gcti_logs/SIP_P
+        target: /logs
+        read_only: true
+    environment:
+      - LOG_PATH=/logs
+      - FLASK_ENV=production
+    ports:
+      - "5500:5000"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+
 
 
 
