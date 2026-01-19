@@ -203,8 +203,16 @@
 
                 <div class="control-group">
                     <label>SIP Server (WebSocket)</label>
-                    <input type="text" id="sipServer" value="wss://192.168.210.54:8443/ws" placeholder="wss://server:port/ws">
+                    <input type="text" id="sipServer" value="" placeholder="wss://server:port/ws">
                 </div>
+                <script>
+                    // Auto-detect WebSocket URL based on current hostname
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const currentHost = window.location.hostname;
+                        const wsUrl = `wss://${currentHost}:8443/ws`;
+                        document.getElementById('sipServer').value = wsUrl;
+                    });
+                </script>
 
                 <button class="btn btn-primary" id="signInBtn" onclick="signIn()">Sign In</button>
                 <button class="btn btn-secondary" id="signOutBtn" onclick="signOut()" disabled>Sign Out</button>
