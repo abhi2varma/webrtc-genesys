@@ -448,7 +448,7 @@
                                 credential: 'Genesys2024!SecureTurn'
                             }
                         ],
-                        iceTransportPolicy: 'all',
+                        iceTransportPolicy: 'relay',  // Force TURN relay, bypass direct connection
                         bundlePolicy: 'max-bundle',
                         rtcpMuxPolicy: 'require',
                         iceCandidatePoolSize: 0
@@ -498,7 +498,7 @@
                                 credential: 'Genesys2024!SecureTurn'
                             }
                         ],
-                        iceTransportPolicy: 'all',
+                        iceTransportPolicy: 'relay',  // Force TURN relay, bypass direct connection
                         bundlePolicy: 'max-bundle',
                         rtcpMuxPolicy: 'require',
                         iceCandidatePoolSize: 0
