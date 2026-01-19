@@ -108,7 +108,7 @@ class RegistrationMonitor:
             return False
     
     async def query_initial_registrations(self):
-        """Query current registration status on startup"""
+        """Query current registration status on startup and unregister all DNs"""
         logger.info("Querying initial registration status...")
         
         try:
@@ -121,6 +121,40 @@ class RegistrationMonitor:
             
         except Exception as e:
             logger.warning(f"Failed to query initial registrations: {e}")
+        
+        # Unregister all DNs from Genesys on startup
+        await self.unregister_all_on_startup()
+    
+    async def unregister_all_on_startup(self):
+        """Unregister all DNs from Genesys on monitor startup for dynamic-only registration"""
+        logger.info("=" * 60)
+        logger.info("🔴 Unregistering all DNs from Genesys on startup...")
+        logger.info("=" * 60)
+        
+        unregistered_count = 0
+        
+        for dn in range(DN_RANGE_START, DN_RANGE_END + 1):
+            reg_name = f"genesys_reg_{dn}"
+            
+            try:
+                response = await self.ami_client.send_action({
+                    'Action': 'PJSIPUnregister',
+                    'Registration': reg_name
+                })
+                
+                if response.success:
+                    unregistered_count += 1
+                    logger.info(f"✅ Unregistered DN {dn} from Genesys")
+                else:
+                    logger.debug(f"⚠️  DN {dn} was not registered or failed to unregister")
+                    
+            except Exception as e:
+                logger.debug(f"Failed to unregister DN {dn}: {e}")
+        
+        logger.info("=" * 60)
+        logger.info(f"✅ Unregistered {unregistered_count} DNs from Genesys")
+        logger.info("🟢 Dynamic registration mode active - DNs will register only when WebRTC clients connect")
+        logger.info("=" * 60)
     
     def is_monitored_dn(self, dn: str) -> bool:
         """Check if DN is in monitored range"""
