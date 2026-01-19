@@ -434,7 +434,19 @@
                     },
                     pcConfig: {
                         iceServers: [
-                            { urls: 'stun:stun.l.google.com:19302' }
+                            { 
+                                urls: 'stun:103.167.180.166:3478' 
+                            },
+                            { 
+                                urls: 'turn:103.167.180.166:3478',
+                                username: 'webrtc',
+                                credential: 'Genesys2024!SecureTurn'
+                            },
+                            { 
+                                urls: 'turns:103.167.180.166:5349',
+                                username: 'webrtc',
+                                credential: 'Genesys2024!SecureTurn'
+                            }
                         ],
                         iceTransportPolicy: 'all',
                         bundlePolicy: 'max-bundle',
@@ -472,7 +484,19 @@
                     },
                     pcConfig: {
                         iceServers: [
-                            { urls: `stun:${this.sipServer.replace(/^wss?:\/\//, '').split(':')[0]}:3478` }
+                            { 
+                                urls: 'stun:103.167.180.166:3478' 
+                            },
+                            { 
+                                urls: 'turn:103.167.180.166:3478',
+                                username: 'webrtc',
+                                credential: 'Genesys2024!SecureTurn'
+                            },
+                            { 
+                                urls: 'turns:103.167.180.166:5349',
+                                username: 'webrtc',
+                                credential: 'Genesys2024!SecureTurn'
+                            }
                         ],
                         iceTransportPolicy: 'all',
                         bundlePolicy: 'max-bundle',
