@@ -20,9 +20,10 @@ const config = {
     port: 8000
   },
   gateway: {
-    url: store.get('gatewayUrl', 'https://103.167.180.166:8443'),
-    iframeUrl: store.get('iframeUrl', 'https://103.167.180.166:8443/wwe-webrtc-gateway.html'),
-    sipServer: store.get('sipServer', 'wss://103.167.180.166:8443/ws')
+    // Use local IP since bridge runs on same server
+    url: store.get('gatewayUrl', 'http://192.168.210.54:8443'),
+    iframeUrl: store.get('iframeUrl', 'http://192.168.210.54:8443/wwe-webrtc-gateway.html'),
+    sipServer: store.get('sipServer', 'ws://192.168.210.54:8080')
   },
   wwe: {
     allowedOrigins: ['http://192.168.210.54:8090', 'https://192.168.210.54:8090', 'http://103.167.180.166:8090', 'https://103.167.180.166:8090']
