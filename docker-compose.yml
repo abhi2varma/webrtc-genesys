@@ -73,6 +73,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./registration-monitor/logs:/app/logs
+      - ./registration-monitor/registration_monitor.py:/app/registration_monitor.py:ro
     environment:
       - ASTERISK_HOST=127.0.0.1
       - ASTERISK_AMI_PORT=5038
