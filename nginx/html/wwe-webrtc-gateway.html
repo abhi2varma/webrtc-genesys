@@ -398,8 +398,22 @@
                 }
                 
                 if (this.ua) {
-                    this.ua.stop();
-                    this.ua = null;
+                    // Explicitly unregister before stopping
+                    if (this.ua.isRegistered()) {
+                        this.log('📤 Unregistering from SIP server...', 'info');
+                        this.ua.unregister({
+                            all: true  // Unregister all registrations
+                        });
+                        
+                        // Wait a bit for the unregister message to be sent
+                        setTimeout(() => {
+                            this.ua.stop();
+                            this.ua = null;
+                        }, 500);
+                    } else {
+                        this.ua.stop();
+                        this.ua = null;
+                    }
                 }
                 
                 this.agentId = null;
@@ -448,7 +462,7 @@
                                 credential: 'Genesys2024!SecureTurn'
                             }
                         ],
-                        iceTransportPolicy: 'relay',  // Force TURN relay, bypass direct connection
+                        iceTransportPolicy: 'all',  // Allow all connection types
                         bundlePolicy: 'max-bundle',
                         rtcpMuxPolicy: 'require',
                         iceCandidatePoolSize: 0
@@ -498,7 +512,7 @@
                                 credential: 'Genesys2024!SecureTurn'
                             }
                         ],
-                        iceTransportPolicy: 'relay',  // Force TURN relay, bypass direct connection
+                        iceTransportPolicy: 'all',  // Allow all connection types
                         bundlePolicy: 'max-bundle',
                         rtcpMuxPolicy: 'require',
                         iceCandidatePoolSize: 0
@@ -656,10 +670,16 @@
 
                 session.on('failed', (e) => {
                     this.log(`❌ Call failed: ${e.cause}`, 'error');
+                    if (e.message) {
+                        this.log(`❌ Error message: ${e.message}`, 'error');
+                    }
+                    if (e.originator) {
+                        this.log(`❌ Originator: ${e.originator}`, 'error');
+                    }
                     this.updateStatus('connected');
                     document.getElementById('activeCall').textContent = 'None';
                     this.currentSession = null;
-                    this.sendEvent('call_failed', { cause: e.cause });
+                    this.sendEvent('call_failed', { cause: e.cause, message: e.message });
                 });
                 
                 // Log SDP
