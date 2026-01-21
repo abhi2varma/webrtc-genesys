@@ -324,6 +324,11 @@ function createAPIServer() {
       
       webrtcStatus.dn = dn;
       
+      // Wait for registration to propagate to Genesys T-Server
+      // This ensures WWE gets the DN status AFTER T-Server sees it
+      logger.info(`Waiting for DN ${dn} registration to reach T-Server...`);
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
       res.json({
         RegisterDnResult: true
       });
