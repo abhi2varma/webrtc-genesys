@@ -16,6 +16,7 @@ import logging
 import os
 import re
 import sys
+import time
 from typing import Dict, Set
 import signal
 
@@ -43,6 +44,21 @@ LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
 
 # Setup logging to file and console
 from logging.handlers import RotatingFileHandler
+import time
+
+# Custom formatter that uses local time
+class LocalTimeFormatter(logging.Formatter):
+    def formatTime(self, record, datefmt=None):
+        """Override to use local time instead of UTC"""
+        ct = self.converter(record.created)
+        if datefmt:
+            s = time.strftime(datefmt, ct)
+        else:
+            t = time.strftime("%Y-%m-%d %H:%M:%S", ct)
+            s = "%s,%03d" % (t, record.msecs)
+        return s
+    
+    converter = time.localtime  # Use local time
 
 logger = logging.getLogger('RegistrationMonitor')
 logger.setLevel(getattr(logging, LOG_LEVEL))
@@ -57,13 +73,13 @@ file_handler = RotatingFileHandler(
     backupCount=3
 )
 file_handler.setLevel(getattr(logging, LOG_LEVEL))
-file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+file_formatter = LocalTimeFormatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 file_handler.setFormatter(file_formatter)
 
 # Console handler
 console_handler = logging.StreamHandler(sys.stdout)
 console_handler.setLevel(getattr(logging, LOG_LEVEL))
-console_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+console_formatter = LocalTimeFormatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 console_handler.setFormatter(console_formatter)
 
 # Add handlers to logger
