@@ -142,34 +142,11 @@ class RegistrationMonitor:
         await self.unregister_all_on_startup()
     
     async def unregister_all_on_startup(self):
-        """Unregister all DNs from Genesys on monitor startup for dynamic-only registration"""
+        """Unregister all DNs from Genesys on monitor startup - DISABLED"""
         logger.info("=" * 60)
-        logger.info("🔴 Unregistering all DNs from Genesys on startup...")
-        logger.info("=" * 60)
-        
-        unregistered_count = 0
-        
-        for dn in range(DN_RANGE_START, DN_RANGE_END + 1):
-            reg_name = f"genesys_reg_{dn}"
-            
-            try:
-                response = await self.ami_client.send_action({
-                    'Action': 'PJSIPUnregister',
-                    'Registration': reg_name
-                })
-                
-                if response.success:
-                    unregistered_count += 1
-                    logger.info(f"✅ Unregistered DN {dn} from Genesys")
-                else:
-                    logger.debug(f"⚠️  DN {dn} was not registered or failed to unregister")
-                    
-            except Exception as e:
-                logger.debug(f"Failed to unregister DN {dn}: {e}")
-        
-        logger.info("=" * 60)
-        logger.info(f"✅ Unregistered {unregistered_count} DNs from Genesys")
-        logger.info("🟢 Dynamic registration mode active - DNs will register only when WebRTC clients connect")
+        logger.info("ℹ️  Asterisk outbound registrations to Genesys are DISABLED")
+        logger.info("ℹ️  Kamailio proxy now forwards REGISTER messages directly to Genesys")
+        logger.info("ℹ️  This ensures T-Server sees registrations as coming from clients, not Asterisk")
         logger.info("=" * 60)
     
     def is_monitored_dn(self, dn: str) -> bool:
@@ -250,72 +227,19 @@ class RegistrationMonitor:
             await self.unregister_from_genesys(dn)
     
     async def register_to_genesys(self, dn: str):
-        """Register DN to Genesys SIP Server via AMI PJSIP command"""
-        if dn in self.registered_dns:
-            logger.debug(f"DN {dn} already registered to Genesys, skipping")
-            return
-        
-        logger.info(f"🔵 Registering DN {dn} to Genesys SIP Server...")
-        
-        try:
-            # Create registration dynamically using PJSIP wizard
-            # Note: This requires the registration to be pre-configured in pjsip.conf
-            # but we'll set it to retry_interval=0 and trigger it manually
-            
-            # Send a custom AMI command to trigger registration
-            reg_name = f"genesys_reg_{dn}"
-            
-            # Method 1: Use PJSIPUnregister to clear, then re-register
-            # This forces a new REGISTER to be sent
-            try:
-                await self.ami_client.send_action({
-                    'Action': 'PJSIPUnregister',
-                    'Registration': reg_name
-                })
-                await asyncio.sleep(0.1)
-            except:
-                pass  # Ignore if not registered
-            
-            # Trigger registration
-            response = await self.ami_client.send_action({
-                'Action': 'PJSIPRegister',
-                'Registration': reg_name
-            })
-            
-            if response.success:
-                self.registered_dns.add(dn)
-                logger.info(f"✅ DN {dn} registered to Genesys successfully")
-            else:
-                logger.warning(f"⚠️  DN {dn} registration response: {response}")
-            
-        except Exception as e:
-            logger.error(f"❌ Failed to register DN {dn} to Genesys: {e}")
+        """Register DN to Genesys SIP Server via AMI PJSIP command - DISABLED"""
+        logger.info(f"🔵 Registration for DN {dn} detected - Kamailio will forward to Genesys")
+        logger.info(f"ℹ️  Asterisk outbound registrations to Genesys are DISABLED")
+        logger.info(f"ℹ️  Kamailio proxy forwards REGISTER messages directly to Genesys")
+        # Registration tracking disabled - Kamailio handles this now
+        return
     
     async def unregister_from_genesys(self, dn: str):
-        """Unregister DN from Genesys SIP Server"""
-        if dn not in self.registered_dns:
-            logger.debug(f"DN {dn} not registered to Genesys, skipping unregister")
-            return
-        
-        logger.info(f"🔴 Unregistering DN {dn} from Genesys SIP Server...")
-        
-        try:
-            reg_name = f"genesys_reg_{dn}"
-            
-            # Send unregister command
-            response = await self.ami_client.send_action({
-                'Action': 'PJSIPUnregister',
-                'Registration': reg_name
-            })
-            
-            if response.success:
-                self.registered_dns.discard(dn)
-                logger.info(f"✅ DN {dn} unregistered from Genesys successfully")
-            else:
-                logger.warning(f"⚠️  DN {dn} unregistration response: {response}")
-            
-        except Exception as e:
-            logger.error(f"❌ Failed to unregister DN {dn} from Genesys: {e}")
+        """Unregister DN from Genesys SIP Server - DISABLED"""
+        logger.info(f"🔴 Unregistration for DN {dn} detected - Kamailio will forward to Genesys")
+        logger.info(f"ℹ️  Asterisk outbound unregistrations to Genesys are DISABLED")
+        # Unregistration tracking disabled - Kamailio handles this now
+        return
     
     async def run(self):
         """Main run loop"""
