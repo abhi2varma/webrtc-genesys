@@ -309,6 +309,9 @@ function createAPIServer() {
         return res.status(400).json({ error: 'No DN provided' });
       }
       
+      // Store DN for auto-registration
+      store.set('userDn', dn);
+      
       // Get password from config or prompt
       const password = store.get('agentPassword', 'Genesys2024!WebRTC');
       
@@ -357,10 +360,11 @@ function createAPIServer() {
   });
   
   // Get endpoint active status
+  // This should return TRUE if the endpoint is ready/available, not if it's registered
   app.get('/GetIsEndpointActive', (req, res) => {
     logger.info('GetIsEndpointActive called');
     res.json({
-      get_IsEndpointActiveResult: webrtcStatus.registered
+      get_IsEndpointActiveResult: true  // Always true = endpoint is available
     });
   });
   
@@ -371,8 +375,31 @@ function createAPIServer() {
   });
   
   // Get SIP endpoint parameters
-  app.get('/GetSIPEndpointParameters', (req, res) => {
+  // WWE calls this during session start - trigger auto-registration
+  app.get('/GetSIPEndpointParameters', async (req, res) => {
     logger.info('GetSIPEndpointParameters called');
+    
+    // If we have a DN but aren't registered, trigger registration
+    const userDn = store.get('userDn');
+    if (userDn && !webrtcStatus.registered) {
+      logger.info(`Auto-registering DN ${userDn} for WWE session`);
+      const password = store.get('agentPassword', 'Genesys2024!WebRTC');
+      
+      try {
+        await sendWebRTCCommand('sign_in', {
+          agentId: userDn,
+          dn: userDn,
+          password: password,
+          sipServer: config.gateway.sipServer
+        });
+        
+        // Give it a moment to register
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      } catch (error) {
+        logger.error('Auto-registration failed:', error);
+      }
+    }
+    
     res.json({
       get_SIPEndpointParametersResult: [
         { Key: 'IsPingMandatory', Value: false },
