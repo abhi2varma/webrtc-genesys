@@ -21,8 +21,9 @@ const config = {
   },
   gateway: {
     // Use local IP since bridge runs on same server
-    url: store.get('gatewayUrl', 'http://192.168.210.54:8443'),
-    iframeUrl: store.get('iframeUrl', 'http://192.168.210.54:8443/wwe-webrtc-gateway.html'),
+    // Port 8443 is HTTPS, port 8080 is for WebSocket
+    url: store.get('gatewayUrl', 'https://192.168.210.54:8443'),
+    iframeUrl: store.get('iframeUrl', 'https://192.168.210.54:8443/wwe-webrtc-gateway.html'),
     sipServer: store.get('sipServer', 'ws://192.168.210.54:8080')
   },
   wwe: {

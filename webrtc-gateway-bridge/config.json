@@ -1,6 +1,6 @@
 {
   "comment": "WebRTC Gateway Bridge Configuration",
-  "gatewayUrl": "http://192.168.210.54:8443",
-  "iframeUrl": "http://192.168.210.54:8443/wwe-webrtc-gateway.html",
+  "gatewayUrl": "https://192.168.210.54:8443",
+  "iframeUrl": "https://192.168.210.54:8443/wwe-webrtc-gateway.html",
   "sipServer": "ws://192.168.210.54:8080"
 }
