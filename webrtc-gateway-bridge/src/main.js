@@ -20,11 +20,11 @@ const config = {
     port: 8000
   },
   gateway: {
-    // Use local IP since bridge runs on same server
+    // Use public IP for WSS connection
     // Port 8443 is HTTPS with WSS WebSocket
-    url: store.get('gatewayUrl', 'https://192.168.210.54:8443'),
-    iframeUrl: store.get('iframeUrl', 'https://192.168.210.54:8443/wwe-webrtc-gateway.html'),
-    sipServer: store.get('sipServer', 'wss://192.168.210.54:8443/ws')
+    url: store.get('gatewayUrl', 'https://103.167.180.166:8443'),
+    iframeUrl: store.get('iframeUrl', 'https://103.167.180.166:8443/wwe-webrtc-gateway.html'),
+    sipServer: store.get('sipServer', 'wss://103.167.180.166:8443/ws')
   },
   wwe: {
     allowedOrigins: [
