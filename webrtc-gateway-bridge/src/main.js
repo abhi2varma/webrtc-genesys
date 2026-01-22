@@ -30,9 +30,10 @@ const config = {
     allowedOrigins: [
       'http://192.168.210.54:8090', 
       'https://192.168.210.54:8090',
-      'https://192.168.210.54:8443',  // WWE via HTTPS proxy
+      'https://192.168.210.54:8443',  // WWE via HTTPS proxy (local)
       'http://103.167.180.166:8090', 
-      'https://103.167.180.166:8090'
+      'https://103.167.180.166:8090',
+      'https://103.167.180.160:8443'  // WWE via HTTPS proxy (public)
     ]
   }
 };
