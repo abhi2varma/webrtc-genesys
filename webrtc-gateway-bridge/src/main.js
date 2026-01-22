@@ -21,13 +21,19 @@ const config = {
   },
   gateway: {
     // Use local IP since bridge runs on same server
-    // Port 8443 is HTTPS, port 8080 is for WebSocket
+    // Port 8443 is HTTPS with WSS WebSocket
     url: store.get('gatewayUrl', 'https://192.168.210.54:8443'),
     iframeUrl: store.get('iframeUrl', 'https://192.168.210.54:8443/wwe-webrtc-gateway.html'),
-    sipServer: store.get('sipServer', 'ws://192.168.210.54:8080')
+    sipServer: store.get('sipServer', 'wss://192.168.210.54:8443/ws')
   },
   wwe: {
-    allowedOrigins: ['http://192.168.210.54:8090', 'https://192.168.210.54:8090', 'http://103.167.180.166:8090', 'https://103.167.180.166:8090']
+    allowedOrigins: [
+      'http://192.168.210.54:8090', 
+      'https://192.168.210.54:8090',
+      'https://192.168.210.54:8443',  // WWE via HTTPS proxy
+      'http://103.167.180.166:8090', 
+      'https://103.167.180.166:8090'
+    ]
   }
 };
 
