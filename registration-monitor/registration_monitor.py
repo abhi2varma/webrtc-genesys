@@ -247,13 +247,14 @@ class RegistrationMonitor:
         logger.info(f"🔵 Registering DN {dn} to Genesys SIP Server")
         
         try:
-            # Send PJSIP outbound registration via AMI
+            # Reload PJSIP outbound registration module to trigger registration
+            # This will cause Asterisk to send REGISTER to Genesys for all enabled registrations
             response = await self.ami_client.send_action({
-                'Action': 'PJSIPOutboundRegistration',
-                'Registration': f'genesys_reg_{dn}'
+                'Action': 'ModuleReload',
+                'Module': 'res_pjsip_outbound_registration.so'
             })
             
-            logger.info(f"✅ DN {dn} registered to Genesys")
+            logger.info(f"✅ DN {dn} registered to Genesys (PJSIP module reloaded)")
             self.registered_dns.add(dn)
             
         except Exception as e:
@@ -269,7 +270,8 @@ class RegistrationMonitor:
         logger.info(f"🔴 Unregistering DN {dn} from Genesys SIP Server")
         
         try:
-            # Send unregistration (register with Expires: 0)
+            # Send unregistration command via AMI
+            # Note: This will unregister the specific registration
             response = await self.ami_client.send_action({
                 'Action': 'PJSIPUnregister',
                 'Registration': f'genesys_reg_{dn}'
@@ -280,6 +282,8 @@ class RegistrationMonitor:
             
         except Exception as e:
             logger.error(f"❌ Failed to unregister DN {dn} from Genesys: {e}")
+            # Try to remove from set anyway
+            self.registered_dns.discard(dn)
     
     async def run(self):
         """Main run loop"""
