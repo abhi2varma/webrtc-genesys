@@ -1,0 +1,3290 @@
+ 2026-01-22 08:10:12.857 [DEBUG] [root] Initialize log4javascript
+ 2026-01-22 08:10:13.136 [DEBUG] [WWE.Login] jQuery Version used in WWE: 3.5.1
+ 2026-01-22 08:10:13.136 [DEBUG] [WWE.Login] A bootstrap instance is already loaded : undefined
+ 2026-01-22 08:10:13.137 [DEBUG] [WWE.Login] Navigator Plugins List: PDF Viewer, Chrome PDF Viewer, Chromium PDF Viewer, Microsoft Edge PDF Viewer, WebKit built-in PDF
+ 2026-01-22 08:10:13.142 [DEBUG] [WWE.ModuleLoader] Module to load - 
+ [Violation] Only request notification permission in response to a user gesture.
+initialize @ login.js?version=8.5.202.96:2
+(anonymous) @ backbone.js?version=:2
+i @ backbone.js?version=:2
+(anonymous) @ login.js?version=8.5.202.96:2
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ i18n.js?version=:2
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+setTimeout
+(anonymous) @ require.js?version=8.5.202.96:4
+s @ require.js?version=8.5.202.96:4
+(anonymous) @ i18n.js?version=:2
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+setTimeout
+(anonymous) @ require.js?version=8.5.202.96:4
+s @ require.js?version=8.5.202.96:4
+load @ i18n.js?version=:2
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+x @ require.js?version=8.5.202.96:4
+callPlugin @ require.js?version=8.5.202.96:4
+fetch @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+setTimeout
+(anonymous) @ require.js?version=8.5.202.96:4
+s @ require.js?version=8.5.202.96:4
+requirejs @ require.js?version=8.5.202.96:4
+(anonymous) @ login.js?version=8.5.202.96:2
+f @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+setTimeout
+(anonymous) @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+fire @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+(anonymous) @ module-loader.js?version=:2
+Yt @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+setTimeout
+(anonymous) @ require.js?version=8.5.202.96:4
+s @ require.js?version=8.5.202.96:4
+requirejs @ require.js?version=8.5.202.96:4
+(anonymous) @ module-loader.js?version=:2
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+setTimeout
+(anonymous) @ require.js?version=8.5.202.96:4
+s @ require.js?version=8.5.202.96:4
+requirejs @ require.js?version=8.5.202.96:4
+(anonymous) @ module-loader.js?version=:2
+(anonymous) @ login.js?version=8.5.202.96:2
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+A @ require.js?version=8.5.202.96:4
+completeLoad @ require.js?version=8.5.202.96:4
+onScriptLoad @ require.js?version=8.5.202.96:4
+script
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+A @ require.js?version=8.5.202.96:4
+completeLoad @ require.js?version=8.5.202.96:4
+onScriptLoad @ require.js?version=8.5.202.96:4
+script
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+A @ require.js?version=8.5.202.96:4
+completeLoad @ require.js?version=8.5.202.96:4
+onScriptLoad @ require.js?version=8.5.202.96:4
+script
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+A @ require.js?version=8.5.202.96:4
+completeLoad @ require.js?version=8.5.202.96:4
+onScriptLoad @ require.js?version=8.5.202.96:4
+script
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+A @ require.js?version=8.5.202.96:4
+completeLoad @ require.js?version=8.5.202.96:4
+onScriptLoad @ require.js?version=8.5.202.96:4
+script
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+A @ require.js?version=8.5.202.96:4
+completeLoad @ require.js?version=8.5.202.96:4
+onScriptLoad @ require.js?version=8.5.202.96:4
+script
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+A @ require.js?version=8.5.202.96:4
+completeLoad @ require.js?version=8.5.202.96:4
+onScriptLoad @ require.js?version=8.5.202.96:4
+script
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+fetch @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+A @ require.js?version=8.5.202.96:4
+completeLoad @ require.js?version=8.5.202.96:4
+onScriptLoad @ require.js?version=8.5.202.96:4
+script
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+fetch @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+A @ require.js?version=8.5.202.96:4
+completeLoad @ require.js?version=8.5.202.96:4
+onScriptLoad @ require.js?version=8.5.202.96:4
+script
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+fetch @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+A @ require.js?version=8.5.202.96:4
+completeLoad @ require.js?version=8.5.202.96:4
+onScriptLoad @ require.js?version=8.5.202.96:4
+script
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+fetch @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+setTimeout
+(anonymous) @ require.js?version=8.5.202.96:4
+s @ require.js?version=8.5.202.96:4
+fetch @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+setTimeout
+(anonymous) @ require.js?version=8.5.202.96:4
+s @ require.js?version=8.5.202.96:4
+requirejs @ require.js?version=8.5.202.96:4
+(anonymous) @ login.js?version=8.5.202.96:2
+(anonymous) @ login.js?version=8.5.202.96:3
+ 2026-01-22 08:10:13.165 [DEBUG] [WWE.AuthentificationManager] DR is not enabled no site found in url
+login.js?version=8.5.202.96:2 2026-01-22 08:10:13.166 [INFO ] [WWE.Login.Login] Initializing Login module
+ 2026-01-22 08:10:13.166 [DEBUG] [WWE.Login.LoginController] Initializing login page
+ 2026-01-22 08:10:13.170 [DEBUG] [WWE.Login.loginView] loginAlgorithm
+ 2026-01-22 08:10:13.170 [DEBUG] [WWE.Login.loginView] Call LoadUserNoCredentials to check for an active session
+ 2026-01-22 08:10:13.171 [DEBUG] [WWE.AuthentificationManager] login function
+jquery.js?version=:2  GET http://192.168.210.54:8090/api/v2/me?subresources=features,devices,channels 403 (Forbidden)
+send @ jquery.js?version=:2
+ajax @ jquery.js?version=:2
+login @ login.js?version=8.5.202.96:2
+loginNoCredentials @ login.js?version=8.5.202.96:2
+loginAlgorithm @ login.js?version=8.5.202.96:2
+viewLogin @ login.js?version=8.5.202.96:2
+initialize @ login.js?version=8.5.202.96:2
+(anonymous) @ login.js?version=8.5.202.96:2
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ i18n.js?version=:2
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+setTimeout
+(anonymous) @ require.js?version=8.5.202.96:4
+s @ require.js?version=8.5.202.96:4
+(anonymous) @ i18n.js?version=:2
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+setTimeout
+(anonymous) @ require.js?version=8.5.202.96:4
+s @ require.js?version=8.5.202.96:4
+load @ i18n.js?version=:2
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+x @ require.js?version=8.5.202.96:4
+callPlugin @ require.js?version=8.5.202.96:4
+fetch @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+setTimeout
+(anonymous) @ require.js?version=8.5.202.96:4
+s @ require.js?version=8.5.202.96:4
+requirejs @ require.js?version=8.5.202.96:4
+(anonymous) @ login.js?version=8.5.202.96:2
+f @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+setTimeout
+(anonymous) @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+fire @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+(anonymous) @ module-loader.js?version=:2
+Yt @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+setTimeout
+(anonymous) @ require.js?version=8.5.202.96:4
+s @ require.js?version=8.5.202.96:4
+requirejs @ require.js?version=8.5.202.96:4
+(anonymous) @ module-loader.js?version=:2
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+setTimeout
+(anonymous) @ require.js?version=8.5.202.96:4
+s @ require.js?version=8.5.202.96:4
+requirejs @ require.js?version=8.5.202.96:4
+(anonymous) @ module-loader.js?version=:2
+(anonymous) @ login.js?version=8.5.202.96:2
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+A @ require.js?version=8.5.202.96:4
+completeLoad @ require.js?version=8.5.202.96:4
+onScriptLoad @ require.js?version=8.5.202.96:4
+script
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+A @ require.js?version=8.5.202.96:4
+completeLoad @ require.js?version=8.5.202.96:4
+onScriptLoad @ require.js?version=8.5.202.96:4
+script
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+A @ require.js?version=8.5.202.96:4
+completeLoad @ require.js?version=8.5.202.96:4
+onScriptLoad @ require.js?version=8.5.202.96:4
+script
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+A @ require.js?version=8.5.202.96:4
+completeLoad @ require.js?version=8.5.202.96:4
+onScriptLoad @ require.js?version=8.5.202.96:4
+script
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+A @ require.js?version=8.5.202.96:4
+completeLoad @ require.js?version=8.5.202.96:4
+onScriptLoad @ require.js?version=8.5.202.96:4
+script
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+A @ require.js?version=8.5.202.96:4
+completeLoad @ require.js?version=8.5.202.96:4
+onScriptLoad @ require.js?version=8.5.202.96:4
+script
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+execCb @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+emit @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+A @ require.js?version=8.5.202.96:4
+completeLoad @ require.js?version=8.5.202.96:4
+onScriptLoad @ require.js?version=8.5.202.96:4
+script
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+fetch @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+A @ require.js?version=8.5.202.96:4
+completeLoad @ require.js?version=8.5.202.96:4
+onScriptLoad @ require.js?version=8.5.202.96:4
+script
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+fetch @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+A @ require.js?version=8.5.202.96:4
+completeLoad @ require.js?version=8.5.202.96:4
+onScriptLoad @ require.js?version=8.5.202.96:4
+script
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+fetch @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+A @ require.js?version=8.5.202.96:4
+completeLoad @ require.js?version=8.5.202.96:4
+onScriptLoad @ require.js?version=8.5.202.96:4
+script
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+load @ require.js?version=8.5.202.96:4
+fetch @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+setTimeout
+(anonymous) @ require.js?version=8.5.202.96:4
+s @ require.js?version=8.5.202.96:4
+fetch @ require.js?version=8.5.202.96:4
+check @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+each @ require.js?version=8.5.202.96:4
+enable @ require.js?version=8.5.202.96:4
+init @ require.js?version=8.5.202.96:4
+(anonymous) @ require.js?version=8.5.202.96:4
+setTimeout
+(anonymous) @ require.js?version=8.5.202.96:4
+s @ require.js?version=8.5.202.96:4
+requirejs @ require.js?version=8.5.202.96:4
+(anonymous) @ login.js?version=8.5.202.96:2
+(anonymous) @ login.js?version=8.5.202.96:3
+ 2026-01-22 08:10:13.338 [DEBUG] [WWE.AuthentificationManager] Command: 'Login1' sent
+$.ajax({"url":"/api/v2/me?subresources=features,devices,channels","contentType":"application/json; charset=UTF-8","type":"GET"})FAILED with:
+{
+	"readyState": 4,
+	"responseText": "{\"statusCode\":20,\"statusMessage\":\"Access denied\"}",
+	"responseJSON": {
+		"statusCode": 20,
+		"statusMessage": "Access denied"
+	},
+	"status": 403,
+	"statusText": "Forbidden"
+}
+ 2026-01-22 08:10:13.341 [DEBUG] [WWE.AuthentificationManager] clearDRData() {}
+ 2026-01-22 08:10:13.343 [DEBUG] [WWE.Login.loginView] loadUser with data failed. Show the login page
+login.js?version=8.5.202.96:2 2026-01-22 08:10:13.344 [INFO ] [WWE.Login.loginView] WWE version: 8.5.202.96
+ 2026-01-22 08:10:18.464 [DEBUG] [WWE.Login.loginView] doLogin
+ 2026-01-22 08:10:18.465 [DEBUG] [WWE.Login.loginView] Call the login function
+ 2026-01-22 08:10:18.465 [DEBUG] [WWE.AuthentificationManager] login function
+ 2026-01-22 08:10:18.646 [DEBUG] [WWE.AuthentificationManager] Command: 'Login1' sent
+$.ajax({"url":"/api/v2/me?subresources=features,devices,channels","contentType":"application/json; charset=UTF-8","type":"GET"})with { Authorization: abhishek.varma:... }
+SUCCEED with:
+{
+	"statusCode": 0,
+	"user": {
+		"id": "3f65ac876a48452f83ffb58cfc58fe47",
+		"userName": "abhishek.varma",
+		"firstName": "abhishek",
+		"lastName": "test",
+		"emailAddress": "",
+		"roles": [
+			"ROLE_AGENT"
+		],
+		"enabled": true,
+		"devices": [
+			{
+				"id": "6f0c9ebb-407d-40b0-a03d-92a2ac0893d9",
+				"deviceState": "Inactive",
+				"phoneNumber": "5001",
+				"description": "",
+				"e164Number": "",
+				"telephonyNetwork": "Private",
+				"doNotDisturb": "Off",
+				"voiceEnvironmentUri": "http://192.168.210.54:8090/api/v2/voice-environments/c7762494-2bde-4dcc-8355-0c6cc79ad250",
+				"capabilities": [
+					"DoNotDisturbOn",
+					"ForwardCallsOn"
+				],
+				"channels": [
+					"voice"
+				],
+				"dynamicPhoneNumber": ""
+			}
+		],
+		"changePasswordOnFirstLogin": false,
+		"features": [
+			{
+				"id": "api-voice-instant-messaging",
+				"displayName": "API Voice Instant Messaging",
+				"description": "API for Internal Agent-to-Agent Chat",
+				"autoAssignOnContactCenterCreate": true,
+				"uri": "http://192.168.210.54:8090/api/v2/features/api-voice-instant-messaging",
+				"path": "/features/api-voice-instant-messaging"
+			},
+			{
+				"id": "api-provisioning-read",
+				"displayName": "API Provisioning Read",
+				"description": "General provisioning read",
+				"autoAssignOnContactCenterCreate": true,
+				"uri": "http://192.168.210.54:8090/api/v2/features/api-provisioning-read",
+				"path": "/features/api-provisioning-read"
+			},
+			{
+				"id": "api-multimedia-email",
+				"displayName": "Multimedia Email API",
+				"description": "API for Multimedia Email",
+				"autoAssignOnContactCenterCreate": true,
+				"uri": "http://192.168.210.54:8090/api/v2/features/api-multimedia-email",
+				"path": "/features/api-multimedia-email"
+			},
+			{
+				"id": "api-devices-webrtc",
+				"displayName": "WebRTC Support",
+				"description": "API for WebRTC provisioning",
+				"autoAssignOnContactCenterCreate": true,
+				"uri": "http://192.168.210.54:8090/api/v2/features/api-devices-webrtc",
+				"path": "/features/api-devices-webrtc"
+			},
+			{
+				"id": "api-voice-predictive-calls",
+				"displayName": "Voice API - Predictive calls",
+				"description": "Enables predictive calls for a contact center",
+				"autoAssignOnContactCenterCreate": true,
+				"uri": "http://192.168.210.54:8090/api/v2/features/api-voice-predictive-calls",
+				"path": "/features/api-voice-predictive-calls"
+			},
+			{
+				"id": "api-supervisor-monitoring",
+				"displayName": "API Supervisor Monitoring",
+				"description": "API for Supervisors to Monitor Agents",
+				"autoAssignOnContactCenterCreate": true,
+				"uri": "http://192.168.210.54:8090/api/v2/features/api-supervisor-monitoring",
+				"path": "/features/api-supervisor-monitoring"
+			},
+			{
+				"id": "api-user-account-management-email",
+				"displayName": "User Account Management via Email",
+				"description": "API for account management via email",
+				"autoAssignOnContactCenterCreate": true,
+				"uri": "http://192.168.210.54:8090/api/v2/features/api-user-account-management-email",
+				"path": "/features/api-user-account-management-email"
+			},
+			{
+				"id": "api-platform-configuration-write",
+				"displayName": "Platform Configuration API - write",
+				"description": "Low-level configuration API",
+				"autoAssignOnContactCenterCreate": true,
+				"uri": "http://192.168.210.54:8090/api/v2/features/api-platform-configuration-write",
+				"path": "/features/api-platform-configuration-write"
+			},
+			{
+				"id": "api-voice",
+				"displayName": "Voice API",
+				"description": "API for Voice",
+				"autoAssignOnContactCenterCreate": true,
+				"uri": "http://192.168.210.54:8090/api/v2/features/api-voice",
+				"path": "/features/api-voice"
+			},
+			{
+				"id": "api-voice-outbound",
+				"displayName": "Voice API Outbound",
+				"description": "API for Outbound",
+				"autoAssignOnContactCenterCreate": true,
+				"uri": "http://192.168.210.54:8090/api/v2/features/api-voice-outbound",
+				"path": "/features/api-voice-outbound"
+			},
+			{
+				"id": "api-multimedia-workitem",
+				"displayName": "Multimedia Workitem API",
+				"description": "API for Multimedia Workitem",
+				"autoAssignOnContactCenterCreate": true,
+				"uri": "http://192.168.210.54:8090/api/v2/features/api-multimedia-workitem",
+				"path": "/features/api-multimedia-workitem"
+			},
+			{
+				"id": "api-provisioning-write",
+				"displayName": "API Provisioning Write",
+				"description": "General provisioning write",
+				"autoAssignOnContactCenterCreate": true,
+				"uri": "http://192.168.210.54:8090/api/v2/features/api-provisioning-write",
+				"path": "/features/api-provisioning-write"
+			},
+			{
+				"id": "api-multimedia-chat",
+				"displayName": "Multimedia Chat API",
+				"description": "API for Multimedia Chat",
+				"autoAssignOnContactCenterCreate": true,
+				"uri": "http://192.168.210.54:8090/api/v2/features/api-multimedia-chat",
+				"path": "/features/api-multimedia-chat"
+			},
+			{
+				"id": "api-supervisor-agent-control",
+				"displayName": "API Supervisor Agent Control",
+				"description": "API for Supervisors to Control Agent State",
+				"autoAssignOnContactCenterCreate": true,
+				"uri": "http://192.168.210.54:8090/api/v2/features/api-supervisor-agent-control",
+				"path": "/features/api-supervisor-agent-control"
+			},
+			{
+				"id": "api-platform-configuration-read",
+				"displayName": "Platform Configuration API - read",
+				"description": "Low-level configuration API",
+				"autoAssignOnContactCenterCreate": true,
+				"uri": "http://192.168.210.54:8090/api/v2/features/api-platform-configuration-read",
+				"path": "/features/api-platform-configuration-read"
+			}
+		],
+		"contactCenterId": "6d7466c8-6a21-4e64-b51e-0308e34995ec",
+		"uri": "http://192.168.210.54:8090/api/v2/users/3f65ac876a48452f83ffb58cfc58fe47",
+		"path": "/users/3f65ac876a48452f83ffb58cfc58fe47"
+	}
+}
+ 2026-01-22 08:10:18.646 [DEBUG] [WWE.AuthentificationManager] parseLoginData
+ 2026-01-22 08:10:18.647 [DEBUG] [WWE.AuthentificationManager] data contains information on user
+ 2026-01-22 08:10:18.647 [DEBUG] [WWE.AuthentificationManager] initialize app with received information
+ 2026-01-22 08:10:18.648 [DEBUG] [WWE.AuthentificationManager] Login is succesful
+ 2026-01-22 08:10:18.950 [DEBUG] [WWE.Main.MediaExtensionManager] Initializing the MediaExtensionManager
+ 2026-01-22 08:10:18.954 [DEBUG] [WWE.Main.DispositionManager] Initializing the DispositionManager
+ 2026-01-22 08:10:18.959 [DEBUG] [WWE.Main.ContactModuleManager] Initializing the ContactModuleManager
+ 2026-01-22 08:10:18.967 [DEBUG] [Reporting.ReportingManager] Initializing the ReportingManager
+ 2026-01-22 08:10:18.968 [DEBUG] [WWE.Main.Performance] Initializing Performance Monitoring...
+ 2026-01-22 08:10:18.981 [DEBUG] [WWE.Main.Jukebox] playSong('sound/empty.mp3|10|100')
+ 2026-01-22 08:10:18.981 [DEBUG] [WWE.Main.Jukebox] createSong('sound/empty.mp3|10|100')
+ 2026-01-22 08:10:18.982 [DEBUG] [WWE.Main.Jukebox] updateSong() size = 1
+ 2026-01-22 08:10:18.982 [DEBUG] [WWE.Main.Song] play()
+ 2026-01-22 08:10:18.986 [DEBUG] [WWE.Main.InteractionManager] Initializing the InteractionManager
+ 2026-01-22 08:10:18.988 [DEBUG] [WWE.Main.DialogManager] Initializing the DialogManager
+ 2026-01-22 08:10:19.024 [DEBUG] [WWE.Main.AppController] Initializing application
+ 2026-01-22 08:10:19.025 [DEBUG] [WWE.Main.CommandManager] addCommand('AgentDndOn', ...)
+ 2026-01-22 08:10:19.026 [DEBUG] [WWE.Main.CommandManager] addCommand('GetLoginSubview', ...)
+ 2026-01-22 08:10:19.026 [DEBUG] [WWE.Main.CommandManager] addCommand('AgentDndOff', ...)
+ 2026-01-22 08:10:19.027 [DEBUG] [WWE.Main.CommandManager] addCommand('AgentLoadUser', ...)
+ 2026-01-22 08:10:19.027 [DEBUG] [WWE.Main.CommandManager] addCommand('RefreshConfiguration', ...)
+ 2026-01-22 08:10:19.028 [DEBUG] [WWE.Main.CommandManager] addCommand('AgentAuthenticateUser', ...)
+ 2026-01-22 08:10:19.028 [DEBUG] [WWE.Main.CommandManager] addCommand('EndContactCenterSession', ...)
+ 2026-01-22 08:10:19.029 [DEBUG] [WWE.Main.CommandManager] addCommand('AgentStartContactCenterSession', ...)
+ 2026-01-22 08:10:19.029 [DEBUG] [WWE.Main.CommandManager] addCommand('AgentReloadContactCenterSession', ...)
+ 2026-01-22 08:10:19.030 [DEBUG] [WWE.Main.CommandManager] addCommand('AgentLogout', ...)
+ 2026-01-22 08:10:19.030 [DEBUG] [WWE.Main.CommandManager] addCommand('AgentSetState', ...)
+ 2026-01-22 08:10:19.030 [DEBUG] [WWE.Main.CommandManager] addCommand('AgentChangePassword', ...)
+ 2026-01-22 08:10:19.031 [DEBUG] [WWE.Main.ResourceRequestAggregator] register('devices')
+ 2026-01-22 08:10:19.032 [DEBUG] [WWE.Main.CommandManager] addCommand('GetDeviceForAgent', ...)
+ 2026-01-22 08:10:19.032 [DEBUG] [WWE.Main.CommandManager] addCommand('GetUsers', ...)
+ 2026-01-22 08:10:19.032 [DEBUG] [WWE.Main.CommandManager] addCommand('GetOptions', ...)
+ 2026-01-22 08:10:19.033 [DEBUG] [WWE.Main.CommandManager] addCommand('GetFeatures', ...)
+ 2026-01-22 08:10:19.033 [DEBUG] [WWE.Main.CommandManager] addCommand('GetServices', ...)
+ 2026-01-22 08:10:19.033 [DEBUG] [WWE.Main.CommandManager] addCommand('GetVoiceEnvironments', ...)
+ 2026-01-22 08:10:19.035 [DEBUG] [WWE.Main.CommandManager] addCommand('GetBusinessAttributes', ...)
+ 2026-01-22 08:10:19.035 [DEBUG] [WWE.Main.CommandManager] addCommand('GetAgentStates', ...)
+ 2026-01-22 08:10:19.036 [DEBUG] [WWE.Main.CommandManager] addCommand('GetTransactionCodes', ...)
+ 2026-01-22 08:10:19.036 [DEBUG] [WWE.Main.CommandManager] addCommand('GetMyAgentGroups', ...)
+ 2026-01-22 08:10:19.037 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionBundleClose', ...)
+ 2026-01-22 08:10:19.037 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionBeforeClose', ...)
+ 2026-01-22 08:10:19.038 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionClose', ...)
+ 2026-01-22 08:10:19.038 [DEBUG] [WWE.Main.CommandManager] addCommand('SearchRecent', ...)
+ 2026-01-22 08:10:19.039 [DEBUG] [WWE.Main.CommandManager] addCommand('SearchFavorites', ...)
+ 2026-01-22 08:10:19.039 [DEBUG] [WWE.Main.CommandManager] addCommand('GetRecents', ...)
+ 2026-01-22 08:10:19.040 [DEBUG] [WWE.Main.CommandManager] addCommand('GetFavorites', ...)
+ 2026-01-22 08:10:19.040 [DEBUG] [WWE.Main.CommandManager] addCommand('GetPersonalFavorites', ...)
+ 2026-01-22 08:10:19.041 [DEBUG] [WWE.Main.CommandManager] addCommand('AddToFavorites', ...)
+ 2026-01-22 08:10:19.042 [DEBUG] [WWE.Main.CommandManager] addCommand('RemoveFromFavorites', ...)
+ 2026-01-22 08:10:19.042 [DEBUG] [WWE.Main.CommandManager] addCommand('EditFavorite', ...)
+ 2026-01-22 08:10:19.043 [DEBUG] [WWE.Main.CommandManager] addCommand('AddTargetToRecent', ...)
+ 2026-01-22 08:10:19.043 [DEBUG] [WWE.Main.CommandManager] addCommand('GetTargetUri', ...)
+ 2026-01-22 08:10:19.044 [DEBUG] [WWE.Main.CommandManager] addCommand('GetContactUser', ...)
+ 2026-01-22 08:10:19.044 [DEBUG] [WWE.Main.CommandManager] addCommand('GetUser', ...)
+ 2026-01-22 08:10:19.045 [DEBUG] [WWE.Main.CommandManager] addCommand('GetQueue', ...)
+ 2026-01-22 08:10:19.045 [DEBUG] [WWE.Main.CommandManager] addCommand('SearchInternalTargets', ...)
+ 2026-01-22 08:10:19.046 [DEBUG] [WWE.Main.CommandManager] addCommand('MatchTargets', ...)
+ 2026-01-22 08:10:19.046 [DEBUG] [WWE.Main.CommandManager] addCommand('getAgentAvailability', ...)
+ 2026-01-22 08:10:19.047 [DEBUG] [WWE.Main.CommandManager] addCommand('getSpecificUsers', ...)
+ 2026-01-22 08:10:19.047 [DEBUG] [WWE.Main.CommandManager] addCommand('GetAvailabilityForUser', ...)
+ 2026-01-22 08:10:19.047 [DEBUG] [WWE.Main.CommandManager] addCommand('getSpecificRoutingPoints', ...)
+ 2026-01-22 08:10:19.048 [DEBUG] [WWE.Main.CommandManager] addCommand('getSpecificInxQueues', ...)
+ 2026-01-22 08:10:19.048 [DEBUG] [WWE.Main.CommandManager] addCommand('getSpecificSkills', ...)
+ 2026-01-22 08:10:19.048 [DEBUG] [WWE.Main.CommandManager] addCommand('getSpecificAgentGroups', ...)
+ 2026-01-22 08:10:19.049 [DEBUG] [WWE.Main.CommandManager] addCommand('getSpecificVirtualAgentGroups', ...)
+ 2026-01-22 08:10:19.049 [DEBUG] [WWE.Main.CommandManager] addCommand('getSpecificObjects', ...)
+ 2026-01-22 08:10:19.050 [DEBUG] [WWE.Main.CommandManager] addCommand('getSpecificInternalTargets', ...)
+ 2026-01-22 08:10:19.050 [DEBUG] [WWE.Main.CommandManager] addCommand('GetAllDispositions', ...)
+ 2026-01-22 08:10:19.051 [DEBUG] [WWE.Main.CommandManager] addCommand('GetDispositionsAndSubgroups', ...)
+ 2026-01-22 08:10:19.052 [DEBUG] [WWE.Main.CommandManager] addCommand('GetRoutingPoints', ...)
+ 2026-01-22 08:10:19.053 [DEBUG] [WWE.Main.CommandManager] addCommand('GetVirtualQueues', ...)
+ 2026-01-22 08:10:19.053 [DEBUG] [WWE.Main.CommandManager] addCommand('GetAgentGroups', ...)
+ 2026-01-22 08:10:19.053 [DEBUG] [WWE.Main.CommandManager] addCommand('GetGroupQueues', ...)
+ 2026-01-22 08:10:19.054 [DEBUG] [WWE.Main.CommandManager] addCommand('GetContactCenterObjects', ...)
+ 2026-01-22 08:10:19.054 [DEBUG] [WWE.Main.CommandManager] addCommand('GetContactCenterObjectsOnly', ...)
+ 2026-01-22 08:10:19.055 [DEBUG] [WWE.Main.CommandManager] addCommand('GetSkillsForAgent', ...)
+ 2026-01-22 08:10:19.055 [DEBUG] [WWE.Main.CommandManager] addCommand('GetStatisticsForSingleObject', ...)
+ 2026-01-22 08:10:19.056 [DEBUG] [WWE.Main.CommandManager] addCommand('GetStatisticsForMultipleObjects', ...)
+ 2026-01-22 08:10:19.056 [DEBUG] [WWE.Main.CommandManager] addCommand('GetStatisticsForMultipleObjectsAndCurrentAgent', ...)
+ 2026-01-22 08:10:19.057 [DEBUG] [WWE.Main.CommandManager] addCommand('GetStatisticsForContactCenter', ...)
+ 2026-01-22 08:10:19.057 [DEBUG] [WWE.Main.CommandManager] addCommand('GetStatisticsForSingleObjectWithHistorical', ...)
+ 2026-01-22 08:10:19.058 [DEBUG] [WWE.Main.CommandManager] addCommand('GetStatisticsForCurrentAgentAndSingleObjectWithHistorical', ...)
+ 2026-01-22 08:10:19.059 [DEBUG] [WWE.Main.CommandManager] addCommand('GetStatisticsForContactCenterAndCurrentAgent', ...)
+ 2026-01-22 08:10:19.059 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('MainRegion', ...)
+ 2026-01-22 08:10:19.060 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('ApplicationMenuBarRegion', ...)
+ 2026-01-22 08:10:19.060 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('BundleToolbarRegion', ...)
+ 2026-01-22 08:10:19.061 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('CaseSideRegion', ...)
+ 2026-01-22 08:10:19.061 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('InteractionDetailsRegion', ...)
+ 2026-01-22 08:10:19.062 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('InteractionInformationRegion', ...)
+ 2026-01-22 08:10:19.062 [DEBUG] [WWE.Main.Application] Initializing the ApplicationView
+ 2026-01-22 08:10:19.064 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('WorkbinInteractionDetailsRegion', ...)
+ 2026-01-22 08:10:19.065 [DEBUG] [WWE.Main.AppController] Navigator Plugins List: PDF Viewer, Chrome PDF Viewer, Chromium PDF Viewer, Microsoft Edge PDF Viewer, WebKit built-in PDF
+ 2026-01-22 08:10:19.066 [DEBUG] [WWE.LoginAPI] Bootstrap version used in WWE:3.4.1
+ 2026-01-22 08:10:19.072 [DEBUG] [WWE.Main.Agent] loadUser function
+ 2026-01-22 08:10:19.073 [DEBUG] [WWE.Main.Agent] Features received:
+[
+	{
+		"id": "api-voice-instant-messaging",
+		"displayName": "API Voice Instant Messaging",
+		"description": "API for Internal Agent-to-Agent Chat",
+		"autoAssignOnContactCenterCreate": true,
+		"uri": "http://192.168.210.54:8090/api/v2/features/api-voice-instant-messaging",
+		"path": "/features/api-voice-instant-messaging"
+	},
+	{
+		"id": "api-provisioning-read",
+		"displayName": "API Provisioning Read",
+		"description": "General provisioning read",
+		"autoAssignOnContactCenterCreate": true,
+		"uri": "http://192.168.210.54:8090/api/v2/features/api-provisioning-read",
+		"path": "/features/api-provisioning-read"
+	},
+	{
+		"id": "api-multimedia-email",
+		"displayName": "Multimedia Email API",
+		"description": "API for Multimedia Email",
+		"autoAssignOnContactCenterCreate": true,
+		"uri": "http://192.168.210.54:8090/api/v2/features/api-multimedia-email",
+		"path": "/features/api-multimedia-email"
+	},
+	{
+		"id": "api-devices-webrtc",
+		"displayName": "WebRTC Support",
+		"description": "API for WebRTC provisioning",
+		"autoAssignOnContactCenterCreate": true,
+		"uri": "http://192.168.210.54:8090/api/v2/features/api-devices-webrtc",
+		"path": "/features/api-devices-webrtc"
+	},
+	{
+		"id": "api-voice-predictive-calls",
+		"displayName": "Voice API - Predictive calls",
+		"description": "Enables predictive calls for a contact center",
+		"autoAssignOnContactCenterCreate": true,
+		"uri": "http://192.168.210.54:8090/api/v2/features/api-voice-predictive-calls",
+		"path": "/features/api-voice-predictive-calls"
+	},
+	{
+		"id": "api-supervisor-monitoring",
+		"displayName": "API Supervisor Monitoring",
+		"description": "API for Supervisors to Monitor Agents",
+		"autoAssignOnContactCenterCreate": true,
+		"uri": "http://192.168.210.54:8090/api/v2/features/api-supervisor-monitoring",
+		"path": "/features/api-supervisor-monitoring"
+	},
+	{
+		"id": "api-user-account-management-email",
+		"displayName": "User Account Management via Email",
+		"description": "API for account management via email",
+		"autoAssignOnContactCenterCreate": true,
+		"uri": "http://192.168.210.54:8090/api/v2/features/api-user-account-management-email",
+		"path": "/features/api-user-account-management-email"
+	},
+	{
+		"id": "api-platform-configuration-write",
+		"displayName": "Platform Configuration API - write",
+		"description": "Low-level configuration API",
+		"autoAssignOnContactCenterCreate": true,
+		"uri": "http://192.168.210.54:8090/api/v2/features/api-platform-configuration-write",
+		"path": "/features/api-platform-configuration-write"
+	},
+	{
+		"id": "api-voice",
+		"displayName": "Voice API",
+		"description": "API for Voice",
+		"autoAssignOnContactCenterCreate": true,
+		"uri": "http://192.168.210.54:8090/api/v2/features/api-voice",
+		"path": "/features/api-voice"
+	},
+	{
+		"id": "api-voice-outbound",
+		"displayName": "Voice API Outbound",
+		"description": "API for Outbound",
+		"autoAssignOnContactCenterCreate": true,
+		"uri": "http://192.168.210.54:8090/api/v2/features/api-voice-outbound",
+		"path": "/features/api-voice-outbound"
+	},
+	{
+		"id": "api-multimedia-workitem",
+		"displayName": "Multimedia Workitem API",
+		"description": "API for Multimedia Workitem",
+		"autoAssignOnContactCenterCreate": true,
+		"uri": "http://192.168.210.54:8090/api/v2/features/api-multimedia-workitem",
+		"path": "/features/api-multimedia-workitem"
+	},
+	{
+		"id": "api-provisioning-write",
+		"displayName": "API Provisioning Write",
+		"description": "General provisioning write",
+		"autoAssignOnContactCenterCreate": true,
+		"uri": "http://192.168.210.54:8090/api/v2/features/api-provisioning-write",
+		"path": "/features/api-provisioning-write"
+	},
+	{
+		"id": "api-multimedia-chat",
+		"displayName": "Multimedia Chat API",
+		"description": "API for Multimedia Chat",
+		"autoAssignOnContactCenterCreate": true,
+		"uri": "http://192.168.210.54:8090/api/v2/features/api-multimedia-chat",
+		"path": "/features/api-multimedia-chat"
+	},
+	{
+		"id": "api-supervisor-agent-control",
+		"displayName": "API Supervisor Agent Control",
+		"description": "API for Supervisors to Control Agent State",
+		"autoAssignOnContactCenterCreate": true,
+		"uri": "http://192.168.210.54:8090/api/v2/features/api-supervisor-agent-control",
+		"path": "/features/api-supervisor-agent-control"
+	},
+	{
+		"id": "api-platform-configuration-read",
+		"displayName": "Platform Configuration API - read",
+		"description": "Low-level configuration API",
+		"autoAssignOnContactCenterCreate": true,
+		"uri": "http://192.168.210.54:8090/api/v2/features/api-platform-configuration-read",
+		"path": "/features/api-platform-configuration-read"
+	}
+]
+ 2026-01-22 08:10:19.074 [DEBUG] [WWE.Main.Agent] Devices received:
+[
+	{
+		"id": "6f0c9ebb-407d-40b0-a03d-92a2ac0893d9",
+		"deviceState": "Inactive",
+		"phoneNumber": "5001",
+		"description": "",
+		"e164Number": "",
+		"telephonyNetwork": "Private",
+		"doNotDisturb": "Off",
+		"voiceEnvironmentUri": "http://192.168.210.54:8090/api/v2/voice-environments/c7762494-2bde-4dcc-8355-0c6cc79ad250",
+		"capabilities": [
+			"DoNotDisturbOn",
+			"ForwardCallsOn"
+		],
+		"channels": [
+			"voice"
+		],
+		"dynamicPhoneNumber": ""
+	}
+]
+ 2026-01-22 08:10:19.074 [DEBUG] [WWE.Main.Agent] No Devices channels
+ 2026-01-22 08:10:19.074 [DEBUG] [WWE.Main.CommandManager] execute('AgentLoadUser')
+ 2026-01-22 08:10:19.075 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetOptions'
+ 2026-01-22 08:10:19.227 [DEBUG] [WWE.Main.Song] onPlayerCanPlay()
+ 
+ 2026-01-22 08:10:19.393 [DEBUG] [WWE.Main.AgentCommands] End fetching states.
+jquery.js?version=:2 [Violation] 'setTimeout' handler took 85ms
+ 2026-01-22 08:10:19.394 [DEBUG] [WWE.Main.Song] onTimerElapse()
+ 2026-01-22 08:10:19.394 [DEBUG] [WWE.Main.Song] stop()
+ 2026-01-22 08:10:19.394 [DEBUG] [WWE.Main.Song] clear()
+ 2026-01-22 08:10:19.395 [DEBUG] [WWE.Main.Jukebox] onSongRemoved(./sound/empty.mp3)
+ 2026-01-22 08:10:19.395 [DEBUG] [WWE.Main.Jukebox] onSongRemoved(./sound/empty.mp3) at [0]
+ 2026-01-22 08:10:19.396 [DEBUG] [WWE.Main.Jukebox] updateSong() size = 0
+ 2026-01-22 08:10:19.396 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'setLoggersLevel'
+ 2026-01-22 08:10:19.398 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetServices'
+ 2026-01-22 08:10:19.565 [DEBUG] [WWE.Main.AgentCommands] Services received:
+$.ajax({"url":"/api/v2/services?fields=*","contentType":"application/json; charset=UTF-8","type":"GET"})
+SUCCEED with:
+{
+	"statusCode": 0,
+	"services": [
+		{
+			"id": "ON_PREMISE_ENVIRONMENT",
+			"name": "Provisioning",
+			"type": "Provisioning",
+			"state": "Active",
+			"uri": "http://192.168.210.54:8090/api/v2/services/ON_PREMISE_ENVIRONMENT",
+			"path": "/services/ON_PREMISE_ENVIRONMENT"
+		},
+		{
+			"id": "c7762494-2bde-4dcc-8355-0c6cc79ad250",
+			"name": "SIP_P",
+			"type": "Voice",
+			"state": "Active",
+			"uri": "http://192.168.210.54:8090/api/v2/services/c7762494-2bde-4dcc-8355-0c6cc79ad250",
+			"path": "/services/c7762494-2bde-4dcc-8355-0c6cc79ad250"
+		},
+		{
+			"id": "a3effc55-1c7b-4a2e-8d6a-e521f958a86e",
+			"name": "InteractionServer_P",
+			"type": "MultiMediaState",
+			"state": "Active",
+			"uri": "http://192.168.210.54:8090/api/v2/services/a3effc55-1c7b-4a2e-8d6a-e521f958a86e",
+			"path": "/services/a3effc55-1c7b-4a2e-8d6a-e521f958a86e"
+		},
+		{
+			"id": "810a421d-d887-4f9d-b53a-d879960797dc",
+			"name": "UCS_UAT_P",
+			"type": "MultiMediaContent",
+			"state": "Inactive",
+			"uri": "http://192.168.210.54:8090/api/v2/services/810a421d-d887-4f9d-b53a-d879960797dc",
+			"path": "/services/810a421d-d887-4f9d-b53a-d879960797dc"
+		}
+	]
+}
+ 2026-01-22 08:10:19.567 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetAgentGroups'
+ 2026-01-22 08:10:19.569 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetMyAgentGroups'
+ 2026-01-22 08:10:19.735 [DEBUG] [WWE.Main.AgentCommands] Agent Groups for Me received:
+$.ajax({"url":"/api/v2/me/groups?type=BusinessUnit&fields=*","contentType":"application/json; charset=UTF-8","type":"GET"})
+SUCCEED
+ 2026-01-22 08:10:19.735 [TRACE] [WWE.Main.AgentCommands] {
+	"statusCode": 0,
+	"groups": [
+		{
+			"id": "2-273438b4-5aaa-4d29-ae3c-9eef83be3e51",
+			"name": "Email_WWE_Group",
+			"type": "BusinessUnit",
+			"contains": [
+				"users",
+				"skills",
+				"queues",
+				"places"
+			],
+			"uri": "http://192.168.210.54:8090/api/v2/groups/2-273438b4-5aaa-4d29-ae3c-9eef83be3e51",
+			"path": "/groups/2-273438b4-5aaa-4d29-ae3c-9eef83be3e51"
+		},
+		{
+			"id": "2-cf090dd4-3237-4883-aa84-8b2d4d14978c",
+			"name": "TEST",
+			"type": "BusinessUnit",
+			"contains": [
+				"users",
+				"skills",
+				"queues",
+				"places"
+			],
+			"uri": "http://192.168.210.54:8090/api/v2/groups/2-cf090dd4-3237-4883-aa84-8b2d4d14978c",
+			"path": "/groups/2-cf090dd4-3237-4883-aa84-8b2d4d14978c"
+		}
+	]
+}
+ 2026-01-22 08:10:19.736 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetContactCenterSubresources'
+ 
+ 2026-01-22 08:10:19.899 [DEBUG] [WWE.Main.AgentCommands] BusinessAttributes received
+ 2026-01-22 08:10:19.921 [DEBUG] [WWE.Main.AgentCommands] End wrapping business attributes
+ 2026-01-22 08:10:19.921 [DEBUG] [WWE.Main.AgentCommands] No transactions codes received
+ 2026-01-22 08:10:19.921 [DEBUG] [WWE.Main.AgentCommands] No Virtual Agent Groups received
+ 2026-01-22 08:10:19.922 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetAllDispositions'
+ 2026-01-22 08:10:19.922 [DEBUG] [WWE.Main.DispositionCommands] Send Command: GetAllDispositions (GET on api/v2/groups?type=dispositions&fields=*)
+ 2026-01-22 08:10:20.074 [DEBUG] [WWE.Main.DispositionCommands] GetAllDispositions received:
+$.ajax({"url":"/api/v2/groups?type=dispositions&fields=*","contentType":"application/json; charset=UTF-8","type":"GET"})
+SUCCEED with:
+{
+	"statusCode": 0,
+	"groups": [
+		{
+			"id": "1-bf8ed3e7-a619-4e24-9523-820e608956e8",
+			"name": "Email Disposition Code",
+			"type": "dispositions",
+			"contains": [
+				"dispositions"
+			],
+			"defaultGroup": false,
+			"uri": "http://192.168.210.54:8090/api/v2/groups/1-bf8ed3e7-a619-4e24-9523-820e608956e8",
+			"path": "/groups/1-bf8ed3e7-a619-4e24-9523-820e608956e8"
+		}
+	]
+}
+ 2026-01-22 08:10:20.075 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetMyMonitorableAgentGroups'
+ 2026-01-22 08:10:20.075 [DEBUG] [WWE.Main.AgentCommands] GetMyMonitorableAgentGroups not called. Agent is not a supervisor
+ 2026-01-22 08:10:20.111 [DEBUG] [WWE.Main.Agent] No active session identified
+ 2026-01-22 08:10:20.117 [DEBUG] [WWE.Main.TimerUtilsLib] checkThrottlingDefenseSupport()
+ 2026-01-22 08:10:20.117 [DEBUG] [WWE.Main.TimerUtilsLib] Option "system.tab-throttling.enable-defense" = true
+ 2026-01-22 08:10:20.118 [DEBUG] [WWE.Main.TimerUtilsLib] Workers are supported : overriding function using "worker-timers" timeout.
+ 2026-01-22 08:10:20.119 [DEBUG] [WWE.Main.Performance] Starting Performance Monitoring for Throttling
+ 2026-01-22 08:10:20.119 [DEBUG] [WWE.Main.Performance] Starting Performance Monitoring for Worker
+ 2026-01-22 08:10:20.133 [DEBUG] [WWE.ModuleLoader] Module to load - ModuleContact,ModuleVoice,ModuleOutbound,ModuleOpenMedia,ModuleChat,ModuleReportCustom,ModuleHistoryVoice,ModuleHistoryEmail,ModuleHistoryFacebook,ModuleHistoryTwitter,ModuleHistoryChat,ModuleIWSIPEndpoint,ModuleExtensionAPI,ModuleCustomization
+ 2026-01-22 08:10:20.160 [DEBUG] [WWE.CustomizationLoader.CustomizationManager] Initializing the CustomizationManager
+ 2026-01-22 08:10:20.171 [DEBUG] [WWE.Contact.ContactManager] Initializing the ContactManager
+ 2026-01-22 08:10:20.182 [DEBUG] [WWE.OpenMedia.WorkbinManager] Initializing the WorkbinManager
+ 2026-01-22 08:10:20.183 [DEBUG] [WWE.OpenMedia.InteractionsManagement] Initializing the InteractionsManagement
+ 2026-01-22 08:10:20.197 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointManager] Initializing the IWSIPEndpointManager
+ 2026-01-22 08:10:20.199 [DEBUG] [WWE.ModuleLoader] Initializing module -- ModuleContact
+ 2026-01-22 08:10:20.199 [DEBUG] [WWE.Contact.PluginController] Initializing the pluging wwe-contact
+ 2026-01-22 08:10:20.199 [DEBUG] [WWE.ModuleLoader] Initializing module -- ModuleVoice
+ 2026-01-22 08:10:20.200 [DEBUG] [WWE.Voice.PluginController] Initializing the pluging wwe-voice
+ 2026-01-22 08:10:20.200 [DEBUG] [WWE.ModuleLoader] Initializing module -- ModuleOutbound
+ 2026-01-22 08:10:20.201 [DEBUG] [WWE.Outbound.PluginController] Initializing the pluging wwe-outbound
+ 2026-01-22 08:10:20.202 [DEBUG] [WWE.ModuleLoader] Initializing module -- ModuleOpenMedia
+ 2026-01-22 08:10:20.202 [DEBUG] [WWE.OpenMedia.PluginController] Initializing the pluging wwe-open-media
+ 2026-01-22 08:10:20.203 [DEBUG] [WWE.ModuleLoader] Initializing module -- ModuleChat
+ 2026-01-22 08:10:20.203 [DEBUG] [WWE.Chat.PluginController] Initializing the pluging wwe-chat
+ 2026-01-22 08:10:20.204 [DEBUG] [WWE.ModuleLoader] Initializing module -- ModuleReportCustom
+ 2026-01-22 08:10:20.204 [DEBUG] [WWE.ModuleLoader] Initializing module -- ModuleHistoryVoice
+ 2026-01-22 08:10:20.205 [DEBUG] [WWE.HistoryVoice.PluginController] Initializing the pluging wwe-history-voice
+ 2026-01-22 08:10:20.205 [DEBUG] [WWE.ModuleLoader] Initializing module -- ModuleHistoryEmail
+ 2026-01-22 08:10:20.206 [DEBUG] [WWE.HistoryEmail.PluginController] Initializing the pluging wwe-history-email
+ 2026-01-22 08:10:20.207 [DEBUG] [WWE.ModuleLoader] Initializing module -- ModuleHistoryFacebook
+ 2026-01-22 08:10:20.207 [DEBUG] [WWE.HistoryFacebook.PluginController] Initializing the pluging wwe-history-facebook
+ 2026-01-22 08:10:20.208 [DEBUG] [WWE.ModuleLoader] Initializing module -- ModuleHistoryTwitter
+ 2026-01-22 08:10:20.208 [DEBUG] [WWE.HistoryTwitter.PluginController] Initializing the pluging wwe-history-twitter
+ 2026-01-22 08:10:20.209 [DEBUG] [WWE.ModuleLoader] Initializing module -- ModuleHistoryChat
+ 2026-01-22 08:10:20.209 [DEBUG] [WWE.HistoryChat.PluginController] Initializing the pluging wwe-history-chat
+ 2026-01-22 08:10:20.210 [DEBUG] [WWE.ModuleLoader] Initializing module -- ModuleIWSIPEndpoint
+ 2026-01-22 08:10:20.211 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointExtensionPluginController] Initializing the pluging wwe-iw-sip-endpoint-extension
+ 2026-01-22 08:10:20.211 [DEBUG] [WWE.ModuleLoader] Initializing module -- ModuleExtensionAPI
+ 2026-01-22 08:10:20.212 [DEBUG] [WWE.ExtensionAPI.PluginController] Initializing the pluging wwe-extension
+ 2026-01-22 08:10:20.212 [DEBUG] [WWE.ModuleLoader] Initializing module -- ModuleCustomization
+ 2026-01-22 08:10:20.212 [DEBUG] [WWE.CustomizationLoader.PluginController] Initializing the pluging customization
+ 2026-01-22 08:10:20.213 [DEBUG] [WWE.Main.CommandManager] addCommand('GetUIResourcesUris', ...)
+ 2026-01-22 08:10:20.213 [DEBUG] [WWE.Main.CommandManager] addCommand('GetUIResources', ...)
+ 2026-01-22 08:10:20.226 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('HistoryInteractionDetailsRegion', ...)
+ 2026-01-22 08:10:20.227 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('MyWorkspaceRegion', ...)
+ 2026-01-22 08:10:20.227 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('MainRegion', ...)
+ 2026-01-22 08:10:20.227 [DEBUG] [WWE.Main.AppController] Selected  -  login
+ 2026-01-22 08:10:20.228 [DEBUG] [WWE.Main.KeyboardManager] register('keyboard.shortcut.jump-to-last-error') = 0
+ 2026-01-22 08:10:20.230 [DEBUG] [WWE.Main.CommandManager] addCommand('ContactLookupUCSContact', ...)
+ 2026-01-22 08:10:20.230 [DEBUG] [WWE.Main.CommandManager] addCommand('ContactCreateUCSContact', ...)
+ 2026-01-22 08:10:20.230 [DEBUG] [WWE.Main.CommandManager] addCommand('ContactGetUCSContact', ...)
+ 2026-01-22 08:10:20.230 [DEBUG] [WWE.Main.CommandManager] addCommand('ContactSearchUCSContact', ...)
+ 2026-01-22 08:10:20.230 [DEBUG] [WWE.Main.CommandManager] addCommand('ContactUpdateUCSContact', ...)
+ 2026-01-22 08:10:20.231 [DEBUG] [WWE.Main.CommandManager] addCommand('ContactDeleteUCSContact', ...)
+ 2026-01-22 08:10:20.231 [DEBUG] [WWE.Main.CommandManager] addCommand('ContactGetUCSContactInteractionHistory', ...)
+ 2026-01-22 08:10:20.231 [DEBUG] [WWE.Main.CommandManager] addCommand('ContactRetrieveAgentHistory', ...)
+ 2026-01-22 08:10:20.232 [DEBUG] [WWE.Main.CommandManager] addCommand('ContactRetrieveAllInteractionsHistory', ...)
+ 2026-01-22 08:10:20.232 [DEBUG] [WWE.Main.CommandManager] addCommand('ContactGetUCSInteractionContent', ...)
+ 2026-01-22 08:10:20.232 [DEBUG] [WWE.Main.CommandManager] addCommand('ContactGetLuceneIndexes', ...)
+ 2026-01-22 08:10:20.232 [DEBUG] [WWE.Main.CommandManager] addCommand('ContactLuceneSearch', ...)
+ 2026-01-22 08:10:20.233 [DEBUG] [WWE.Main.CommandManager] addCommand('LuceneSearchInteractions', ...)
+ 2026-01-22 08:10:20.233 [DEBUG] [WWE.Main.CommandManager] addCommand('ContactFindOrCreatePhoneCall', ...)
+ 2026-01-22 08:10:20.233 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('CaseSideRegion', ...)
+ 2026-01-22 08:10:20.234 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('InteractionDetailsRegion', ...)
+ 2026-01-22 08:10:20.235 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('ContactRegion', ...)
+ 2026-01-22 08:10:20.235 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('ContactRegion', ...)
+ 2026-01-22 08:10:20.235 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('ContactSearchWidget', ...)
+ 2026-01-22 08:10:20.236 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('MainRegion', ...)
+ 2026-01-22 08:10:20.236 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('MyWorkspaceRegion', ...)
+ 2026-01-22 08:10:20.236 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('ContactDesktopContainerView', ...)
+ 2026-01-22 08:10:20.236 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('HistoryInteractionDetailsRegion', ...)
+ 2026-01-22 08:10:20.237 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('HistoryInteractionDetailsRegion', ...)
+ 2026-01-22 08:10:20.237 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('WorkbinInteractionDetailsRegion', ...)
+ 2026-01-22 08:10:20.237 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('WorkbinInteractionDetailsRegion', ...)
+ 2026-01-22 08:10:20.238 [DEBUG] [WWE.Main.ResourceRequestAggregator] register('calls')
+ 2026-01-22 08:10:20.239 [DEBUG] [WWE.Main.CommandManager] insertCommandBefore('AgentStartContactCenterSession', 'StartContactCenterSession', ...)
+ 2026-01-22 08:10:20.239 [DEBUG] [WWE.Main.CommandManager] insertCommandBefore('AgentSetState', 'SetAgentState', ...)
+ 2026-01-22 08:10:20.239 [DEBUG] [WWE.Main.CommandManager] addCommand('DeleteDeviceForAgent', ...)
+ 2026-01-22 08:10:20.240 [DEBUG] [WWE.Main.CommandManager] addCommand('AddDeviceForAgent', ...)
+ 2026-01-22 08:10:20.240 [DEBUG] [WWE.Main.CommandManager] addCommand('UpdateDeviceForAgent', ...)
+ 2026-01-22 08:10:20.240 [DEBUG] [WWE.Main.CommandManager] addCommand('CheckNailedUpAndUpdateDevice', ...)
+ 2026-01-22 08:10:20.241 [DEBUG] [WWE.Main.CommandManager] addCommand('MediaVoiceLogin', ...)
+ 2026-01-22 08:10:20.241 [DEBUG] [WWE.Main.CommandManager] addCommand('MediaVoiceChangeState', ...)
+ 2026-01-22 08:10:20.241 [DEBUG] [WWE.Main.CommandManager] addCommand('MediaVoiceCallerId', ...)
+ 2026-01-22 08:10:20.242 [DEBUG] [WWE.Main.CommandManager] addCommand('MediaVoiceDial', ...)
+ 2026-01-22 08:10:20.242 [DEBUG] [WWE.Main.CommandManager] addCommand('MediaVoiceCall', ...)
+ 2026-01-22 08:10:20.242 [DEBUG] [WWE.Main.CommandManager] addCommand('MediaVoiceConsult', ...)
+ 2026-01-22 08:10:20.243 [DEBUG] [WWE.Main.CommandManager] addCommand('MediaVoiceForwardCallsOn', ...)
+ 2026-01-22 08:10:20.243 [DEBUG] [WWE.Main.CommandManager] addCommand('MediaVoiceForwardCallsOff', ...)
+ 2026-01-22 08:10:20.243 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceAnswer', ...)
+ 2026-01-22 08:10:20.243 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceReject', ...)
+ 2026-01-22 08:10:20.244 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceAccept', ...)
+ 2026-01-22 08:10:20.244 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceDecline', ...)
+ 2026-01-22 08:10:20.244 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceHangup', ...)
+ 2026-01-22 08:10:20.244 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceClearCall', ...)
+ 2026-01-22 08:10:20.245 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceHold', ...)
+ 2026-01-22 08:10:20.245 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceRetrieve', ...)
+ 2026-01-22 08:10:20.245 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceResume', ...)
+ 2026-01-22 08:10:20.246 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceSingleStepTransfer', ...)
+ 2026-01-22 08:10:20.246 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceSingleStepConference', ...)
+ 2026-01-22 08:10:20.247 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceInitiateConference', ...)
+ 2026-01-22 08:10:20.247 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceCompleteConference', ...)
+ 2026-01-22 08:10:20.247 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceInitiateTransfer', ...)
+ 2026-01-22 08:10:20.248 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceCompleteTransfer', ...)
+ 2026-01-22 08:10:20.248 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceDeleteFromConference', ...)
+ 2026-01-22 08:10:20.248 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceSendDTMF', ...)
+ 2026-01-22 08:10:20.248 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceAttachUserData', ...)
+ 2026-01-22 08:10:20.249 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceUpdateUserData', ...)
+ 2026-01-22 08:10:20.249 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceDeleteUserData', ...)
+ 2026-01-22 08:10:20.249 [DEBUG] [WWE.Main.CommandManager] addCommand('StartCallRecording', ...)
+ 2026-01-22 08:10:20.249 [DEBUG] [WWE.Main.CommandManager] addCommand('StopCallRecording', ...)
+ 2026-01-22 08:10:20.250 [DEBUG] [WWE.Main.CommandManager] addCommand('PauseCallRecording', ...)
+ 2026-01-22 08:10:20.250 [DEBUG] [WWE.Main.CommandManager] addCommand('ResumeCallRecording', ...)
+ 2026-01-22 08:10:20.250 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceIsPossibleToExit', ...)
+ 2026-01-22 08:10:20.250 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceBeforeClose', ...)
+ 2026-01-22 08:10:20.251 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceSendUserEvent', ...)
+ 2026-01-22 08:10:20.252 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceClose', ...)
+ 2026-01-22 08:10:20.252 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceSetContact', ...)
+ 2026-01-22 08:10:20.252 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceSaveComment', ...)
+ 2026-01-22 08:10:20.253 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionVoiceSetCallCompleted', ...)
+ 2026-01-22 08:10:20.253 [DEBUG] [WWE.Main.CommandManager] addCommand('AddCallToRecent', ...)
+ 2026-01-22 08:10:20.253 [DEBUG] [WWE.Main.CommandManager] addCommand('Add3PCCSupportForDN', ...)
+ 2026-01-22 08:10:20.253 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('InteractionDetailsRegion', ...)
+ 2026-01-22 08:10:20.254 [DEBUG] [WWE.Outbound.PluginController] registerPluginService
+ 2026-01-22 08:10:20.254 [DEBUG] [WWE.Outbound.PluginController] Load the outbound module
+ 2026-01-22 08:10:20.254 [DEBUG] [WWE.Main.CommandManager] addCommand('ProceedOutboundEvent', ...)
+ 2026-01-22 08:10:20.255 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionOutboundClose', ...)
+ 2026-01-22 08:10:20.255 [DEBUG] [WWE.Main.CommandManager] insertCommandBefore('InteractionClose', 'Close', ...)
+ 2026-01-22 08:10:20.255 [DEBUG] [WWE.Main.CommandManager] insertCommandBefore('InteractionVoiceClose', 'CancelAfterCallWork', ...)
+ 2026-01-22 08:10:20.255 [DEBUG] [WWE.Main.CommandManager] addCommand('DoNotCallOutboundRecord', ...)
+ 2026-01-22 08:10:20.256 [DEBUG] [WWE.Main.CommandManager] addCommand('MarkProcessedOutboundRecord', ...)
+ 2026-01-22 08:10:20.256 [DEBUG] [WWE.Main.CommandManager] addCommand('RequestCampaignStatus', ...)
+ 2026-01-22 08:10:20.256 [DEBUG] [WWE.Main.CommandManager] addCommand('GetPreviewRecordOutbound', ...)
+ 2026-01-22 08:10:20.257 [DEBUG] [WWE.Main.CommandManager] addCommand('GetChainedOutboundRecord', ...)
+ 2026-01-22 08:10:20.257 [DEBUG] [WWE.Main.CommandManager] addCommand('CancelOutboundRecord', ...)
+ 2026-01-22 08:10:20.257 [DEBUG] [WWE.Main.CommandManager] addCommand('RejectOutboundRecord', ...)
+ 2026-01-22 08:10:20.258 [DEBUG] [WWE.Main.CommandManager] addCommand('UpdateCallCompletionStats', ...)
+ 2026-01-22 08:10:20.258 [DEBUG] [WWE.Main.CommandManager] insertCommandBefore('InteractionVoiceBeforeClose', 'IsItPossibleToClose', ...)
+ 2026-01-22 08:10:20.258 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('DispositionRegion', ...)
+ 2026-01-22 08:10:20.258 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('MyWorkspaceRegion', ...)
+ 2026-01-22 08:10:20.259 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('BundleToolbarRegion', ...)
+ 2026-01-22 08:10:20.260 [DEBUG] [WWE.Main.ResourceRequestAggregator] register('channels,interactions')
+ 2026-01-22 08:10:20.260 [DEBUG] [WWE.Main.CommandManager] addCommand('MediaOpenMediaChangeState', ...)
+ 2026-01-22 08:10:20.261 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionOpenMediaAccept', ...)
+ 2026-01-22 08:10:20.261 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionOpenMediaReject', ...)
+ 2026-01-22 08:10:20.262 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionOpenMediaRoutedSingleStepTransfer', ...)
+ 2026-01-22 08:10:20.262 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionOpenMediaSingleStepTransfer', ...)
+ 2026-01-22 08:10:20.262 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionOpenMediaStartConference', ...)
+ 2026-01-22 08:10:20.263 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionOpenMediaAbortConference', ...)
+ 2026-01-22 08:10:20.263 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionOpenMediaHandlingTimeout', ...)
+ 2026-01-22 08:10:20.264 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionOpenMediaStopProcessing', ...)
+ 2026-01-22 08:10:20.264 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionOpenMediaPlaceInQueue', ...)
+ 2026-01-22 08:10:20.264 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionOpenMediaUpdateProperties', ...)
+ 2026-01-22 08:10:20.265 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionOpenMediaAttachUserData', ...)
+ 2026-01-22 08:10:20.265 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionOpenMediaUpdateUserData', ...)
+ 2026-01-22 08:10:20.265 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionOpenMediaDeleteUserData', ...)
+ 2026-01-22 08:10:20.266 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionOpenMediaSaveComment', ...)
+ 2026-01-22 08:10:20.266 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionOpenMediaSetContact', ...)
+ 2026-01-22 08:10:20.266 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionOpenMediaIsPossibleToExit', ...)
+ 2026-01-22 08:10:20.267 [DEBUG] [WWE.Main.CommandManager] addCommand('GetWorkbins', ...)
+ 2026-01-22 08:10:20.267 [DEBUG] [WWE.Main.CommandManager] addCommand('GetWorkbinContent', ...)
+ 2026-01-22 08:10:20.268 [DEBUG] [WWE.Main.CommandManager] addCommand('GetWorkbinsContent', ...)
+ 2026-01-22 08:10:20.268 [DEBUG] [WWE.Main.CommandManager] addCommand('AddInteractionToWorkbin', ...)
+ 2026-01-22 08:10:20.269 [DEBUG] [WWE.Main.CommandManager] addCommand('PullInteractionFromWorkbin', ...)
+ 2026-01-22 08:10:20.269 [DEBUG] [WWE.Main.CommandManager] addCommand('SubscribeWorkbinEvents', ...)
+ 2026-01-22 08:10:20.269 [DEBUG] [WWE.Main.CommandManager] addCommand('UnsubscribeWorkbinEvents', ...)
+ 2026-01-22 08:10:20.269 [DEBUG] [WWE.Main.CommandManager] addCommand('AddInteractionToQueue', ...)
+ 2026-01-22 08:10:20.270 [DEBUG] [WWE.Main.CommandManager] addCommand('PullInteraction', ...)
+ 2026-01-22 08:10:20.270 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('MainRegion', ...)
+ 2026-01-22 08:10:20.271 [DEBUG] [WWE.Main.ResourceRequestAggregator] register('chats')
+ 2026-01-22 08:10:20.271 [DEBUG] [WWE.Main.CommandManager] addCommand('MediaChatLogin', ...)
+ 2026-01-22 08:10:20.271 [DEBUG] [WWE.Main.CommandManager] addCommand('MediaChatConsult', ...)
+ 2026-01-22 08:10:20.272 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatAccept', ...)
+ 2026-01-22 08:10:20.272 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatReject', ...)
+ 2026-01-22 08:10:20.272 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatLeave', ...)
+ 2026-01-22 08:10:20.273 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatEnd', ...)
+ 2026-01-22 08:10:20.273 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatEndConsultation', ...)
+ 2026-01-22 08:10:20.273 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatSendMessage', ...)
+ 2026-01-22 08:10:20.274 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatSendMessageToAgents', ...)
+ 2026-01-22 08:10:20.274 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatPushUrl', ...)
+ 2026-01-22 08:10:20.274 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatStartTyping', ...)
+ 2026-01-22 08:10:20.275 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatStopTyping', ...)
+ 2026-01-22 08:10:20.275 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatStartTypingToAgents', ...)
+ 2026-01-22 08:10:20.276 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatStopTypingToAgents', ...)
+ 2026-01-22 08:10:20.276 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatSingleStepTransfer', ...)
+ 2026-01-22 08:10:20.276 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatSingleStepConference', ...)
+ 2026-01-22 08:10:20.277 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatInitiateTransfer', ...)
+ 2026-01-22 08:10:20.277 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatCompleteTransfer', ...)
+ 2026-01-22 08:10:20.277 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatCompleteConference', ...)
+ 2026-01-22 08:10:20.278 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatDeleteFromConference', ...)
+ 2026-01-22 08:10:20.278 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatSaveComment', ...)
+ 2026-01-22 08:10:20.279 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatAttachUserData', ...)
+ 2026-01-22 08:10:20.279 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatUpdateUserData', ...)
+ 2026-01-22 08:10:20.280 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatDeleteUserData', ...)
+ 2026-01-22 08:10:20.280 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatSetContact', ...)
+ 2026-01-22 08:10:20.281 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatSendCustomNotice', ...)
+ 2026-01-22 08:10:20.281 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatClose', ...)
+ 2026-01-22 08:10:20.281 [DEBUG] [WWE.Main.CommandManager] addCommand('InteractionChatConsultationClose', ...)
+ 2026-01-22 08:10:20.285 [DEBUG] [WWE.Main.ViewManager] addViewDescriptor('MyWorkspaceRegion', ...)
+ 2026-01-22 08:10:20.286 [DEBUG] [WWE.Main.CommandManager] insertCommandBefore('AgentStartContactCenterSession', 'StartContactCenterSession', ...)
+ 2026-01-22 08:10:20.287 [DEBUG] [WWE.Main.CommandManager] insertCommandBefore('AgentLogout', 'Logout', ...)
+ 2026-01-22 08:10:20.287 [DEBUG] [WWE.Main.CommandManager] addCommand('IWSIPEndpointRegisterSoftphone', ...)
+ 2026-01-22 08:10:20.287 [DEBUG] [WWE.Main.CommandManager] addCommand('IWSIPEndpointGetDnSIP', ...)
+ 2026-01-22 08:10:20.288 [DEBUG] [WWE.Main.CommandManager] addCommand('IWSIPEndpointRegisterDN', ...)
+ 2026-01-22 08:10:20.288 [DEBUG] [WWE.Main.CommandManager] addCommand('IWSIPEndpointUnregisterDN', ...)
+ 2026-01-22 08:10:20.288 [DEBUG] [WWE.Main.CommandManager] addCommand('IWSIPEndpointSetOptions', ...)
+ 2026-01-22 08:10:20.289 [DEBUG] [WWE.Main.CommandManager] addCommand('IWSIPEndpointGetIsEndpointActive', ...)
+ 2026-01-22 08:10:20.289 [DEBUG] [WWE.Main.CommandManager] addCommand('IWSIPEndpointGetEndpointParameters', ...)
+ 2026-01-22 08:10:20.289 [DEBUG] [WWE.Main.CommandManager] addCommand('IWSIPEndpointSetEndpointParameters', ...)
+ 2026-01-22 08:10:20.290 [DEBUG] [WWE.Main.CommandManager] addCommand('IWSIPEndpointPing', ...)
+ 2026-01-22 08:10:20.290 [DEBUG] [WWE.Main.CommandManager] addCommand('IWSIPEndpointSetPingPeriod', ...)
+ 2026-01-22 08:10:20.290 [DEBUG] [WWE.Main.CommandManager] addCommand('IWSIPEndpointMuteMicrophone', ...)
+ 2026-01-22 08:10:20.291 [DEBUG] [WWE.Main.CommandManager] addCommand('IWSIPEndpointUnmuteMicrophone', ...)
+ 2026-01-22 08:10:20.291 [DEBUG] [WWE.Main.CommandManager] addCommand('IWSIPEndpointMuteSpeaker', ...)
+ 2026-01-22 08:10:20.291 [DEBUG] [WWE.Main.CommandManager] addCommand('IWSIPEndpointUnmuteSpeaker', ...)
+ 2026-01-22 08:10:20.291 [DEBUG] [WWE.Main.CommandManager] addCommand('IWSIPEndpointGetMicrophoneState', ...)
+ 2026-01-22 08:10:20.292 [DEBUG] [WWE.Main.CommandManager] addCommand('IWSIPEndpointGetSpeakerState', ...)
+ 2026-01-22 08:10:20.292 [DEBUG] [WWE.Main.CommandManager] addCommand('IWSIPEndpointGetMicrophoneVolume', ...)
+ 2026-01-22 08:10:20.292 [DEBUG] [WWE.Main.CommandManager] addCommand('IWSIPEndpointGetSpeakerVolume', ...)
+ 2026-01-22 08:10:20.293 [DEBUG] [WWE.Main.CommandManager] addCommand('IWSIPEndpointSetMicrophoneVolume', ...)
+ 2026-01-22 08:10:20.293 [DEBUG] [WWE.Main.CommandManager] addCommand('IWSIPEndpointSetSpeakerVolume', ...)
+ 2026-01-22 08:10:20.294 [DEBUG] [WWE.Main.CommandManager] execute('GetLoginSubview')
+ 2026-01-22 08:10:20.294 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetPlaceSelectionView'
+jquery.js?version=:2 [Violation] 'setTimeout' handler took 70ms
+ 2026-01-22 08:10:20.303 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetLoginChangeDeviceView'
+ 2026-01-22 08:10:20.310 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetLoginChangeQueueView'
+ 2026-01-22 08:10:20.317 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetLanguageSelectionView'
+ 2026-01-22 08:10:20.346 [DEBUG] [WWE.Main.loginView] startContactCenterSession()
+ 2026-01-22 08:10:20.346 [DEBUG] [WWE.Main.CommandManager] execute('AgentStartContactCenterSession')
+ 2026-01-22 08:10:20.346 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'setContactCenterSessionWorkmode'
+ 2026-01-22 08:10:20.351 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'RegisterSoftphone'
+ 2026-01-22 08:10:20.352 [DEBUG] [WWE.Main.CommandManager] execute('GetDeviceForAgent')
+ 2026-01-22 08:10:20.352 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetDeviceForAgent'
+ 2026-01-22 08:10:20.366 [DEBUG] [WWE.Main.CommandManager] execute('GetLoginSubview')
+ 2026-01-22 08:10:20.366 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetPlaceSelectionView'
+ 2026-01-22 08:10:20.367 [DEBUG] [WWE.Main.CommandManager] execute('IWSIPEndpointGetDnSIP')
+ 2026-01-22 08:10:20.368 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetDnSIP'
+ 2026-01-22 08:10:20.369 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'GetDnSIP' sending
+ 2026-01-22 08:10:20.372 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetLoginChangeDeviceView'
+ 2026-01-22 08:10:20.379 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetLoginChangeQueueView'
+ 2026-01-22 08:10:20.384 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetLanguageSelectionView'
+ 2026-01-22 08:10:20.411 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'GetDnSIP' sent in 0.039s
+$.ajax({"type":"GET","url":"https://127.0.0.1:8000/GetDnSIP","contentType":"application/json; charset=UTF-8"})
+SUCCEED with:
+{
+	"get_DnSIPResult": ""
+}
+ 2026-01-22 08:10:20.411 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Dn SIP received: SUCCEED with:
+{
+	"get_DnSIPResult": ""
+}
+ 2026-01-22 08:10:20.412 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetEndPointSSOConfig'
+ 2026-01-22 08:10:20.413 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'GetEndPointSSOConfig' sending
+ 2026-01-22 08:10:20.577 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'GetEndPointSSOConfig' sent in 0.162s
+$.ajax({"type":"GET","url":"/api/v2/me/devices/6f0c9ebb-407d-40b0-a03d-92a2ac0893d9/settings/tserver","contentType":"application/json; charset=UTF-8"})
+SUCCEED with:
+{
+	"statusCode": 0,
+	"settings": [
+		{
+			"name": "make-call-rfc3725-flow",
+			"value": "1"
+		},
+		{
+			"name": "record",
+			"value": "false"
+		},
+		{
+			"name": "recovery-timeout",
+			"value": "3"
+		},
+		{
+			"name": "refer-enabled",
+			"value": "false"
+		},
+		{
+			"name": "reinvite-requires-hold",
+			"value": "false"
+		},
+		{
+			"name": "reject-call-incall",
+			"value": "true"
+		},
+		{
+			"name": "reject-call-notready",
+			"value": "true"
+		},
+		{
+			"name": "ring-tone-on-make-call",
+			"value": "true"
+		},
+		{
+			"name": "sip-cti-control",
+			"value": "talk,hold,beep,dtmf"
+		},
+		{
+			"name": "sip-ring-tone-mode",
+			"value": "1"
+		},
+		{
+			"name": "transfer-complete-by-refer",
+			"value": "false"
+		},
+		{
+			"name": "contact",
+			"value": "*"
+		}
+	],
+	"key": "name"
+}
+ 2026-01-22 08:10:20.578 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] TServer annex for device received:
+$.ajax(/api/v2/me/devices/6f0c9ebb-407d-40b0-a03d-92a2ac0893d9/settings/tserver)
+SUCCEED with:
+{
+	"statusCode": 0,
+	"settings": [
+		{
+			"name": "make-call-rfc3725-flow",
+			"value": "1"
+		},
+		{
+			"name": "record",
+			"value": "false"
+		},
+		{
+			"name": "recovery-timeout",
+			"value": "3"
+		},
+		{
+			"name": "refer-enabled",
+			"value": "false"
+		},
+		{
+			"name": "reinvite-requires-hold",
+			"value": "false"
+		},
+		{
+			"name": "reject-call-incall",
+			"value": "true"
+		},
+		{
+			"name": "reject-call-notready",
+			"value": "true"
+		},
+		{
+			"name": "ring-tone-on-make-call",
+			"value": "true"
+		},
+		{
+			"name": "sip-cti-control",
+			"value": "talk,hold,beep,dtmf"
+		},
+		{
+			"name": "sip-ring-tone-mode",
+			"value": "1"
+		},
+		{
+			"name": "transfer-complete-by-refer",
+			"value": "false"
+		},
+		{
+			"name": "contact",
+			"value": "*"
+		}
+	],
+	"key": "name"
+}
+ 2026-01-22 08:10:20.584 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointManager] Device not registered on DN, registering ...
+ 2026-01-22 08:10:20.587 [DEBUG] [WWE.Main.CommandManager] execute('IWSIPEndpointSetOptions')
+ 2026-01-22 08:10:20.587 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'SetOptions'
+ 2026-01-22 08:10:20.588 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'SetOptions' sending
+ 2026-01-22 08:10:20.609 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'SetOptions' sent in 0.019s
+$.ajax({"type":"POST","url":"https://127.0.0.1:8000/SetOptions","contentType":"application/json; charset=UTF-8","data":"{\"value\":{\"uri\":\"https://127.0.0.1:8000\",\"sip-server-address\":\"192.168.210.81:5060\",\"register-interval\":1500,\"wait-user-max-attempts\":20,\"register-max-attempts\":10,\"ping-interval\":2000,\"max-failed-ping\":10,\"transport-protocol\":\"UDP\",\"headset-unplugged-set-not-ready\":true,\"noise_suppression\":\"1\",\"policy.session.agc_mode\":\"1\",\"policy.session.auto_answer\":\"0\",\"policy.session.noise_suppression\":\"1\"}}"})
+SUCCEED with:
+{}
+ 2026-01-22 08:10:20.610 [DEBUG] [WWE.Main.CommandManager] execute('IWSIPEndpointSetEndpointParameters')
+ 2026-01-22 08:10:20.610 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'SetEndpointParameters'
+ 2026-01-22 08:10:20.611 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'SetEndpointParameters' sending
+ 2026-01-22 08:10:20.630 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'SetEndpointParameters' sent in 0.018s
+$.ajax({"type":"POST","url":"https://127.0.0.1:8000/SetSIPEndpointParameters","contentType":"application/json; charset=UTF-8","data":"{\"value\":[{\"Key\":\"SipEndpointTransportProtocol\",\"Value\":\"UDP\"}]}"})
+SUCCEED with:
+{}
+ 2026-01-22 08:10:20.630 [DEBUG] [WWE.Main.CommandManager] execute('IWSIPEndpointRegisterDN')
+ 2026-01-22 08:10:20.631 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'RegisterDN'
+ 2026-01-22 08:10:20.631 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'RegisterDN' sending
+ 2026-01-22 08:10:20.651 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'RegisterDN' sent in 0.018s
+$.ajax({"type":"POST","url":"https://127.0.0.1:8000/RegisterDn/","contentType":"application/json; charset=UTF-8","data":"{\"addresses\":[\"192.168.210.81:5060\"],\"users\":[\"5001\"]}"})
+SUCCEED with:
+{
+	"RegisterDnResult": true
+}
+ 2026-01-22 08:10:20.652 [DEBUG] [WWE.Main.CommandManager] execute('IWSIPEndpointGetIsEndpointActive')
+ 2026-01-22 08:10:20.652 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetIsEndpointActive'
+ 2026-01-22 08:10:20.653 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'GetIsEndpointActive' sending
+ 2026-01-22 08:10:20.656 [DEBUG] [WWE.Main.CommandManager] execute('IWSIPEndpointGetEndpointParameters')
+ 2026-01-22 08:10:20.657 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetEndpointParameters'
+ 2026-01-22 08:10:20.658 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'GetEndpointParameters' sending
+ 2026-01-22 08:10:20.674 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'GetIsEndpointActive' sent in 0.02s
+$.ajax({"type":"GET","url":"https://127.0.0.1:8000/GetIsEndpointActive","contentType":"application/json; charset=UTF-8"})
+SUCCEED with:
+{
+	"get_IsEndpointActiveResult": false
+}
+ 2026-01-22 08:10:20.675 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Endpoint isActive received :)
+SUCCEED with:
+{
+	"get_IsEndpointActiveResult": false
+}
+ 2026-01-22 08:10:20.683 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'GetEndpointParameters' sent in 0.024s
+$.ajax({"type":"GET","url":"https://127.0.0.1:8000/GetSIPEndpointParameters","contentType":"application/json; charset=UTF-8"})
+SUCCEED with:
+{
+	"get_SIPEndpointParametersResult": [
+		{
+			"Key": "IsPingMandatory",
+			"Value": false
+		},
+		{
+			"Key": "Status",
+			"Value": "Unregistered"
+		},
+		{
+			"Key": "EndpointStatus",
+			"Value": "EndpointStatus_Ready"
+		}
+	]
+}
+ 2026-01-22 08:10:20.683 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Endpoint parameters received :)
+SUCCEED with:
+{
+	"get_SIPEndpointParametersResult": [
+		{
+			"Key": "IsPingMandatory",
+			"Value": false
+		},
+		{
+			"Key": "Status",
+			"Value": "Unregistered"
+		},
+		{
+			"Key": "EndpointStatus",
+			"Value": "EndpointStatus_Ready"
+		}
+	]
+}
+ 2026-01-22 08:10:22.178 [DEBUG] [WWE.Main.CommandManager] execute('IWSIPEndpointGetIsEndpointActive')
+ 2026-01-22 08:10:22.179 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetIsEndpointActive'
+ 2026-01-22 08:10:22.179 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'GetIsEndpointActive' sending
+ 2026-01-22 08:10:22.188 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'GetIsEndpointActive' sent in 0.008s
+$.ajax({"type":"GET","url":"https://127.0.0.1:8000/GetIsEndpointActive","contentType":"application/json; charset=UTF-8"})
+SUCCEED with:
+{
+	"get_IsEndpointActiveResult": true
+}
+ 2026-01-22 08:10:22.188 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Endpoint isActive received :)
+SUCCEED with:
+{
+	"get_IsEndpointActiveResult": true
+}
+ 2026-01-22 08:10:22.189 [DEBUG] [WWE.Main.CommandManager] execute('IWSIPEndpointSetPingPeriod')
+ 2026-01-22 08:10:22.189 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'SetPingPeriod'
+ 2026-01-22 08:10:22.189 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'SetPingPeriod' sending
+ 2026-01-22 08:10:22.191 [DEBUG] [WWE.Main.CommandManager] execute('IWSIPEndpointPing')
+ 2026-01-22 08:10:22.191 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'Ping'
+ 2026-01-22 08:10:22.191 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'Ping' sending
+ 2026-01-22 08:10:22.204 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'SetPingPeriod' sent in 0.013s
+$.ajax({"type":"POST","url":"https://127.0.0.1:8000/SetPingPeriod","contentType":"application/json; charset=UTF-8","data":"{\"value\":2000}"})
+SUCCEED with:
+{}
+ 2026-01-22 08:10:22.205 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointManager] Ping Period setted
+ 2026-01-22 08:10:22.210 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'Ping' sent in 0.016s
+$.ajax({"type":"GET","url":"https://127.0.0.1:8000/Ping","contentType":"application/json; charset=UTF-8"})
+SUCCEED with:
+{
+	"pong": true
+}
+main.js?version=:2 2026-01-22 08:10:22.211 [INFO ] [WWE.SipEndpoint.IWSIPEndpointCommands] Attempting to ping iw sip server
+ 2026-01-22 08:10:22.220 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'StartContactCenterSession'
+ 2026-01-22 08:10:22.221 [DEBUG] [WWE.Outbound.PluginController] registerPluginService
+ 2026-01-22 08:10:22.225 [DEBUG] [WWE.Main.Agent] CLEAN LOCAL STORAGE FOR AGENT
+ 2026-01-22 08:10:22.226 [DEBUG] [WWE.Main.AgentCommands] Command: 'StartContactCenterSession' sending
+ 2026-01-22 08:10:22.414 [DEBUG] [WWE.Main.AgentCommands] Command: 'StartContactCenterSession' sent in 0.187s
+$.ajax({"type":"POST","url":"/api/v2/me","contentType":"application/json; charset=UTF-8","data":"{\"operationName\":\"StartContactCenterSession\",\"channels\":[\"voice\",\"chat\"]}"})
+SUCCEED with:
+{
+	"statusCode": 7,
+	"failed": [
+		{
+			"statusCode": 4,
+			"statusMessage": "Device '5001' is not registered.",
+			"channel": "voice"
+		}
+	],
+	"succeeded": [
+		{
+			"statusCode": 0,
+			"channel": "multimedia"
+		}
+	]
+}
+ 2026-01-22 08:10:22.415 [DEBUG] [WWE.Main.AgentCommands] But the server answers with:
+	statusCode=7 (Operation was partially successful. Returned if at least one action in a bulk operation succeeded. See more information on partial success returns below.)
+ 2026-01-22 08:10:22.416 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'LoadAgentCompleteInfo'
+ 2026-01-22 08:10:22.595 [DEBUG] [WWE.Main.AgentCommands] User received:
+$.ajax({"url":"/api/v2/contacts/3f65ac876a48452f83ffb58cfc58fe47?type=User","contentType":"application/json; charset=UTF-8","type":"GET"})
+SUCCEED with:
+{
+	"statusCode": 0,
+	"contact": {
+		"id": "3f65ac876a48452f83ffb58cfc58fe47",
+		"name": "abhishek.varma",
+		"type": "User",
+		"phoneNumbers": [
+			{
+				"phoneNumber": "5001",
+				"description": "",
+				"switchName": "SIP_Switch"
+			}
+		],
+		"userName": "abhishek.varma",
+		"firstName": "abhishek",
+		"lastName": "test",
+		"employeeId": "abhishek",
+		"uri": "http://192.168.210.54:8090/api/v2/contacts/3f65ac876a48452f83ffb58cfc58fe47",
+		"path": "/contacts/3f65ac876a48452f83ffb58cfc58fe47"
+	}
+}
+ 2026-01-22 08:10:22.596 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'StartCometD'
+ 2026-01-22 08:10:22.796 [DEBUG] [WWE.Main.CommandManager] execute('ContactGetLuceneIndexes')
+ 2026-01-22 08:10:22.796 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetLuceneIndexes'
+ 2026-01-22 08:10:22.799 [DEBUG] [WWE.Main.CommandManager] execute('GetDeviceForAgent')
+ 2026-01-22 08:10:22.800 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetDeviceForAgent'
+ 2026-01-22 08:10:22.821 [DEBUG] [WWE.Main.Agent] All Targets received
+ 2026-01-22 08:10:22.821 [DEBUG] [WWE.Main.CommandManager] execute('GetFavorites')
+ 2026-01-22 08:10:22.822 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'getFavorites'
+ 2026-01-22 08:10:22.829 [DEBUG] [WWE.Main.AppController] Selected  - app main
+ 2026-01-22 08:10:22.830 [DEBUG] [WWE.Main.AuthenticatedView] Initializing the AuthenticatedView
+ 2026-01-22 08:10:22.843 [DEBUG] [WWE.Main.ViewManager] getViewDescriptor('AgentDesktopTop', ...)
+ 2026-01-22 08:10:22.846 [DEBUG] [WWE.Main.ViewManager] getViewDescriptor('ApplicationMenuBarRegion', ...)
+ 2026-01-22 08:10:22.847 [DEBUG] [WWE.Main.ViewManager] getViewDescriptor('AgentMenuRegion', ...)
+ 2026-01-22 08:10:22.847 [DEBUG] [WWE.Main.ViewManager] getViewDescriptor('HelpMenuRegion', ...)
+ 2026-01-22 08:10:22.848 [DEBUG] [WWE.Main.AgentDesktopView] Initializing the AgentDesktopView
+ 2026-01-22 08:10:22.849 [DEBUG] [WWE.Main.ViewManager] getViewDescriptor('MainRegion', ...)
+ 2026-01-22 08:10:22.849 [DEBUG] [WWE.Main.ViewManager] getViewDescriptor('MainRegion', ...)
+ 2026-01-22 08:10:22.850 [DEBUG] [WWE.Main.ViewManager] getOrderedViewDescriptors('MyWorkspaceRegion', 'undefined',...)
+ 2026-01-22 08:10:22.851 [DEBUG] [WWE.Main.ViewManager] getViewDescriptor('MyWorkspaceRegion', ...)
+ 2026-01-22 08:10:22.853 [DEBUG] [WWE.Contact.ContactHistoryView] Initializing the ContactHistoryView
+ 2026-01-22 08:10:22.854 [DEBUG] [WWE.Main.ViewManager] getOrderedViewDescriptors('HistoryInteractionDetailsRegion', 'undefined',...)
+ 2026-01-22 08:10:22.855 [DEBUG] [WWE.Main.ViewManager] getViewDescriptor('HistoryInteractionDetailsRegion', ...)
+ 2026-01-22 08:10:22.855 [DEBUG] [WWE.Contact.AdHistorytGridView] Initializing the AdHistorytGridView
+ 2026-01-22 08:10:22.857 [DEBUG] [WWE.Contact.ContactPaginationView] setRangeOfDisplayedElements()
+ 2026-01-22 08:10:22.858 [DEBUG] [WWE.Contact.ContactInteractionDetailView] Initializing the ContactInteractionDetailView
+ 2026-01-22 08:10:22.859 [DEBUG] [WWE.Main.StaticCaseDataView] Initializing the StaticCaseDataView
+ 2026-01-22 08:10:22.859 [DEBUG] [WWE.Main.ViewManager] setDefaultActivatedView('HistoryInteractionDetailsRegion', ...)
+ 2026-01-22 08:10:22.861 [DEBUG] [WWE.Main.WWEUtils] iFrame options for 'workspace-tab' - allow : 
+ 2026-01-22 08:10:22.861 [DEBUG] [WWE.Main.WorkspaceView]       >> section: workspace-tab, allowOptions : []
+ 2026-01-22 08:10:22.861 [DEBUG] [WWE.Main.WWEUtils] iFrame options for 'workspace-tab_2' - allow : 
+ 2026-01-22 08:10:22.862 [DEBUG] [WWE.Main.WorkspaceView]       >> section: workspace-tab_2, allowOptions : []
+ 2026-01-22 08:10:22.862 [DEBUG] [WWE.Main.ViewManager] setDefaultActivatedView('MyWorkspaceRegion', ...)
+ 2026-01-22 08:10:22.863 [DEBUG] [WWE.Main.ViewManager] getOrderedViewDescriptors('WorkbinInteractionDetailsRegion', 'undefined',...)
+ 2026-01-22 08:10:22.864 [DEBUG] [WWE.Main.ViewManager] getViewDescriptor('WorkbinInteractionDetailsRegion', ...)
+ 2026-01-22 08:10:22.865 [DEBUG] [WWE.OpenMedia.WorkbinsGridView] Initializing the WorkbinsGridView
+ 2026-01-22 08:10:22.865 [DEBUG] [WWE.OpenMedia.WorkbinPaginationView] setRangeOfDisplayedElements()
+ 2026-01-22 08:10:22.867 [DEBUG] [WWE.Contact.ContactInteractionDetailView] Initializing the ContactInteractionDetailView
+ 2026-01-22 08:10:22.868 [DEBUG] [WWE.Main.StaticCaseDataView] Initializing the StaticCaseDataView
+ 2026-01-22 08:10:22.868 [DEBUG] [WWE.Main.ViewManager] setDefaultActivatedView('WorkbinInteractionDetailsRegion', ...)
+ 2026-01-22 08:10:22.869 [DEBUG] [WWE.Main.ViewManager] getViewDescriptor('ContactDesktopContainerView', ...)
+ 2026-01-22 08:10:22.869 [DEBUG] [WWE.Main.ViewManager] getViewDescriptor('ContactDesktopContainerView', ...)
+ 2026-01-22 08:10:22.871 [DEBUG] [WWE.Contact.ContactPaginationView] setRangeOfDisplayedElements()
+ 2026-01-22 08:10:22.873 [DEBUG] [WWE.Contact.AgentContactListView] initialize()
+ 2026-01-22 08:10:22.875 [DEBUG] [WWE.Main.ViewManager] getOrderedViewDescriptors('ContactRegion', 'undefined',...)
+ 2026-01-22 08:10:22.875 [DEBUG] [WWE.Main.ViewManager] getViewDescriptor('ContactRegion', ...)
+ 2026-01-22 08:10:22.877 [DEBUG] [WWE.Contact.ContactHistoryView] Initializing the ContactHistoryView
+ 2026-01-22 08:10:22.877 [DEBUG] [WWE.Main.ViewManager] getOrderedViewDescriptors('HistoryInteractionDetailsRegion', 'undefined',...)
+ 2026-01-22 08:10:22.877 [DEBUG] [WWE.Main.ViewManager] getViewDescriptor('HistoryInteractionDetailsRegion', ...)
+ 2026-01-22 08:10:22.878 [DEBUG] [WWE.Contact.AdHistorytGridView] Initializing the AdHistorytGridView
+ 2026-01-22 08:10:22.878 [DEBUG] [WWE.Contact.ContactPaginationView] setRangeOfDisplayedElements()
+ 2026-01-22 08:10:22.880 [DEBUG] [WWE.Contact.ContactInteractionDetailView] Initializing the ContactInteractionDetailView
+ 2026-01-22 08:10:22.881 [DEBUG] [WWE.Main.StaticCaseDataView] Initializing the StaticCaseDataView
+ 2026-01-22 08:10:22.881 [DEBUG] [WWE.Main.ViewManager] setDefaultActivatedView('HistoryInteractionDetailsRegion', ...)
+ 2026-01-22 08:10:22.882 [DEBUG] [WWE.Main.ViewManager] setDefaultActivatedView('ContactRegion', ...)
+ 2026-01-22 08:10:22.884 [DEBUG] [WWE.Main.InteractionBarView] Initializing the InteractionBarView
+ 2026-01-22 08:10:22.964 [DEBUG] [WWE.Main.KeyboardManager] register('keyboard.shortcut.interaction.next') = 1
+ 2026-01-22 08:10:22.965 [DEBUG] [WWE.Main.KeyboardManager] register('keyboard.shortcut.interaction.previous') = 2
+ 2026-01-22 08:10:22.969 [DEBUG] [WWE.Main.DialogContainerView] Initializing the DialogContainerView
+ 2026-01-22 08:10:22.973 [DEBUG] [WWE.Main.KeyboardManager] register('keyboard.shortcut.jump-to-last-error') = 3
+ 2026-01-22 08:10:22.974 [DEBUG] [WWE.Main.Agent] new message added
+ 2026-01-22 08:10:22.974 [DEBUG] [WWE.Main.Application] The Universal Contact Server is out of service
+ 2026-01-22 08:10:22.979 [DEBUG] [WWE.Main.AgentDesktopView] Adding Menu button on Desktop
+ 2026-01-22 08:10:22.980 [DEBUG] [WWE.Main.WorkspaceView] Adding Widget on Workspace
+ 2026-01-22 08:10:23.004 [DEBUG] [WWE.Main.WorkspaceView] Adding Widget on Workspace
+ 2026-01-22 08:10:23.014 [DEBUG] [WWE.Outbound.OutboundCampaignListView] Display campaign()
+ 2026-01-22 08:10:23.018 [DEBUG] [WWE.Main.WorkspaceView] Adding Widget on Workspace
+ 2026-01-22 08:10:23.036 [DEBUG] [WWE.Contact.ContactPaginationView] setRangeOfDisplayedElements()
+ 2026-01-22 08:10:23.037 [DEBUG] [WWE.Contact.ContactInteractionDetailView] setInteraction()
+ 2026-01-22 08:10:23.039 [DEBUG] [WWE.Contact.NotepadView] setInteraction()
+ 2026-01-22 08:10:23.040 [DEBUG] [WWE.Main.StaticCaseDataView] setInteraction()
+ 2026-01-22 08:10:23.064 [DEBUG] [WWE.Main.WorkspaceView] Adding Widget on Workspace
+ 2026-01-22 08:10:23.066 [DEBUG] [WWE.Main.WorkspaceView] Adding Widget on Workspace
+ 2026-01-22 08:10:23.165 [DEBUG] [WWE.Main.WorkspaceView] Adding Widget on Workspace
+ 2026-01-22 08:10:23.172 [DEBUG] [WWE.Main.WorkspaceView] getItemList()
+ 2026-01-22 08:10:23.175 [DEBUG] [WWE.Main.WorkspaceView] getItemList()
+ 2026-01-22 08:10:23.175 [DEBUG] [WWE.OpenMedia.WorkbinsDesktopContainerView] getItemList()
+ 2026-01-22 08:10:23.176 [DEBUG] [WWE.Contact.ContactDesktopContainerView] getItemList()
+ 2026-01-22 08:10:23.176 [DEBUG] [WWE.Main.MyMessagesView] getItemList()
+ 2026-01-22 08:10:23.180 [DEBUG] [WWE.Main.AgentDesktopView] Adding Menu button on Desktop
+ 2026-01-22 08:10:23.185 [DEBUG] [WWE.OpenMedia.WorkbinPaginationView] setRangeOfDisplayedElements()
+ 2026-01-22 08:10:23.208 [DEBUG] [WWE.OpenMedia.WorkbinsDesktopContainerView] setItemList()
+ 2026-01-22 08:10:23.209 [DEBUG] [WWE.Main.CommandManager] execute('GetWorkbins')
+ 2026-01-22 08:10:23.209 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetWorkbins'
+ 2026-01-22 08:10:23.219 [DEBUG] [WWE.Contact.ContactInteractionDetailView] setInteraction()
+ 2026-01-22 08:10:23.220 [DEBUG] [WWE.Contact.NotepadView] setInteraction()
+ 2026-01-22 08:10:23.221 [DEBUG] [WWE.Main.StaticCaseDataView] setInteraction()
+ 2026-01-22 08:10:23.225 [DEBUG] [WWE.OpenMedia.WorkbinsDesktopContainerView] getItemList()
+ 2026-01-22 08:10:23.226 [DEBUG] [WWE.Main.WorkspaceView] getItemList()
+ 2026-01-22 08:10:23.226 [DEBUG] [WWE.OpenMedia.WorkbinsDesktopContainerView] getItemList()
+ 2026-01-22 08:10:23.226 [DEBUG] [WWE.Contact.ContactDesktopContainerView] getItemList()
+ 2026-01-22 08:10:23.226 [DEBUG] [WWE.Main.MyMessagesView] getItemList()
+ 2026-01-22 08:10:23.228 [DEBUG] [WWE.Main.AgentDesktopView] Adding Menu button on Desktop
+ 2026-01-22 08:10:23.229 [DEBUG] [WWE.Contact.ContactDesktopContainerView] Adding Widget on Contact Desktop Container
+ 2026-01-22 08:10:23.243 [DEBUG] [WWE.Contact.AgentContactGridView] Display contacts()
+ 2026-01-22 08:10:23.252 [DEBUG] [WWE.Contact.AgentContactListView] Render()
+ 2026-01-22 08:10:23.255 [DEBUG] [WWE.Contact.ContactPaginationView] setRangeOfDisplayedElements()
+ 2026-01-22 08:10:23.256 [DEBUG] [WWE.Contact.AgentContactListView] displayContacts()
+ 2026-01-22 08:10:23.258 [DEBUG] [WWE.Contact.AgentContactGridView] Display contacts()
+ 2026-01-22 08:10:23.263 [DEBUG] [WWE.Contact.ContactPaginationView] setRangeOfDisplayedElements()
+ 2026-01-22 08:10:23.272 [DEBUG] [WWE.Contact.ContactInformationView] setContact()
+ 2026-01-22 08:10:23.288 [DEBUG] [WWE.Contact.ContactPaginationView] setRangeOfDisplayedElements()
+ 2026-01-22 08:10:23.289 [DEBUG] [WWE.Contact.ContactInteractionDetailView] setInteraction()
+ 2026-01-22 08:10:23.291 [DEBUG] [WWE.Contact.NotepadView] setInteraction()
+ 2026-01-22 08:10:23.292 [DEBUG] [WWE.Main.StaticCaseDataView] setInteraction()
+main.js?version=:2 2026-01-22 08:10:23.324 [DEBUG] [WWE.Contact.ContactDesktopContainerView] getItemList()
+main.js?version=:2 2026-01-22 08:10:23.325 [DEBUG] [WWE.Main.WorkspaceView] getItemList()
+main.js?version=:2 2026-01-22 08:10:23.326 [DEBUG] [WWE.OpenMedia.WorkbinsDesktopContainerView] getItemList()
+main.js?version=:2 2026-01-22 08:10:23.326 [DEBUG] [WWE.Contact.ContactDesktopContainerView] getItemList()
+main.js?version=:2 2026-01-22 08:10:23.326 [DEBUG] [WWE.Main.MyMessagesView] getItemList()
+main.js?version=:2 2026-01-22 08:10:23.328 [DEBUG] [WWE.Main.AgentDesktopView] Adding Menu button on Desktop
+main.js?version=:2 2026-01-22 08:10:23.338 [DEBUG] [WWE.Main.MyMessagesView] Display message()
+main.js?version=:2 2026-01-22 08:10:23.345 [DEBUG] [WWE.Main.MyMessagesView] getItemList()
+main.js?version=:2 2026-01-22 08:10:23.346 [DEBUG] [WWE.Main.WorkspaceView] getItemList()
+main.js?version=:2 2026-01-22 08:10:23.346 [DEBUG] [WWE.OpenMedia.WorkbinsDesktopContainerView] getItemList()
+main.js?version=:2 2026-01-22 08:10:23.347 [DEBUG] [WWE.Contact.ContactDesktopContainerView] getItemList()
+main.js?version=:2 2026-01-22 08:10:23.347 [DEBUG] [WWE.Main.MyMessagesView] getItemList()
+main.js?version=:2 2026-01-22 08:10:23.349 [DEBUG] [WWE.Main.AgentStateView] Initializing the AgentStateView
+jquery.js?version=:2 [Violation] 'setTimeout' handler took 531ms
+jquery.js?version=:2  GET http://192.168.210.54:8090/internal-api/lucene/index 500 (Server Error)
+send @ jquery.js?version=:2
+ajax @ jquery.js?version=:2
+onExecute @ main.js?version=:2
+execute @ main.js?version=:2
+execute @ main.js?version=:2
+getLuceneIndexes @ main.js?version=:2
+onNotifConnected @ main.js?version=:2
+u @ backbone-wwe-extension.js?version=:2
+a @ backbone-wwe-extension.js?version=:2
+(anonymous) @ main.js?version=:2
+Yt @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+fire @ jquery.js?version=:2
+triggerOnNotifConnected @ main.js?version=:2
+connectHandler @ main.js?version=:2
+Yt @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+Y @ cometd-3.1.12.js?version=:2
+Z @ cometd-3.1.12.js?version=:2
+kt @ cometd-3.1.12.js?version=:2
+Rt @ cometd-3.1.12.js?version=:2
+nt @ cometd-3.1.12.js?version=:2
+onSuccess @ cometd-3.1.12.js?version=:2
+t.transportSuccess @ cometd-3.1.12.js?version=:2
+onSuccess @ cometd-3.1.12.js?version=:2
+n.onload @ cometd-3.1.12.js?version=:2
+XMLHttpRequest.send
+t.xhrSend @ cometd-3.1.12.js?version=:2
+t.transportSend @ cometd-3.1.12.js?version=:2
+f @ cometd-3.1.12.js?version=:2
+p @ cometd-3.1.12.js?version=:2
+t.send @ cometd-3.1.12.js?version=:2
+it @ cometd-3.1.12.js?version=:2
+ct @ cometd-3.1.12.js?version=:2
+(anonymous) @ cometd-3.1.12.js?version=:2
+(anonymous) @ cometd-3.1.12.js?version=:2
+U.v.onmessage @ cometd-3.1.12.js?version=:2
+main.js?version=:2 2026-01-22 08:10:23.401 [DEBUG] [WWE.Main.ResourceRequestAggregator] executeRequest()
+main.js?version=:2 2026-01-22 08:10:23.449 [DEBUG] [WWE.Contact.ContactCommands] Lucene Indexes search failed
+main.js?version=:2 2026-01-22 08:10:23.450 [DEBUG] [WWE.Main.AboutView] Version Htcc received:
+$.ajax({"url":"/api/v2/diagnostics/version","contentType":"application/json; charset=UTF-8","type":"GET"})
+SUCCEED with:
+{
+	"statusCode": 0,
+	"version": "8.5.202.96"
+}
+main.js?version=:2 2026-01-22 08:10:23.452 [DEBUG] [WWE.OpenMedia.WorkbinCommands] Workbins received:
+$.ajax({"url":"/api/v2/workbins?fields=*","contentType":"application/json; charset=UTF-8","type":"GET"})
+SUCCEED
+main.js?version=:2 2026-01-22 08:10:23.452 [TRACE] [WWE.OpenMedia.WorkbinCommands] {
+	"statusCode": 0,
+	"workbins": [
+		{
+			"workbinName": "Draft",
+			"id": "802a8606-dff6-45a2-8ea4-6371c6213ec8",
+			"displayName": "Draft",
+			"uri": "http://192.168.210.54:8090/api/v2/workbins/802a8606-dff6-45a2-8ea4-6371c6213ec8",
+			"type": "Agent"
+		},
+		{
+			"workbinName": "Awaiting",
+			"id": "0088efd4-8640-44cb-8abf-b6765433d086",
+			"displayName": "Awaiting",
+			"uri": "http://192.168.210.54:8090/api/v2/workbins/0088efd4-8640-44cb-8abf-b6765433d086",
+			"type": "Agent"
+		},
+		{
+			"workbinName": "InProgress",
+			"id": "37fb109e-0dc9-4933-bf18-a0b50570a7d5",
+			"displayName": "InProgress",
+			"uri": "http://192.168.210.54:8090/api/v2/workbins/37fb109e-0dc9-4933-bf18-a0b50570a7d5",
+			"type": "Agent"
+		},
+		{
+			"workbinName": "Pending",
+			"id": "aa0e067b-0d4c-46d0-8819-f2844f7b8657",
+			"displayName": "Pending",
+			"uri": "http://192.168.210.54:8090/api/v2/workbins/aa0e067b-0d4c-46d0-8819-f2844f7b8657",
+			"type": "Agent"
+		}
+	]
+}
+main.js?version=:2 2026-01-22 08:10:23.459 [DEBUG] [WWE.OpenMedia.WorkbinManager] GetWorkbins finished
+main.js?version=:2 2026-01-22 08:10:23.461 [DEBUG] [WWE.Main.CommandManager] execute('GetWorkbinContent')
+main.js?version=:2 2026-01-22 08:10:23.462 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetWorkbinContent'
+main.js?version=:2 2026-01-22 08:10:23.464 [DEBUG] [WWE.Main.CommandManager] execute('GetWorkbinContent')
+main.js?version=:2 2026-01-22 08:10:23.465 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetWorkbinContent'
+main.js?version=:2 2026-01-22 08:10:23.468 [DEBUG] [WWE.Contact.ContactManager] Error cannot get the lucene indexes
+main.js?version=:2 2026-01-22 08:10:23.526 [DEBUG] [WWE.Main.ExtensionViewController] register() = 0
+main.js?version=:2 2026-01-22 08:10:23.620 [DEBUG] [WWE.Main.ResourceRequestAggregator] Aggregated subresources received:
+$.ajax({"url":"/api/v2/me/?subresources=devices,calls,channels,interactions,chats","contentType":"application/json; charset=UTF-8","type":"GET"})
+SUCCEED
+main.js?version=:2 2026-01-22 08:10:23.620 [TRACE] [WWE.Main.ResourceRequestAggregator] {
+	"statusCode": 0,
+	"user": {
+		"id": "3f65ac876a48452f83ffb58cfc58fe47",
+		"userName": "abhishek.varma",
+		"firstName": "abhishek",
+		"lastName": "test",
+		"emailAddress": "",
+		"roles": [
+			"ROLE_AGENT"
+		],
+		"enabled": true,
+		"devices": [
+			{
+				"id": "6f0c9ebb-407d-40b0-a03d-92a2ac0893d9",
+				"deviceState": "Inactive",
+				"phoneNumber": "5001",
+				"description": "",
+				"e164Number": "",
+				"telephonyNetwork": "Private",
+				"doNotDisturb": "Off",
+				"voiceEnvironmentUri": "http://192.168.210.54:8090/api/v2/voice-environments/c7762494-2bde-4dcc-8355-0c6cc79ad250",
+				"capabilities": [
+					"DoNotDisturbOn",
+					"ForwardCallsOn"
+				],
+				"channels": [
+					"voice"
+				],
+				"dynamicPhoneNumber": ""
+			}
+		],
+		"channels": [
+			{
+				"channel": "chat",
+				"userState": {
+					"id": "900D55CC-2BB0-431F-8BF9-D3525B383BE6",
+					"displayName": "Not Ready",
+					"state": "NotReady"
+				}
+			}
+		],
+		"channelStates": [
+			{
+				"channel": "chat",
+				"userState": {
+					"id": "900D55CC-2BB0-431F-8BF9-D3525B383BE6",
+					"displayName": "Not Ready",
+					"state": "NotReady"
+				}
+			}
+		],
+		"calls": [],
+		"changePasswordOnFirstLogin": false,
+		"contactCenterId": "6d7466c8-6a21-4e64-b51e-0308e34995ec",
+		"uri": "http://192.168.210.54:8090/api/v2/users/3f65ac876a48452f83ffb58cfc58fe47",
+		"path": "/users/3f65ac876a48452f83ffb58cfc58fe47"
+	}
+}
+main.js?version=:2 2026-01-22 08:10:23.760 [DEBUG] [WWE.Voice.MediaVoiceExtension] updateExistingCallsCore()
+main.js?version=:2 2026-01-22 08:10:23.761 [TRACE] [WWE.Voice.MediaVoiceExtension] {
+	"id": "3f65ac876a48452f83ffb58cfc58fe47",
+	"userName": "abhishek.varma",
+	"firstName": "abhishek",
+	"lastName": "test",
+	"emailAddress": "",
+	"roles": [
+		"ROLE_AGENT"
+	],
+	"enabled": true,
+	"devices": [
+		{
+			"id": "6f0c9ebb-407d-40b0-a03d-92a2ac0893d9",
+			"deviceState": "Inactive",
+			"phoneNumber": "5001",
+			"description": "",
+			"e164Number": "",
+			"telephonyNetwork": "Private",
+			"doNotDisturb": "Off",
+			"voiceEnvironmentUri": "http://192.168.210.54:8090/api/v2/voice-environments/c7762494-2bde-4dcc-8355-0c6cc79ad250",
+			"capabilities": [
+				"DoNotDisturbOn",
+				"ForwardCallsOn"
+			],
+			"channels": [
+				"voice"
+			],
+			"dynamicPhoneNumber": ""
+		}
+	],
+	"channels": [
+		{
+			"channel": "chat",
+			"userState": {
+				"id": "900D55CC-2BB0-431F-8BF9-D3525B383BE6",
+				"displayName": "Not Ready",
+				"state": "NotReady"
+			}
+		}
+	],
+	"channelStates": [
+		{
+			"channel": "chat",
+			"userState": {
+				"id": "900D55CC-2BB0-431F-8BF9-D3525B383BE6",
+				"displayName": "Not Ready",
+				"state": "NotReady"
+			}
+		}
+	],
+	"calls": [],
+	"changePasswordOnFirstLogin": false,
+	"contactCenterId": "6d7466c8-6a21-4e64-b51e-0308e34995ec",
+	"uri": "http://192.168.210.54:8090/api/v2/users/3f65ac876a48452f83ffb58cfc58fe47",
+	"path": "/users/3f65ac876a48452f83ffb58cfc58fe47"
+}
+main.js?version=:2 2026-01-22 08:10:23.761 [DEBUG] [WWE.Voice.MediaVoiceExtension] loadExistingCallsFromSessionStorage()
+main.js?version=:2 2026-01-22 08:10:23.761 [TRACE] [WWE.Voice.MediaVoiceExtension] []
+main.js?version=:2 2026-01-22 08:10:23.762 [DEBUG] [WWE.Chat.MediaChatExtension] createMedia({
+	"channel": "chat",
+	"userState": {
+		"id": "900D55CC-2BB0-431F-8BF9-D3525B383BE6",
+		"displayName": "Not Ready",
+		"state": "NotReady"
+	}
+})
+main.js?version=:2 2026-01-22 08:10:23.771 [DEBUG] [WWE.Main.Agent] Agent add Media: 
+{
+	"name": "chat",
+	"isActive": true,
+	"capabilities": [],
+	"isDNDOn": false,
+	"state": {
+		"state": "NOT_READY",
+		"displayName": "Not Ready",
+		"workMode": "",
+		"startDate": "1769049623770",
+		"iconClass": "wwe-sprite-not-ready",
+		"name": "Not Ready",
+		"reason": null,
+		"id": "900D55CC-2BB0-431F-8BF9-D3525B383BE6",
+		"operationName": "NotReady"
+	},
+	"displayName": "chat",
+	"channel": {
+		"channel": "chat",
+		"userState": {
+			"id": "900D55CC-2BB0-431F-8BF9-D3525B383BE6",
+			"displayName": "Not Ready",
+			"state": "NotReady"
+		}
+	},
+	"previousState": {
+		"state": "UNKNOWN",
+		"displayName": "",
+		"workMode": "",
+		"reason": null,
+		"startDate": 1769049623769
+	}
+}
+
+main.js?version=:2 2026-01-22 08:10:23.827 [DEBUG] [WWE.OpenMedia.WorkbinCommands] Workbin content received:
+$.ajax({"url":"/api/v2/workbins/802a8606-dff6-45a2-8ea4-6371c6213ec8?subresources=*","contentType":"application/json; charset=UTF-8","type":"GET"})
+SUCCEED
+main.js?version=:2 2026-01-22 08:10:23.827 [TRACE] [WWE.OpenMedia.WorkbinCommands] {
+	"statusCode": 0,
+	"workbin": {
+		"workbinName": "Draft",
+		"id": "802a8606-dff6-45a2-8ea4-6371c6213ec8",
+		"displayName": "Draft",
+		"uri": "http://192.168.210.54:8090/api/v2/workbins/802a8606-dff6-45a2-8ea4-6371c6213ec8",
+		"emails": [
+			{
+				"userData": {
+					"IW_CaseUid": "8d18c8cc-8768-4003-d822-27ace643157a",
+					"InteractionId": "02744138EK0K0005",
+					"PlaceInQueueSeq": "9437344",
+					"FirstName": "Pratosh",
+					"Origination_Source": "Email",
+					"WorkbinAgentId": "abhishek",
+					"WWEOutboundInteractionId": "02744138EK0K0002",
+					"ContactId": "00001aKWNQVN00UK",
+					"EmailAddress": "pratoshkumar123@gmail.com",
+					"Subject": "Re: UAT Testing",
+					"FromAddress": "test.genesys@mpokket.com",
+					"IWAttachedDataInformation": {
+						"Option.interaction.case-data.frame-color": "#17849D",
+						"DispositionCode.Label": "Email Disposition Code",
+						"Option.interaction.case-data.header-foreground-color": "#FFFFFF",
+						"DispositionCode.Key": "DispositionCode",
+						"SelectedDispositionCodeName": "",
+						"CaseDataBusinessAttribute": "Email_CaseData"
+					},
+					"Workbin": "Draft",
+					"LastName": "Kumar",
+					"To": "pratoshkumar123@gmail.com",
+					"IW_BundleUid": "d4824b5c-96a4-4b43-3a9b-0f05ff9bd391"
+				},
+				"id": "02744138EK0K0005",
+				"receivedDate": "2025-07-14 14:10:40.000+0530",
+				"assignedTo": "abhishek",
+				"parentId": "00001aKWNQVN0109",
+				"interactionQueue": "Draft/PrivateQueue",
+				"interactionType": "Outbound",
+				"interactionSubtype": "OutboundReply",
+				"subject": "Re: UAT Testing",
+				"emailType": "Outbound",
+				"capabilities": []
+			},
+			{
+				"userData": {
+					"IW_CaseUid": "047390a8-1783-4c2c-5bdd-20b63086306b",
+					"InteractionId": "02744138EK0K0006",
+					"PlaceInQueueSeq": "10486039",
+					"FirstName": "Pratosh",
+					"Origination_Source": "Email",
+					"WorkbinAgentId": "abhishek",
+					"ContactId": "00001aKWNQVN00UK",
+					"EmailAddress": "pratoshkumar123@gmail.com",
+					"Subject": "Re: Test 142025",
+					"FromAddress": "test.genesys@mpokket.com",
+					"IWAttachedDataInformation": {
+						"Option.interaction.case-data.frame-color": "#17849D",
+						"DispositionCode.Label": "Email Disposition Code",
+						"Option.interaction.case-data.header-foreground-color": "#FFFFFF",
+						"DispositionCode.Key": "DispositionCode",
+						"SelectedDispositionCodeName": "",
+						"CaseDataBusinessAttribute": "Email_CaseData"
+					},
+					"Workbin": "Draft",
+					"LastName": "Kumar",
+					"To": "pratoshkumar123@gmail.com",
+					"IW_BundleUid": "36168b8e-ae82-4330-c7fd-ef4df429d236"
+				},
+				"id": "02744138EK0K0006",
+				"receivedDate": "2025-07-14 14:14:03.000+0530",
+				"assignedTo": "abhishek",
+				"parentId": "00001aKWNQVN010S",
+				"interactionQueue": "Draft/PrivateQueue",
+				"interactionType": "Outbound",
+				"interactionSubtype": "OutboundReply",
+				"subject": "Re: Test 142025",
+				"emailType": "Outbound",
+				"capabilities": []
+			},
+			{
+				"userData": {
+					"IW_CaseUid": "047390a8-1783-4c2c-5bdd-20b63086306b",
+					"InteractionId": "0277R138EK3K0002",
+					"PlaceInQueueSeq": "10485886",
+					"FirstName": "Pratosh",
+					"Origination_Source": "Email",
+					"WorkbinAgentId": "abhishek",
+					"WWEOutboundInteractionId": "02744138EK0K0006",
+					"ContactId": "00001aKWNQVN00UK",
+					"EmailAddress": "pratoshkumar123@gmail.com",
+					"Subject": "Re: Test 142025",
+					"FromAddress": "test.genesys@mpokket.com",
+					"IWAttachedDataInformation": {
+						"Option.interaction.case-data.frame-color": "#17849D",
+						"DispositionCode.Label": "Email Disposition Code",
+						"Option.interaction.case-data.header-foreground-color": "#FFFFFF",
+						"DispositionCode.Key": "DispositionCode",
+						"SelectedDispositionCodeName": "",
+						"CaseDataBusinessAttribute": "Email_CaseData"
+					},
+					"Workbin": "Draft",
+					"LastName": "Kumar",
+					"To": "pratoshkumar123@gmail.com",
+					"IW_BundleUid": "36168b8e-ae82-4330-c7fd-ef4df429d236"
+				},
+				"id": "0277R138EK3K0002",
+				"receivedDate": "2025-07-14 14:56:39.000+0530",
+				"assignedTo": "abhishek",
+				"parentId": "00001aKWNQVN010S",
+				"interactionQueue": "Draft/PrivateQueue",
+				"interactionType": "Outbound",
+				"interactionSubtype": "OutboundReply",
+				"subject": "Re: Test 142025",
+				"emailType": "Outbound",
+				"capabilities": []
+			},
+			{
+				"userData": {
+					"IW_CaseUid": "047390a8-1783-4c2c-5bdd-20b63086306b",
+					"InteractionId": "0277R138EK3K0003",
+					"PlaceInQueueSeq": "10485908",
+					"FirstName": "Pratosh",
+					"Origination_Source": "Email",
+					"WorkbinAgentId": "abhishek",
+					"WWEOutboundInteractionId": "02744138EK0K0006",
+					"ContactId": "00001aKWNQVN00UK",
+					"EmailAddress": "pratoshkumar123@gmail.com",
+					"Subject": "Re: Test 142025",
+					"FromAddress": "test.genesys@mpokket.com",
+					"IWAttachedDataInformation": {
+						"Option.interaction.case-data.frame-color": "#17849D",
+						"DispositionCode.Label": "Email Disposition Code",
+						"Option.interaction.case-data.header-foreground-color": "#FFFFFF",
+						"DispositionCode.Key": "DispositionCode",
+						"SelectedDispositionCodeName": "",
+						"CaseDataBusinessAttribute": "Email_CaseData"
+					},
+					"Workbin": "Draft",
+					"LastName": "Kumar",
+					"To": "pratoshkumar123@gmail.com",
+					"IW_BundleUid": "36168b8e-ae82-4330-c7fd-ef4df429d236"
+				},
+				"id": "0277R138EK3K0003",
+				"receivedDate": "2025-07-14 14:57:04.000+0530",
+				"assignedTo": "abhishek",
+				"parentId": "00001aKWNQVN010S",
+				"interactionQueue": "Draft/PrivateQueue",
+				"interactionType": "Outbound",
+				"interactionSubtype": "OutboundReply",
+				"subject": "Re: Test 142025",
+				"emailType": "Outbound",
+				"capabilities": []
+			},
+			{
+				"userData": {
+					"IW_CaseUid": "320eb2fe-4742-49ba-870c-e001cd727344",
+					"InteractionId": "0277R138EK3K0004",
+					"PlaceInQueueSeq": "10485930",
+					"FirstName": "Pratosh",
+					"Origination_Source": "Email",
+					"WorkbinAgentId": "abhishek",
+					"WWEOutboundInteractionId": "02744138EK0K0000",
+					"ContactId": "00001aKWNQVN00UK",
+					"EmailAddress": "pratoshkumar123@gmail.com",
+					"Subject": "Re: Email Test",
+					"FromAddress": "test.genesys@mpokket.com",
+					"IWAttachedDataInformation": {
+						"Option.interaction.case-data.frame-color": "#17849D",
+						"DispositionCode.Label": "Email Disposition Code",
+						"Option.interaction.case-data.header-foreground-color": "#FFFFFF",
+						"DispositionCode.Key": "DispositionCode",
+						"SelectedDispositionCodeName": "",
+						"CaseDataBusinessAttribute": "Email_CaseData"
+					},
+					"Workbin": "Draft",
+					"LastName": "Kumar",
+					"To": "pratoshkumar123@gmail.com",
+					"IW_BundleUid": "0bba27cc-7cd6-4024-801a-af0c7d929bc0"
+				},
+				"id": "0277R138EK3K0004",
+				"receivedDate": "2025-07-14 14:57:26.000+0530",
+				"assignedTo": "abhishek",
+				"parentId": "00001aKWNQVN00XX",
+				"interactionQueue": "Draft/PrivateQueue",
+				"interactionType": "Outbound",
+				"interactionSubtype": "OutboundReply",
+				"subject": "Re: Email Test",
+				"emailType": "Outbound",
+				"capabilities": []
+			}
+		],
+		"type": "Agent"
+	}
+}
+main.js?version=:2 2026-01-22 08:10:23.909 [DEBUG] [WWE.Main.AgentCommands] Command: 'GetDeviceForAgent' sent
+Get devices from resource request aggregator
+SUCCEED
+main.js?version=:2 2026-01-22 08:10:23.910 [TRACE] [WWE.Main.AgentCommands] {
+	"id": "3f65ac876a48452f83ffb58cfc58fe47",
+	"userName": "abhishek.varma",
+	"firstName": "abhishek",
+	"lastName": "test",
+	"emailAddress": "",
+	"roles": [
+		"ROLE_AGENT"
+	],
+	"enabled": true,
+	"devices": [
+		{
+			"id": "6f0c9ebb-407d-40b0-a03d-92a2ac0893d9",
+			"deviceState": "Inactive",
+			"phoneNumber": "5001",
+			"description": "",
+			"e164Number": "",
+			"telephonyNetwork": "Private",
+			"doNotDisturb": "Off",
+			"voiceEnvironmentUri": "http://192.168.210.54:8090/api/v2/voice-environments/c7762494-2bde-4dcc-8355-0c6cc79ad250",
+			"capabilities": [
+				"DoNotDisturbOn",
+				"ForwardCallsOn"
+			],
+			"channels": [
+				"voice"
+			],
+			"dynamicPhoneNumber": ""
+		}
+	],
+	"channels": [
+		{
+			"channel": "chat",
+			"userState": {
+				"id": "900D55CC-2BB0-431F-8BF9-D3525B383BE6",
+				"displayName": "Not Ready",
+				"state": "NotReady"
+			}
+		}
+	],
+	"channelStates": [
+		{
+			"channel": "chat",
+			"userState": {
+				"id": "900D55CC-2BB0-431F-8BF9-D3525B383BE6",
+				"displayName": "Not Ready",
+				"state": "NotReady"
+			}
+		}
+	],
+	"calls": [],
+	"changePasswordOnFirstLogin": false,
+	"contactCenterId": "6d7466c8-6a21-4e64-b51e-0308e34995ec",
+	"uri": "http://192.168.210.54:8090/api/v2/users/3f65ac876a48452f83ffb58cfc58fe47",
+	"path": "/users/3f65ac876a48452f83ffb58cfc58fe47"
+}
+main.js?version=:2 2026-01-22 08:10:23.988 [DEBUG] [WWE.OpenMedia.WorkbinCommands] Workbin content received:
+$.ajax({"url":"/api/v2/workbins/37fb109e-0dc9-4933-bf18-a0b50570a7d5?subresources=*","contentType":"application/json; charset=UTF-8","type":"GET"})
+SUCCEED
+main.js?version=:2 2026-01-22 08:10:23.989 [TRACE] [WWE.OpenMedia.WorkbinCommands] {
+	"statusCode": 0,
+	"workbin": {
+		"workbinName": "InProgress",
+		"id": "37fb109e-0dc9-4933-bf18-a0b50570a7d5",
+		"displayName": "InProgress",
+		"uri": "http://192.168.210.54:8090/api/v2/workbins/37fb109e-0dc9-4933-bf18-a0b50570a7d5",
+		"emails": [
+			{
+				"userData": {
+					"FromPersonal": "Pratosh Kumar",
+					"_AttachmentsInfo": null,
+					"IW_CaseUid": "8d18c8cc-8768-4003-d822-27ace643157a",
+					"_AutoReplyCount": 0,
+					"Header_ARC-Message-Signature": "i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;        h=to:subject:message-id:date:from:mime-version:dkim-signature;        bh=O3UxklA6Qgli5e/WTHgCkokXBqrEjWt9fIapPkci2Tg=;        fh=HOwFjNhdlTgL3GnX8HjbJW/2e74ZPwicACyzX30CHBE=;        b=CCY8qSFGMYEuk2j0cBuOU2L0/PQUcwztMAFe9xxiYROc5dtSBSl2pXYVK2PpQvbQ0q         s8QD6epvPm5PT+dQzjZqslDvbFmdwbso9gSk9RHig0PMoJiMR/dX5r/kVjYLpmvdzShk         PDNBlXW9rMYi0kuC4IF+Y1FCAz2uuqvqKWppjfQ2zMMb3UvySyeWxMiCfBQ8PsRG2bV5         Gd1XRo/YcEiR26vm5fpBDebHzaIguTcGR9lZ4g6wmnP1AY7CS87RkzlcdTgBFyjQgcuT         IU1myabuHle+SO1u1GAa7DAIyYnDWal10AgFVBBQq8Xn6+C+TUjtiz26XpZ7lh0n6eQt         1z2g==;        dara=google.com",
+					"Header_MIME-Version": "1.0",
+					"Header_Date": "Mon, 14 Jul 2025 14:06:31 +0530",
+					"ContactId": "00001aKWNQVN00UK",
+					"Header_X-Google-Smtp-Source": "AGHT+IF9K4SVHQTuMcrVkVTP7/DDYyzPPmVG3eIYSA14dEeWyVRaZr9QEWJWjkg/ePW4ii+PDAHkXib9RLJAcg+quIs=",
+					"Header_X-Gm-Message-State": "AOJu0YxohztIaiSf+1WW/gm08FAoEsN3HYiH+wWjKpXfs19rOaO2b8ul\tyGrwQw3YgP37gkWEyNFleIHYKQJJaQK6VuFk60fRnCbdoTzwjILIUGiA1j7m63ifbPSaF52P7+u\tF8A8jYsvPq66WsOMLt0VKXy5jzG5paeThG4EU",
+					"Header_X-Gm-Features": "Ac12FXyqx7P7U_8sSuTal_cd3zJHtZkxsKibs3_3zAVpAjrcEdDa2VizeYwcJZs",
+					"FromAddress": "pratoshkumar123@gmail.com",
+					"_AttachmentsSize": "0",
+					"Mailbox": "test.genesys@mpokket.com",
+					"Header_Delivered-To": "test.genesys@mpokket.com",
+					"IWAttachedDataInformation": {
+						"Option.interaction.case-data.frame-color": "#17849D",
+						"DispositionCode.Label": "Email Disposition Code",
+						"Option.interaction.case-data.header-foreground-color": "#FFFFFF",
+						"DispositionCode.Key": "DispositionCode",
+						"SelectedDispositionCodeName": "",
+						"CaseDataBusinessAttribute": "Email_CaseData"
+					},
+					"Workbin": "InProgress",
+					"Header_X-Received": "by 2002:a05:690c:4a10:b0:70f:8830:809c with SMTP id 00721157ae682-717d697915emr178568577b3.12.1752482203801;        Mon, 14 Jul 2025 01:36:43 -0700 (PDT),by 2002:a05:690c:730a:b0:70e:7f7f:cfda with SMTP id 00721157ae682-717d6979432mr184353417b3.10.1752482202580; Mon, 14 Jul 2025 01:36:42 -0700 (PDT)",
+					"To": "test.genesys@mpokket.com",
+					"Header_ARC-Seal": "i=1; a=rsa-sha256; t=1752482203; cv=none;        d=google.com; s=arc-20240605;        b=i91j/nnKdGcJ63MbVe2XlcHTW2iQDgYLNGq4+b8iRPJRSAxLgFaSjCC25filWKf9WE         f2odNGprJ16e9niwOJUvf5E3hHf2HR64rJv7cBNaev0zHHH0U0TfB8EA1xAOvGs4M6fE         cwHdao6znIxDO0IOmmodjSPbMhab/wc42912DYfqr/uJYofkBnvUXOlOOZdis+Cq/JFe         wzdVS+11hKvN6B+v1iuR9K0YclbKiF55vbWtOm0gT5DuEA/A6WNx681Y9Gk5x52jXZ3M         Kn3J9a891RRAHXyBvl3fYHwKcfHNciCufUAiJfES3j94iKW9lIIYlSxCb+fWBg/tuZsJ         du0A==",
+					"Header_Authentication-Results": "mx.google.com;       dkim=pass header.i=@gmail.com header.s=20230601 header.b=Rh4gNZq6;       spf=pass (google.com: domain of pratoshkumar123@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=pratoshkumar123@gmail.com;       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com;       dara=neutral header.i=@mpokket.com",
+					"Header_Message-ID": "<CAGuA6-2EKeGpJa3OZS+x+ae5Vv6C4HhSHkFfLYWbOV4hRziGgA@mail.gmail.com>",
+					"IW_BundleUid": "d4824b5c-96a4-4b43-3a9b-0f05ff9bd391",
+					"Header_ARC-Authentication-Results": "i=1; mx.google.com;       dkim=pass header.i=@gmail.com header.s=20230601 header.b=Rh4gNZq6;       spf=pass (google.com: domain of pratoshkumar123@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=pratoshkumar123@gmail.com;       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com;       dara=neutral header.i=@mpokket.com",
+					"Header_X-Gm-Gg": "ASbGncuo+23jDIlhSB01AW051AUYGNyawniWBdsw7C3OyZ/fhCVcIbbOaPmqCDIt0SS\tz3LwPn/2jQOwnIC1v2rfYbrm4ejE7TUZUFGIbaT8mFxEwDiZKRyhRICuQzb+nkU1FZ58qP8ZzOK\tGK+edGPSskMq9cAXjRDj8954QDfedXVkpk2ztiBHn0eEULymOuQjSlhPKqGkiFKF5jvYYMZEj8p\tvc6ZHBQv9oZ65Hsil8=",
+					"InteractionId": "00001aKWNQVN0109",
+					"_AttachmentFileNames": "",
+					"PlaceInQueueSeq": "9437337",
+					"FirstName": "Pratosh",
+					"Origination_Source": "Email",
+					"WorkbinAgentId": "abhishek",
+					"WWEOutboundInteractionId": "02744138EK0K0002",
+					"_ContainsAttachment": "false",
+					"EmailAddress": "pratoshkumar123@gmail.com",
+					"Subject": "UAT Testing",
+					"Header_DKIM-Signature": "v=1; a=rsa-sha256; c=relaxed/relaxed;        d=gmail.com; s=20230601; t=1752482203; x=1753087003; darn=mpokket.com;        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject         :date:message-id:reply-to;        bh=O3UxklA6Qgli5e/WTHgCkokXBqrEjWt9fIapPkci2Tg=;        b=Rh4gNZq6Af1OJ2HYJfiLPc9+46E7+o5W+0hxhqRDJ8c5mmMfYwHLHiDwibi5D9J1xr         LRG3GM0C3gKWm+QYAuFGd0l4k6KfBALf/yAoR7RSHsyFk7hy6/1UNpNzDAmAPweDlq7y         TavJvhvf/5HJSb7M/jnRKcBx7vqn72h/Rflf3NxK6Ipz1qWsDgBPZ+6idwoRDWdKArO+         d9R9YqMDmx0vXEnmP3t4q4Un/wdori2cmeGQYWYUu+dSpKjHDuE5i94ZHUkswCKcfubS         fCQWwZJX5Wo5T7Y5fZIc07cU401WQIpaYP9EQUihZsJNQK6UDcv7nGJV17Jar9oJgxu0         uKoQ==",
+					"Header_Content-Type": "multipart/alternative; boundary=\"00000000000028fdb50639df8f08\"",
+					"Header_Received-SPF": "pass (google.com: domain of pratoshkumar123@gmail.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;",
+					"LastName": "Kumar",
+					"Header_X-Google-DKIM-Signature": "v=1; a=rsa-sha256; c=relaxed/relaxed;        d=1e100.net; s=20230601; t=1752482203; x=1753087003;        h=to:subject:message-id:date:from:mime-version:x-gm-message-state         :from:to:cc:subject:date:message-id:reply-to;        bh=O3UxklA6Qgli5e/WTHgCkokXBqrEjWt9fIapPkci2Tg=;        b=jXAZNJNVAK7cOtPFnlCAwG1fE1rT+6cOPfjVgbzgRi6mkbZ+AdeO9mUT+LKtevdpmb         5m5pH9xoX258RCaCGPXz/g5Q+FLEuXbjr0SjchR9U+nShFycuNQ9OpLCgjcEHHRObCWs         hnIWZfR1QI4XJtIOKWbBN/ZgJqDqnessvXQSFpu2mi7fO1xuh1cRAwPoS82DsvPfJffj         Qq9HJ5OSLQJkaKXichs/KnnBOf2Hp2Zf6lc+eTQxnD+TBrArKAAGUn6eKdK/9R7V96ot         /6xtixP1D/yE6Ru+H+QOlTYFjMfOwGW6gp7qhcfo6v9HxfWicy0SlOKlfKh/IubT5Ktn         deTA=="
+				},
+				"id": "00001aKWNQVN0109",
+				"receivedDate": "2025-07-14 14:06:58.000+0530",
+				"assignedTo": "abhishek",
+				"interactionQueue": "InProgress/PrivateQueue",
+				"interactionType": "Inbound",
+				"interactionSubtype": "InboundNew",
+				"subject": "UAT Testing",
+				"emailType": "Inbound",
+				"capabilities": []
+			}
+		],
+		"type": "Agent"
+	}
+}
+main.js?version=:2 2026-01-22 08:10:23.991 [DEBUG] [WWE.Voice.MediaVoiceExtension] createMedia({
+	"id": "6f0c9ebb-407d-40b0-a03d-92a2ac0893d9",
+	"deviceState": "Inactive",
+	"phoneNumber": "5001",
+	"description": "",
+	"e164Number": "",
+	"telephonyNetwork": "Private",
+	"doNotDisturb": "Off",
+	"voiceEnvironmentUri": "http://192.168.210.54:8090/api/v2/voice-environments/c7762494-2bde-4dcc-8355-0c6cc79ad250",
+	"capabilities": [
+		"DoNotDisturbOn",
+		"ForwardCallsOn"
+	],
+	"channels": [
+		"voice"
+	],
+	"dynamicPhoneNumber": "",
+	"deviceUri": "/devices/6f0c9ebb-407d-40b0-a03d-92a2ac0893d9",
+	"devicePath": "/devices/6f0c9ebb-407d-40b0-a03d-92a2ac0893d9"
+})
+main.js?version=:2 2026-01-22 08:10:23.993 [DEBUG] [WWE.Main.Agent] Agent add Media: 
+{
+	"name": "voice",
+	"isActive": true,
+	"capabilities": [
+		"DND_ON",
+		"FORWARD_ON"
+	],
+	"isDNDOn": false,
+	"state": {
+		"state": "UNKNOWN",
+		"displayName": "Out Of Service",
+		"workMode": "",
+		"startDate": "1769049623992",
+		"iconClass": "wwe-sprite-out-of-service"
+	},
+	"displayName": "voice",
+	"phoneNumber": "5001",
+	"queue": "",
+	"loginId": "",
+	"password": "",
+	"device": {
+		"id": "6f0c9ebb-407d-40b0-a03d-92a2ac0893d9",
+		"deviceState": "Inactive",
+		"phoneNumber": "5001",
+		"description": "",
+		"e164Number": "",
+		"telephonyNetwork": "Private",
+		"doNotDisturb": "Off",
+		"voiceEnvironmentUri": "http://192.168.210.54:8090/api/v2/voice-environments/c7762494-2bde-4dcc-8355-0c6cc79ad250",
+		"capabilities": [
+			"DoNotDisturbOn",
+			"ForwardCallsOn"
+		],
+		"channels": [
+			"voice"
+		],
+		"dynamicPhoneNumber": "",
+		"deviceUri": "/devices/6f0c9ebb-407d-40b0-a03d-92a2ac0893d9",
+		"devicePath": "/devices/6f0c9ebb-407d-40b0-a03d-92a2ac0893d9"
+	},
+	"previousState": {
+		"state": "UNKNOWN",
+		"displayName": "",
+		"workMode": "",
+		"reason": null,
+		"startDate": 1769049623992
+	}
+}
+
+main.js?version=:2 2026-01-22 08:10:23.995 [DEBUG] [WWE.Main.CommandManager] execute('RequestCampaignStatus')
+main.js?version=:2 2026-01-22 08:10:23.996 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'RequestCampaignStatus'
+main.js?version=:2 2026-01-22 08:10:23.997 [DEBUG] [WWE.Main.CommandManager] execute('InteractionVoiceSendUserEvent')
+main.js?version=:2 2026-01-22 08:10:23.998 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'SendUserEvent'
+main.js?version=:2 2026-01-22 08:10:23.998 [DEBUG] [WWE.Voice.InteractionVoiceCommands] Command: 'SendUserEvent' sending
+main.js?version=:2 2026-01-22 08:10:24.002 [DEBUG] [WWE.Main.CommandManager] execute('Add3PCCSupportForDN')
+main.js?version=:2 2026-01-22 08:10:24.002 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'Add3PCCSupportForDN'
+main.js?version=:2 2026-01-22 08:10:24.024 [INFO ] [WWE.Voice.MediaVoice] login function
+main.js?version=:2 2026-01-22 08:10:24.024 [INFO ] [WWE.Voice.MediaVoice] Not Ready without reason is applied as no reason is matching with Login
+main.js?version=:2 2026-01-22 08:10:24.025 [DEBUG] [WWE.Voice.MediaVoice] ChangeState - NotReady
+main.js?version=:2 2026-01-22 08:10:24.025 [DEBUG] [WWE.Voice.MediaVoice] StateForcedByAgent = True
+main.js?version=:2 2026-01-22 08:10:24.025 [DEBUG] [WWE.Main.CommandManager] execute('MediaVoiceChangeState')
+main.js?version=:2 2026-01-22 08:10:24.026 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'ChangeState'
+main.js?version=:2 2026-01-22 08:10:24.027 [DEBUG] [WWE.Voice.MediaVoiceCommands] Command: 'ChangeState' sending
+main.js?version=:2 2026-01-22 08:10:24.030 [DEBUG] [WWE.OpenMedia.WorkbinManager] GetWorkbinContent finished
+main.js?version=:2 2026-01-22 08:10:24.043 [DEBUG] [WWE.OpenMedia.WorkbinManager] GetWorkbinContent finished
+jquery.js?version=:2  POST http://192.168.210.54:8090/internal-api/operations 500 (Server Error)
+send @ jquery.js?version=:2
+ajax @ jquery.js?version=:2
+htccOperation @ main.js?version=:2
+postOperation @ main.js?version=:2
+onExecute @ main.js?version=:2
+execute @ main.js?version=:2
+execute @ main.js?version=:2
+requestByRefId @ main.js?version=:2
+onExecute @ main.js?version=:2
+execute @ main.js?version=:2
+execute @ main.js?version=:2
+requestCampaignStatus @ main.js?version=:2
+onMediaAdded @ main.js?version=:2
+v @ backbone.js?version=:2
+d @ backbone.js?version=:2
+f @ backbone.js?version=:2
+o.trigger @ backbone.js?version=:2
+_onModelEvent @ backbone.js?version=:2
+u @ backbone-wwe-extension.js?version=:2
+a @ backbone-wwe-extension.js?version=:2
+set @ backbone.js?version=:2
+add @ backbone.js?version=:2
+createMedia @ main.js?version=:2
+(anonymous) @ main.js?version=:2
+Yt @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+bn @ underscore.js?version=:2
+(anonymous) @ main.js?version=:2
+Yt @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+f @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+setTimeout
+(anonymous) @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+fire @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+f @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+f @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+setTimeout
+(anonymous) @ jquery.js?version=:2
+a @ jquery.js?version=:2
+add @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+Deferred @ jquery.js?version=:2
+then @ jquery.js?version=:2
+f @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+setTimeout
+(anonymous) @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+fire @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+f @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+setTimeout
+(anonymous) @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+fire @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+(anonymous) @ main.js?version=:2
+Yt @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+f @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+setTimeout
+(anonymous) @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+fire @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+(anonymous) @ main.js?version=:2
+Yt @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+f @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+setTimeout
+(anonymous) @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+fire @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+C @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+XMLHttpRequest.send
+send @ jquery.js?version=:2
+ajax @ jquery.js?version=:2
+executeRequest @ main.js?version=:2
+(anonymous) @ main.js?version=:2
+Yt @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+setTimeout
+onNotifConnected @ main.js?version=:2
+u @ backbone-wwe-extension.js?version=:2
+a @ backbone-wwe-extension.js?version=:2
+(anonymous) @ main.js?version=:2
+Yt @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+fire @ jquery.js?version=:2
+triggerOnNotifConnected @ main.js?version=:2
+connectHandler @ main.js?version=:2
+Yt @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+Y @ cometd-3.1.12.js?version=:2
+Z @ cometd-3.1.12.js?version=:2
+kt @ cometd-3.1.12.js?version=:2
+Rt @ cometd-3.1.12.js?version=:2
+nt @ cometd-3.1.12.js?version=:2
+onSuccess @ cometd-3.1.12.js?version=:2
+t.transportSuccess @ cometd-3.1.12.js?version=:2
+onSuccess @ cometd-3.1.12.js?version=:2
+n.onload @ cometd-3.1.12.js?version=:2
+XMLHttpRequest.send
+t.xhrSend @ cometd-3.1.12.js?version=:2
+t.transportSend @ cometd-3.1.12.js?version=:2
+f @ cometd-3.1.12.js?version=:2
+p @ cometd-3.1.12.js?version=:2
+t.send @ cometd-3.1.12.js?version=:2
+it @ cometd-3.1.12.js?version=:2
+ct @ cometd-3.1.12.js?version=:2
+(anonymous) @ cometd-3.1.12.js?version=:2
+(anonymous) @ cometd-3.1.12.js?version=:2
+U.v.onmessage @ cometd-3.1.12.js?version=:2
+main.js?version=:2 2026-01-22 08:10:24.148 [DEBUG] [WWE.Voice.InteractionVoiceCommands] Command: 'SendUserEvent' sent in 0.147s
+$.ajax({"type":"POST","url":"/internal-api/operations","contentType":"application/json; charset=UTF-8","data":{"operationName":"SendUserEvent","deviceId":"6f0c9ebb-407d-40b0-a03d-92a2ac0893d9","userData":{"GSW_AGENT_REQ_TYPE":"CampaignStatusRequest","GSW_REFERENCE_ID":1}}})
+FAILED with:
+{
+	"readyState": 4,
+	"responseText": "{\"statusCode\":4,\"statusMessage\":\"Device '5001' is not registered.\"}",
+	"responseJSON": {
+		"statusCode": 4,
+		"statusMessage": "Device '5001' is not registered."
+	},
+	"status": 500,
+	"statusText": "Server Error"
+}
+main.js?version=:2 2026-01-22 08:10:24.150 [DEBUG] [WWE.Main.Application] Server Error
+main.js?version=:2 2026-01-22 08:10:24.152 [DEBUG] [WWE.Voice.MediaVoiceCommands] TServer annex for device received:
+$.ajax({"url":"/api/v2/devices/6f0c9ebb-407d-40b0-a03d-92a2ac0893d9/settings/tserver","contentType":"application/json; charset=UTF-8","type":"GET"})
+SUCCEED with:
+{
+	"statusCode": 0,
+	"settings": [
+		{
+			"name": "make-call-rfc3725-flow",
+			"value": "1"
+		},
+		{
+			"name": "record",
+			"value": "false"
+		},
+		{
+			"name": "recovery-timeout",
+			"value": "3"
+		},
+		{
+			"name": "refer-enabled",
+			"value": "false"
+		},
+		{
+			"name": "reinvite-requires-hold",
+			"value": "false"
+		},
+		{
+			"name": "reject-call-incall",
+			"value": "true"
+		},
+		{
+			"name": "reject-call-notready",
+			"value": "true"
+		},
+		{
+			"name": "ring-tone-on-make-call",
+			"value": "true"
+		},
+		{
+			"name": "sip-cti-control",
+			"value": "talk,hold,beep,dtmf"
+		},
+		{
+			"name": "sip-ring-tone-mode",
+			"value": "1"
+		},
+		{
+			"name": "transfer-complete-by-refer",
+			"value": "false"
+		},
+		{
+			"name": "contact",
+			"value": "*"
+		}
+	],
+	"key": "name"
+}
+jquery.js?version=:2  POST http://192.168.210.54:8090/api/v2/me/channels/voice 500 (Server Error)
+send @ jquery.js?version=:2
+ajax @ jquery.js?version=:2
+htccOperation @ main.js?version=:2
+postOperation @ main.js?version=:2
+onExecute @ main.js?version=:2
+execute @ main.js?version=:2
+execute @ main.js?version=:2
+changeState @ main.js?version=:2
+login @ main.js?version=:2
+(anonymous) @ main.js?version=:2
+Yt @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+bn @ underscore.js?version=:2
+(anonymous) @ main.js?version=:2
+Yt @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+f @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+setTimeout
+(anonymous) @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+fire @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+f @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+f @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+setTimeout
+(anonymous) @ jquery.js?version=:2
+a @ jquery.js?version=:2
+add @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+Deferred @ jquery.js?version=:2
+then @ jquery.js?version=:2
+f @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+setTimeout
+(anonymous) @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+fire @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+f @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+setTimeout
+(anonymous) @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+fire @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+(anonymous) @ main.js?version=:2
+Yt @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+f @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+setTimeout
+(anonymous) @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+fire @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+(anonymous) @ main.js?version=:2
+Yt @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+f @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+setTimeout
+(anonymous) @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+fire @ jquery.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+C @ jquery.js?version=:2
+(anonymous) @ jquery.js?version=:2
+XMLHttpRequest.send
+send @ jquery.js?version=:2
+ajax @ jquery.js?version=:2
+executeRequest @ main.js?version=:2
+(anonymous) @ main.js?version=:2
+Yt @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+setTimeout
+onNotifConnected @ main.js?version=:2
+u @ backbone-wwe-extension.js?version=:2
+a @ backbone-wwe-extension.js?version=:2
+(anonymous) @ main.js?version=:2
+Yt @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+a @ jquery.js?version=:2
+fireWith @ jquery.js?version=:2
+fire @ jquery.js?version=:2
+triggerOnNotifConnected @ main.js?version=:2
+connectHandler @ main.js?version=:2
+Yt @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+(anonymous) @ underscore.js?version=:2
+Y @ cometd-3.1.12.js?version=:2
+Z @ cometd-3.1.12.js?version=:2
+kt @ cometd-3.1.12.js?version=:2
+Rt @ cometd-3.1.12.js?version=:2
+nt @ cometd-3.1.12.js?version=:2
+onSuccess @ cometd-3.1.12.js?version=:2
+t.transportSuccess @ cometd-3.1.12.js?version=:2
+onSuccess @ cometd-3.1.12.js?version=:2
+n.onload @ cometd-3.1.12.js?version=:2
+XMLHttpRequest.send
+t.xhrSend @ cometd-3.1.12.js?version=:2
+t.transportSend @ cometd-3.1.12.js?version=:2
+f @ cometd-3.1.12.js?version=:2
+p @ cometd-3.1.12.js?version=:2
+t.send @ cometd-3.1.12.js?version=:2
+it @ cometd-3.1.12.js?version=:2
+ct @ cometd-3.1.12.js?version=:2
+(anonymous) @ cometd-3.1.12.js?version=:2
+(anonymous) @ cometd-3.1.12.js?version=:2
+U.v.onmessage @ cometd-3.1.12.js?version=:2
+main.js?version=:2 2026-01-22 08:10:24.198 [DEBUG] [WWE.Main.MediaDeviceExtension] Message received from /v2/me/devices
+main.js?version=:2 2026-01-22 08:10:24.199 [TRACE] [WWE.Main.MediaDeviceExtension] {
+	"messageType": "ErrorMessage",
+	"metrics": {
+		"eventProcessing": {
+			"nodeProcessingTimeNanos": 116977,
+			"serverGenerationTimestamp": 1769049624339,
+			"serverProcessingTimeTotalMs": -1
+		}
+	},
+	"devicePath": "/devices/6f0c9ebb-407d-40b0-a03d-92a2ac0893d9",
+	"deviceUri": "http://192.168.210.54:8090/api/v2/devices/6f0c9ebb-407d-40b0-a03d-92a2ac0893d9"
+}
+main.js?version=:2 2026-01-22 08:10:24.202 [DEBUG] [WWE.Voice.MediaVoiceCommands] Command: 'ChangeState' sent in 0.173s
+$.ajax({"type":"POST","url":"/api/v2/me/channels/voice","contentType":"application/json; charset=UTF-8","data":{"operationName":"NotReady"}})
+FAILED with:
+{
+	"readyState": 4,
+	"responseText": "{\"statusCode\":4,\"statusMessage\":\"Device '5001' is not registered.\"}",
+	"responseJSON": {
+		"statusCode": 4,
+		"statusMessage": "Device '5001' is not registered."
+	},
+	"status": 500,
+	"statusText": "Server Error"
+}
+main.js?version=:2 2026-01-22 08:10:24.204 [DEBUG] [WWE.Main.Application] Cannot change the voice media status
+main.js?version=:2 2026-01-22 08:10:24.228 [DEBUG] [WWE.Main.CommandManager] execute('IWSIPEndpointPing')
+main.js?version=:2 2026-01-22 08:10:24.228 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'Ping'
+main.js?version=:2 2026-01-22 08:10:24.228 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'Ping' sending
+main.js?version=:2 2026-01-22 08:10:24.239 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'Ping' sent in 0.009s
+$.ajax({"type":"GET","url":"https://127.0.0.1:8000/Ping","contentType":"application/json; charset=UTF-8"})
+SUCCEED with:
+{
+	"pong": true
+}
+main.js?version=:2 2026-01-22 08:10:24.239 [INFO ] [WWE.SipEndpoint.IWSIPEndpointCommands] Attempting to ping iw sip server
+main.js?version=:2 2026-01-22 08:10:24.339 [DEBUG] [WWE.OpenMedia.WorkbinsDesktopContainerView] workbins received
+main.js?version=:2 2026-01-22 08:10:25.326 [DEBUG] [WWE.Main.CommandManager] execute('GetWorkbinsContent')
+main.js?version=:2 2026-01-22 08:10:25.326 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'GetWorkbinsContent'
+main.js?version=:2 2026-01-22 08:10:25.329 [DEBUG] [WWE.OpenMedia.WorkbinsDesktopContainerView] setItemList()
+main.js?version=:2 2026-01-22 08:10:25.331 [DEBUG] [WWE.Main.WorkspaceView] getItemList()
+main.js?version=:2 2026-01-22 08:10:25.332 [DEBUG] [WWE.OpenMedia.WorkbinsDesktopContainerView] getItemList()
+main.js?version=:2 2026-01-22 08:10:25.333 [DEBUG] [WWE.Contact.ContactDesktopContainerView] getItemList()
+main.js?version=:2 2026-01-22 08:10:25.333 [DEBUG] [WWE.Main.MyMessagesView] getItemList()
+main.js?version=:2 2026-01-22 08:10:25.337 [DEBUG] [WWE.Main.WorkspaceView] getItemList()
+main.js?version=:2 2026-01-22 08:10:25.338 [DEBUG] [WWE.OpenMedia.WorkbinsDesktopContainerView] getItemList()
+main.js?version=:2 2026-01-22 08:10:25.338 [DEBUG] [WWE.Contact.ContactDesktopContainerView] getItemList()
+main.js?version=:2 2026-01-22 08:10:25.339 [DEBUG] [WWE.Main.MyMessagesView] getItemList()
+main.js?version=:2 2026-01-22 08:10:25.342 [DEBUG] [WWE.Main.WorkspaceView] getItemList()
+main.js?version=:2 2026-01-22 08:10:25.342 [DEBUG] [WWE.OpenMedia.WorkbinsDesktopContainerView] getItemList()
+main.js?version=:2 2026-01-22 08:10:25.343 [DEBUG] [WWE.Contact.ContactDesktopContainerView] getItemList()
+main.js?version=:2 2026-01-22 08:10:25.343 [DEBUG] [WWE.Main.MyMessagesView] getItemList()
+main.js?version=:2 2026-01-22 08:10:25.346 [DEBUG] [WWE.Main.WorkspaceView] getItemList()
+main.js?version=:2 2026-01-22 08:10:25.346 [DEBUG] [WWE.OpenMedia.WorkbinsDesktopContainerView] getItemList()
+main.js?version=:2 2026-01-22 08:10:25.347 [DEBUG] [WWE.Contact.ContactDesktopContainerView] getItemList()
+main.js?version=:2 2026-01-22 08:10:25.347 [DEBUG] [WWE.Main.MyMessagesView] getItemList()
+main.js?version=:2 2026-01-22 08:10:25.352 [DEBUG] [WWE.Main.Agent] new message added
+main.js?version=:2 2026-01-22 08:10:25.353 [DEBUG] [WWE.Main.MyMessagesView] Display message()
+main.js?version=:2 2026-01-22 08:10:25.358 [DEBUG] [WWE.Main.Application] The voice channel is not available. You will not be able to make or receive calls.
+main.js?version=:2 2026-01-22 08:10:25.493 [DEBUG] [WWE.OpenMedia.WorkbinCommands] Workbins content received:
+$.ajax({"url":"/api/v2/workbins?workbinIds=0088efd4-8640-44cb-8abf-b6765433d086,802a8606-dff6-45a2-8ea4-6371c6213ec8,37fb109e-0dc9-4933-bf18-a0b50570a7d5,aa0e067b-0d4c-46d0-8819-f2844f7b8657&subresources=*","contentType":"application/json; charset=UTF-8","type":"GET"})
+SUCCEED
+main.js?version=:2 2026-01-22 08:10:25.493 [TRACE] [WWE.OpenMedia.WorkbinCommands] {
+	"statusCode": 0,
+	"workbins": {
+		"802a8606-dff6-45a2-8ea4-6371c6213ec8": {
+			"workbinName": "Draft",
+			"id": "802a8606-dff6-45a2-8ea4-6371c6213ec8",
+			"displayName": "Draft",
+			"uri": "http://192.168.210.54:8090/api/v2/workbins/802a8606-dff6-45a2-8ea4-6371c6213ec8",
+			"emails": [
+				{
+					"userData": {
+						"IW_CaseUid": "8d18c8cc-8768-4003-d822-27ace643157a",
+						"InteractionId": "02744138EK0K0005",
+						"PlaceInQueueSeq": "9437344",
+						"FirstName": "Pratosh",
+						"Origination_Source": "Email",
+						"WorkbinAgentId": "abhishek",
+						"WWEOutboundInteractionId": "02744138EK0K0002",
+						"ContactId": "00001aKWNQVN00UK",
+						"EmailAddress": "pratoshkumar123@gmail.com",
+						"Subject": "Re: UAT Testing",
+						"FromAddress": "test.genesys@mpokket.com",
+						"IWAttachedDataInformation": {
+							"Option.interaction.case-data.frame-color": "#17849D",
+							"DispositionCode.Label": "Email Disposition Code",
+							"Option.interaction.case-data.header-foreground-color": "#FFFFFF",
+							"DispositionCode.Key": "DispositionCode",
+							"SelectedDispositionCodeName": "",
+							"CaseDataBusinessAttribute": "Email_CaseData"
+						},
+						"Workbin": "Draft",
+						"LastName": "Kumar",
+						"To": "pratoshkumar123@gmail.com",
+						"IW_BundleUid": "d4824b5c-96a4-4b43-3a9b-0f05ff9bd391"
+					},
+					"id": "02744138EK0K0005",
+					"receivedDate": "2025-07-14 14:10:40.000+0530",
+					"assignedTo": "abhishek",
+					"parentId": "00001aKWNQVN0109",
+					"interactionQueue": "Draft/PrivateQueue",
+					"interactionType": "Outbound",
+					"interactionSubtype": "OutboundReply",
+					"subject": "Re: UAT Testing",
+					"emailType": "Outbound",
+					"capabilities": []
+				},
+				{
+					"userData": {
+						"IW_CaseUid": "047390a8-1783-4c2c-5bdd-20b63086306b",
+						"InteractionId": "02744138EK0K0006",
+						"PlaceInQueueSeq": "10486039",
+						"FirstName": "Pratosh",
+						"Origination_Source": "Email",
+						"WorkbinAgentId": "abhishek",
+						"ContactId": "00001aKWNQVN00UK",
+						"EmailAddress": "pratoshkumar123@gmail.com",
+						"Subject": "Re: Test 142025",
+						"FromAddress": "test.genesys@mpokket.com",
+						"IWAttachedDataInformation": {
+							"Option.interaction.case-data.frame-color": "#17849D",
+							"DispositionCode.Label": "Email Disposition Code",
+							"Option.interaction.case-data.header-foreground-color": "#FFFFFF",
+							"DispositionCode.Key": "DispositionCode",
+							"SelectedDispositionCodeName": "",
+							"CaseDataBusinessAttribute": "Email_CaseData"
+						},
+						"Workbin": "Draft",
+						"LastName": "Kumar",
+						"To": "pratoshkumar123@gmail.com",
+						"IW_BundleUid": "36168b8e-ae82-4330-c7fd-ef4df429d236"
+					},
+					"id": "02744138EK0K0006",
+					"receivedDate": "2025-07-14 14:14:03.000+0530",
+					"assignedTo": "abhishek",
+					"parentId": "00001aKWNQVN010S",
+					"interactionQueue": "Draft/PrivateQueue",
+					"interactionType": "Outbound",
+					"interactionSubtype": "OutboundReply",
+					"subject": "Re: Test 142025",
+					"emailType": "Outbound",
+					"capabilities": []
+				},
+				{
+					"userData": {
+						"IW_CaseUid": "047390a8-1783-4c2c-5bdd-20b63086306b",
+						"InteractionId": "0277R138EK3K0002",
+						"PlaceInQueueSeq": "10485886",
+						"FirstName": "Pratosh",
+						"Origination_Source": "Email",
+						"WorkbinAgentId": "abhishek",
+						"WWEOutboundInteractionId": "02744138EK0K0006",
+						"ContactId": "00001aKWNQVN00UK",
+						"EmailAddress": "pratoshkumar123@gmail.com",
+						"Subject": "Re: Test 142025",
+						"FromAddress": "test.genesys@mpokket.com",
+						"IWAttachedDataInformation": {
+							"Option.interaction.case-data.frame-color": "#17849D",
+							"DispositionCode.Label": "Email Disposition Code",
+							"Option.interaction.case-data.header-foreground-color": "#FFFFFF",
+							"DispositionCode.Key": "DispositionCode",
+							"SelectedDispositionCodeName": "",
+							"CaseDataBusinessAttribute": "Email_CaseData"
+						},
+						"Workbin": "Draft",
+						"LastName": "Kumar",
+						"To": "pratoshkumar123@gmail.com",
+						"IW_BundleUid": "36168b8e-ae82-4330-c7fd-ef4df429d236"
+					},
+					"id": "0277R138EK3K0002",
+					"receivedDate": "2025-07-14 14:56:39.000+0530",
+					"assignedTo": "abhishek",
+					"parentId": "00001aKWNQVN010S",
+					"interactionQueue": "Draft/PrivateQueue",
+					"interactionType": "Outbound",
+					"interactionSubtype": "OutboundReply",
+					"subject": "Re: Test 142025",
+					"emailType": "Outbound",
+					"capabilities": []
+				},
+				{
+					"userData": {
+						"IW_CaseUid": "047390a8-1783-4c2c-5bdd-20b63086306b",
+						"InteractionId": "0277R138EK3K0003",
+						"PlaceInQueueSeq": "10485908",
+						"FirstName": "Pratosh",
+						"Origination_Source": "Email",
+						"WorkbinAgentId": "abhishek",
+						"WWEOutboundInteractionId": "02744138EK0K0006",
+						"ContactId": "00001aKWNQVN00UK",
+						"EmailAddress": "pratoshkumar123@gmail.com",
+						"Subject": "Re: Test 14202
+main.js?version=:2 2026-01-22 08:10:25.495 [DEBUG] [WWE.OpenMedia.WorkbinManager] GetWorkbinsContent finished
+main.js?version=:2 2026-01-22 08:10:25.504 [DEBUG] [WWE.Main.CommandManager] execute('SubscribeWorkbinEvents')
+main.js?version=:2 2026-01-22 08:10:25.505 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'SubscribeWorkbinEvents'
+main.js?version=:2 2026-01-22 08:10:25.505 [DEBUG] [WWE.OpenMedia.WorkbinCommands] Command: 'SubscribeWorkbinEvents' sending
+main.js?version=:2 2026-01-22 08:10:25.508 [DEBUG] [WWE.Main.CommandManager] execute('SubscribeWorkbinEvents')
+main.js?version=:2 2026-01-22 08:10:25.509 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'SubscribeWorkbinEvents'
+main.js?version=:2 2026-01-22 08:10:25.510 [DEBUG] [WWE.OpenMedia.WorkbinCommands] Command: 'SubscribeWorkbinEvents' sending
+main.js?version=:2 2026-01-22 08:10:25.513 [DEBUG] [WWE.Main.CommandManager] execute('SubscribeWorkbinEvents')
+main.js?version=:2 2026-01-22 08:10:25.514 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'SubscribeWorkbinEvents'
+main.js?version=:2 2026-01-22 08:10:25.514 [DEBUG] [WWE.OpenMedia.WorkbinCommands] Command: 'SubscribeWorkbinEvents' sending
+main.js?version=:2 2026-01-22 08:10:25.518 [DEBUG] [WWE.Main.CommandManager] execute('SubscribeWorkbinEvents')
+main.js?version=:2 2026-01-22 08:10:25.518 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'SubscribeWorkbinEvents'
+main.js?version=:2 2026-01-22 08:10:25.519 [DEBUG] [WWE.OpenMedia.WorkbinCommands] Command: 'SubscribeWorkbinEvents' sending
+main.js?version=:2 2026-01-22 08:10:25.595 [DEBUG] [WWE.OpenMedia.WorkbinCommands] Command: 'SubscribeWorkbinEvents' sent in 0.077s
+$.ajax({"type":"POST","url":"/api/v2/workbins/37fb109e-0dc9-4933-bf18-a0b50570a7d5","contentType":"application/json; charset=UTF-8","data":"{\"operationName\":\"Subscribe\"}"})
+SUCCEED with:
+{
+	"statusCode": 0,
+	"referenceId": 68
+}
+main.js?version=:2 2026-01-22 08:10:25.598 [DEBUG] [WWE.OpenMedia.WorkbinCommands] Command: 'SubscribeWorkbinEvents' sent in 0.09s
+$.ajax({"type":"POST","url":"/api/v2/workbins/0088efd4-8640-44cb-8abf-b6765433d086","contentType":"application/json; charset=UTF-8","data":"{\"operationName\":\"Subscribe\"}"})
+SUCCEED with:
+{
+	"statusCode": 0,
+	"referenceId": 66
+}
+main.js?version=:2 2026-01-22 08:10:25.601 [DEBUG] [WWE.OpenMedia.WorkbinCommands] Command: 'SubscribeWorkbinEvents' sent in 0.088s
+$.ajax({"type":"POST","url":"/api/v2/workbins/802a8606-dff6-45a2-8ea4-6371c6213ec8","contentType":"application/json; charset=UTF-8","data":"{\"operationName\":\"Subscribe\"}"})
+SUCCEED with:
+{
+	"statusCode": 0,
+	"referenceId": 67
+}
+main.js?version=:2 2026-01-22 08:10:25.604 [DEBUG] [WWE.OpenMedia.WorkbinManager] subscribeWorkbinEvents finished for "InProgress"
+main.js?version=:2 2026-01-22 08:10:25.605 [DEBUG] [WWE.OpenMedia.WorkbinManager] subscribeWorkbinEvents finished for "Awaiting"
+main.js?version=:2 2026-01-22 08:10:25.606 [DEBUG] [WWE.OpenMedia.WorkbinManager] subscribeWorkbinEvents finished for "Draft"
+main.js?version=:2 2026-01-22 08:10:25.845 [DEBUG] [WWE.Main.Agent] All Favorites received
+main.js?version=:2 2026-01-22 08:10:25.846 [DEBUG] [WWE.Main.CommandManager] execute('GetPersonalFavorites')
+main.js?version=:2 2026-01-22 08:10:25.846 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'getPersonalFavorites'
+main.js?version=:2 2026-01-22 08:10:25.922 [DEBUG] [WWE.OpenMedia.WorkbinCommands] Command: 'SubscribeWorkbinEvents' sent in 0.402s
+$.ajax({"type":"POST","url":"/api/v2/workbins/aa0e067b-0d4c-46d0-8819-f2844f7b8657","contentType":"application/json; charset=UTF-8","data":"{\"operationName\":\"Subscribe\"}"})
+SUCCEED with:
+{
+	"statusCode": 0,
+	"referenceId": 69
+}
+main.js?version=:2 2026-01-22 08:10:25.934 [DEBUG] [WWE.Main.Agent] Personal Favorites received
+main.js?version=:2 2026-01-22 08:10:25.935 [DEBUG] [WWE.OpenMedia.WorkbinManager] subscribeWorkbinEvents finished for "Pending"
+main.js?version=:2 2026-01-22 08:10:25.944 [DEBUG] [WWE.Main.CommandManager] execute('GetRecents')
+main.js?version=:2 2026-01-22 08:10:25.944 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'getRecents'
+main.js?version=:2 2026-01-22 08:10:25.961 [DEBUG] [WWE.Main.Agent] All Recents received
+main.js?version=:2 2026-01-22 08:10:25.965 [DEBUG] [WWE.Main.CommandManager] execute('getSpecificInternalTargets')
+main.js?version=:2 2026-01-22 08:10:25.966 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'getSpecificInternalTargets'
+main.js?version=:2 2026-01-22 08:10:25.966 [DEBUG] [WWE.Main.CommandManager] execute('getSpecificUsers')
+main.js?version=:2 2026-01-22 08:10:25.966 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'getSpecificUsers'
+main.js?version=:2 2026-01-22 08:10:25.966 [DEBUG] [WWE.Main.CommandManager] execute('getSpecificObjects')
+main.js?version=:2 2026-01-22 08:10:25.967 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'getSpecificObjects'
+main.js?version=:2 2026-01-22 08:10:25.998 [DEBUG] [WWE.Main.CommandManager] execute('getSpecificRoutingPoints')
+main.js?version=:2 2026-01-22 08:10:25.998 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'getSpecificRoutingPoints'
+main.js?version=:2 2026-01-22 08:10:25.998 [DEBUG] [WWE.Main.CommandManager] execute('getSpecificObjects')
+main.js?version=:2 2026-01-22 08:10:25.998 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'getSpecificObjects'
+main.js?version=:2 2026-01-22 08:10:26.027 [DEBUG] [WWE.Main.CommandManager] execute('getSpecificInxQueues')
+main.js?version=:2 2026-01-22 08:10:26.027 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'getSpecificInxQueues'
+main.js?version=:2 2026-01-22 08:10:26.027 [DEBUG] [WWE.Main.CommandManager] execute('getSpecificObjects')
+main.js?version=:2 2026-01-22 08:10:26.028 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'getSpecificObjects'
+main.js?version=:2 2026-01-22 08:10:26.058 [DEBUG] [WWE.Main.CommandManager] execute('getSpecificSkills')
+main.js?version=:2 2026-01-22 08:10:26.058 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'getSpecificSkills'
+main.js?version=:2 2026-01-22 08:10:26.058 [DEBUG] [WWE.Main.CommandManager] execute('getSpecificObjects')
+main.js?version=:2 2026-01-22 08:10:26.059 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'getSpecificObjects'
+main.js?version=:2 2026-01-22 08:10:26.090 [DEBUG] [WWE.Main.CommandManager] execute('getSpecificAgentGroups')
+main.js?version=:2 2026-01-22 08:10:26.091 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'getSpecificAgentGroups'
+main.js?version=:2 2026-01-22 08:10:26.091 [DEBUG] [WWE.Main.CommandManager] execute('getSpecificObjects')
+main.js?version=:2 2026-01-22 08:10:26.091 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'getSpecificObjects'
+main.js?version=:2 2026-01-22 08:10:26.120 [DEBUG] [WWE.Main.AgentCommands] Wrapping agent-groups
+main.js?version=:2 2026-01-22 08:10:26.120 [DEBUG] [WWE.Main.AgentCommands] End wrapping agent-groups
+main.js?version=:2 2026-01-22 08:10:26.121 [DEBUG] [WWE.Main.AgentCommands] End Fetching agent-groups.
+main.js?version=:2 2026-01-22 08:10:26.121 [DEBUG] [WWE.Main.CommandManager] execute('getSpecificVirtualAgentGroups')
+main.js?version=:2 2026-01-22 08:10:26.121 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'getSpecificVirtualAgentGroups'
+main.js?version=:2 2026-01-22 08:10:26.121 [DEBUG] [WWE.Main.CommandManager] execute('getSpecificObjects')
+main.js?version=:2 2026-01-22 08:10:26.121 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'getSpecificObjects'
+main.js?version=:2 2026-01-22 08:10:26.154 [DEBUG] [WWE.Main.AgentCommands] Wrapping agent-groups
+main.js?version=:2 2026-01-22 08:10:26.154 [DEBUG] [WWE.Main.AgentCommands] End wrapping agent-groups
+main.js?version=:2 2026-01-22 08:10:26.154 [DEBUG] [WWE.Main.AgentCommands] End Fetching agent-groups.
+main.js?version=:2 2026-01-22 08:10:26.161 [DEBUG] [WWE.Main.OptionLayerAgent] Settings saved:
+$.ajax([])
+SUCCEED
+main.js?version=:2 2026-01-22 08:10:26.165 [DEBUG] [WWE.Main.TargetUtils] Request set recent SUCCEEDED
+main.js?version=:2 2026-01-22 08:10:26.244 [DEBUG] [WWE.Main.CommandManager] execute('IWSIPEndpointPing')
+main.js?version=:2 2026-01-22 08:10:26.244 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'Ping'
+main.js?version=:2 2026-01-22 08:10:26.244 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'Ping' sending
+main.js?version=:2 2026-01-22 08:10:26.252 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'Ping' sent in 0.007s
+$.ajax({"type":"GET","url":"https://127.0.0.1:8000/Ping","contentType":"application/json; charset=UTF-8"})
+SUCCEED with:
+{
+	"pong": true
+}
+main.js?version=:2 2026-01-22 08:10:26.252 [INFO ] [WWE.SipEndpoint.IWSIPEndpointCommands] Attempting to ping iw sip server
+main.js?version=:2 2026-01-22 08:10:28.261 [DEBUG] [WWE.Main.CommandManager] execute('IWSIPEndpointPing')
+main.js?version=:2 2026-01-22 08:10:28.262 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'Ping'
+main.js?version=:2 2026-01-22 08:10:28.262 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'Ping' sending
+main.js?version=:2 2026-01-22 08:10:28.281 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'Ping' sent in 0.018s
+$.ajax({"type":"GET","url":"https://127.0.0.1:8000/Ping","contentType":"application/json; charset=UTF-8"})
+SUCCEED with:
+{
+	"pong": true
+}
+main.js?version=:2 2026-01-22 08:10:28.281 [INFO ] [WWE.SipEndpoint.IWSIPEndpointCommands] Attempting to ping iw sip server
+ 2026-01-22 08:10:30.293 [DEBUG] [WWE.Main.CommandManager] execute('IWSIPEndpointPing')
+ 2026-01-22 08:10:30.294 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'Ping'
+ 2026-01-22 08:10:30.294 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'Ping' sending
+ 2026-01-22 08:10:30.321 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'Ping' sent in 0.024s
+$.ajax({"type":"GET","url":"https://127.0.0.1:8000/Ping","contentType":"application/json; charset=UTF-8"})
+SUCCEED with:
+{
+	"pong": true
+}
+ 2026-01-22 08:10:30.323 [INFO ] [WWE.SipEndpoint.IWSIPEndpointCommands] Attempting to ping iw sip server
+ 2026-01-22 08:10:32.326 [DEBUG] [WWE.Main.CommandManager] execute('IWSIPEndpointPing')
+ 2026-01-22 08:10:32.327 [DEBUG] [WWE.Main.ChainOfCommand] execute() 'Ping'
+ 2026-01-22 08:10:32.328 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'Ping' sending
+ 2026-01-22 08:10:32.360 [DEBUG] [WWE.SipEndpoint.IWSIPEndpointCommands] Command: 'Ping' sent in 0.03s
+$.ajax({"type":"GET","url":"https://127.0.0.1:8000/Ping","contentType":"application/json; charset=UTF-8"})
+SUCCEED with:
+{
+	"pong": true
+}
+ 2026-01-22 08:10:32.361 [INFO ] [WWE.SipEndpoint.IWSIPEndpointCommands] Attempting to ping iw sip server
+ 2026-01-22 08:10:34.001 [DEBUG] [WWE.Outbound.OutboundExtension] Outbound request [GSW_REFERENCE_ID = 1 ] timed out

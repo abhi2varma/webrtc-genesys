@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Microphone Test</title>
+</head>
+<body>
+    <h1>Microphone Access Test</h1>
+    <button onclick="testMic()">Test Microphone</button>
+    <pre id="result"></pre>
+    
+    <script>
+        function testMic() {
+            const result = document.getElementById('result');
+            result.textContent = 'Testing microphone access...';
+            
+            navigator.mediaDevices.getUserMedia({audio: true, video: false})
+                .then(stream => {
+                    result.textContent = '✅ SUCCESS! Microphone is accessible.\n';
+                    result.textContent += 'Stream ID: ' + stream.id + '\n';
+                    result.textContent += 'Audio tracks: ' + stream.getAudioTracks().length + '\n';
+                    stream.getAudioTracks().forEach(track => {
+                        result.textContent += '  - ' + track.label + ' (enabled: ' + track.enabled + ')\n';
+                    });
+                    
+                    // Stop the stream
+                    stream.getTracks().forEach(track => track.stop());
+                })
+                .catch(err => {
+                    result.textContent = '❌ ERROR: ' + err.name + '\n';
+                    result.textContent += 'Message: ' + err.message + '\n';
+                    result.textContent += '\nPossible causes:\n';
+                    if (err.name === 'NotAllowedError') {
+                        result.textContent += '- Browser permission denied\n';
+                        result.textContent += '- Click the 🔒 or camera icon in address bar\n';
+                        result.textContent += '- Allow microphone access\n';
+                    } else if (err.name === 'NotFoundError') {
+                        result.textContent += '- No microphone found\n';
+                        result.textContent += '- Check if microphone is connected\n';
+                    } else if (err.name === 'NotReadableError') {
+                        result.textContent += '- Microphone is in use by another application\n';
+                        result.textContent += '- Close other apps using the mic\n';
+                    } else if (err.name === 'SecurityError') {
+                        result.textContent += '- HTTPS required for microphone access\n';
+                        result.textContent += '- Or certificate issue\n';
+                    }
+                });
+        }
+    </script>
+</body>
+</html>

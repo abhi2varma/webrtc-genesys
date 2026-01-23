@@ -73,7 +73,9 @@ let webrtcStatus = {
   registered: false,
   dn: null,
   callActive: false,
-  callDestination: null
+  callDestination: null,
+  incomingCall: null,  // Store incoming call details
+  callerId: null
 };
 
 // Create HTTPS certificate
@@ -231,9 +233,27 @@ function handleWebRTCEvent(event) {
       updateTrayTooltip();
       break;
     
+    case 'incoming_call':
+      // Store incoming call details for WWE to retrieve
+      webrtcStatus.incomingCall = {
+        callerId: event.data?.callerId || event.data?.from || 'Unknown',
+        timestamp: Date.now(),
+        session: event.data?.session
+      };
+      webrtcStatus.callerId = webrtcStatus.incomingCall.callerId;
+      logger.info('Incoming call from:', webrtcStatus.callerId);
+      updateTrayTooltip();
+      break;
+    
+    case 'call_progress':
+      // Call is ringing
+      logger.info('Call progress - ringing');
+      break;
+    
     case 'call_accepted':
     case 'call_confirmed':
       webrtcStatus.callActive = true;
+      webrtcStatus.incomingCall = null; // Clear incoming call state
       updateTrayTooltip();
       break;
     
@@ -241,6 +261,8 @@ function handleWebRTCEvent(event) {
     case 'call_failed':
       webrtcStatus.callActive = false;
       webrtcStatus.callDestination = null;
+      webrtcStatus.incomingCall = null;
+      webrtcStatus.callerId = null;
       updateTrayTooltip();
       break;
   }
@@ -475,6 +497,38 @@ function createAPIServer() {
       logger.error('AnswerCall error:', error);
       res.status(500).json({ error: error.message });
     }
+  });
+  
+  // Get incoming call status - WWE polls this to detect incoming calls
+  app.get('/GetIncomingCall', (req, res) => {
+    logger.info('GetIncomingCall called');
+    
+    if (webrtcStatus.incomingCall) {
+      // Return incoming call details
+      res.json({
+        hasIncomingCall: true,
+        callerId: webrtcStatus.incomingCall.callerId,
+        timestamp: webrtcStatus.incomingCall.timestamp
+      });
+    } else {
+      // No incoming call
+      res.json({
+        hasIncomingCall: false
+      });
+    }
+  });
+  
+  // Get call status - WWE can use this to check current call state
+  app.get('/GetCallStatus', (req, res) => {
+    logger.info('GetCallStatus called');
+    
+    res.json({
+      registered: webrtcStatus.registered,
+      dn: webrtcStatus.dn,
+      callActive: webrtcStatus.callActive,
+      hasIncomingCall: !!webrtcStatus.incomingCall,
+      callerId: webrtcStatus.callerId
+    });
   });
   
   // Hold call (mute)
