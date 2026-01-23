@@ -308,7 +308,10 @@ class RegistrationMonitor:
             await self.unregister_from_genesys(dn)
         
         if self.ami_client:
-            await self.ami_client.disconnect()
+            try:
+                await self.ami_client.close()
+            except Exception as e:
+                logger.debug(f"Error closing AMI connection: {e}")
         
         logger.info("Registration monitor stopped")
 
