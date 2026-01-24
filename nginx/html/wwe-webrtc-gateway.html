@@ -325,7 +325,8 @@
                 
                 this.agentId = agentId;
                 this.agentDn = dn;
-                this.sipServer = sipServer || 'wss://103.167.180.166:8443/ws';
+                // Connect directly to Asterisk WSS (bypass Kamailio to avoid proxy loop)
+                this.sipServer = sipServer || 'wss://103.167.180.166:8089/ws';
                 
                 // Update UI
                 document.getElementById('agentId').textContent = agentId;
