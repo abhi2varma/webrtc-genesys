@@ -124,7 +124,7 @@ class RegistrationMonitor:
             return False
     
     async def query_initial_registrations(self):
-        """Query current registration status on startup"""
+        """Query current registration status on startup and unregister all DNs"""
         logger.info("Querying initial registration status...")
         
         try:
@@ -138,8 +138,15 @@ class RegistrationMonitor:
         except Exception as e:
             logger.warning(f"Failed to query initial registrations: {e}")
         
-        # Note: Not unregistering on startup - let static PJSIP registrations
-        # in pjsip.conf handle the initial registration to Genesys
+        # Unregister all DNs on startup to ensure clean state
+        # DNs will only be registered when WebRTC clients actually connect
+        logger.info("🧹 Unregistering all DNs from Genesys on startup...")
+        for dn_num in range(DN_RANGE_START, DN_RANGE_END + 1):
+            dn = str(dn_num)
+            try:
+                await self.unregister_from_genesys(dn)
+            except Exception as e:
+                logger.debug(f"Failed to unregister DN {dn} on startup (may not be registered): {e}")
     
     def is_monitored_dn(self, dn: str) -> bool:
         """Check if DN is in monitored range"""
