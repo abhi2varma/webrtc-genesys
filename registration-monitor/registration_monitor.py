@@ -234,12 +234,26 @@ class RegistrationMonitor:
         
         logger.info(f"🔵 Registering DN {dn} to Genesys SIP Server")
         
-        # Note: Static PJSIP registrations in pjsip.conf (genesys_reg_1002, genesys_reg_1003)
-        # will automatically register to Genesys when Asterisk starts.
-        # This monitor just tracks the registration state.
+        try:
+            # Trigger outbound registration using AMI
+            # The registration object must exist in pjsip.conf as genesys_reg_{dn}
+            registration_name = f"genesys_reg_{dn}"
+            
+            response = await self.ami_client.send_action({
+                'Action': 'PJSIPRegister',
+                'Registration': registration_name
+            })
+            
+            if response.success:
+                logger.info(f"✅ DN {dn} registered to Genesys (registration: {registration_name})")
+                self.registered_dns.add(dn)
+            else:
+                logger.error(f"❌ Failed to register DN {dn}: {response.message}")
+                logger.info(f"💡 Hint: Ensure [{registration_name}] exists in pjsip.conf")
         
-        logger.info(f"✅ DN {dn} registered to Genesys")
-        self.registered_dns.add(dn)
+        except Exception as e:
+            logger.error(f"❌ Failed to register DN {dn}: {e}")
+            logger.info(f"💡 Hint: Ensure [genesys_reg_{dn}] exists in pjsip.conf")
     
     async def unregister_from_genesys(self, dn: str):
         """Unregister DN from Genesys SIP Server"""
@@ -250,11 +264,27 @@ class RegistrationMonitor:
         
         logger.info(f"🔴 Unregistering DN {dn} from Genesys SIP Server")
         
-        # Note: Static PJSIP registrations in pjsip.conf will automatically
-        # expire based on their expiration time. This monitor just tracks the state.
+        try:
+            # Unregister via AMI
+            registration_name = f"genesys_reg_{dn}"
+            
+            response = await self.ami_client.send_action({
+                'Action': 'PJSIPUnregister',
+                'Registration': registration_name
+            })
+            
+            if response.success:
+                logger.info(f"✅ DN {dn} unregistered from Genesys (registration: {registration_name})")
+                self.registered_dns.discard(dn)
+            else:
+                logger.warning(f"⚠️ Failed to unregister DN {dn}: {response.message}")
+                # Remove from tracking anyway
+                self.registered_dns.discard(dn)
         
-        logger.info(f"✅ DN {dn} unregistered from Genesys")
-        self.registered_dns.discard(dn)
+        except Exception as e:
+            logger.warning(f"⚠️ Failed to unregister DN {dn}: {e}")
+            # Remove from tracking anyway
+            self.registered_dns.discard(dn)
     
     async def run(self):
         """Main run loop"""
