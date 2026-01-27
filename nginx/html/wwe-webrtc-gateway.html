@@ -606,7 +606,7 @@
                     setTimeout(() => {
                         if (this.currentSession && !this.currentSession.isEstablished()) {
                             this.log('🎯 AUTO-ANSWER: Answering call automatically', 'success');
-                            this.answer();
+                            this.answerCall();
                             this.sendEvent('auto_answered', {
                                 trigger: 'timer',
                                 from: callerNumber
