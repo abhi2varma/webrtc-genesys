@@ -386,6 +386,41 @@
                     this.handleNewSession(e.session, e.originator);
                 });
 
+                // Handle incoming NOTIFY messages for auto-answer
+                this.ua.on('newMessage', (e) => {
+                    const request = e.request;
+                    this.log(`📩 Received SIP message: ${request.method}`, 'info');
+                    
+                    if (request.method === 'NOTIFY') {
+                        const eventHeader = request.getHeader('Event');
+                        this.log(`📩 NOTIFY Event: ${eventHeader}`, 'info');
+                        
+                        if (eventHeader === 'talk') {
+                            this.log('🎯 AUTO-ANSWER TRIGGER: Received NOTIFY with Event: talk', 'success');
+                            
+                            // Check if there's an incoming call session in progress
+                            if (this.currentSession && !this.currentSession.isEstablished()) {
+                                this.log('📞 Auto-answering incoming call...', 'success');
+                                
+                                // Answer the call
+                                this.currentSession.answer({
+                                    mediaConstraints: {
+                                        audio: true,
+                                        video: false
+                                    }
+                                });
+                                
+                                this.sendEvent('auto_answered', {
+                                    trigger: 'notify_talk',
+                                    callId: request.getHeader('Call-ID')
+                                });
+                            } else {
+                                this.log('⚠️ No pending call to auto-answer', 'warn');
+                            }
+                        }
+                    }
+                });
+
                 // Start UA
                 this.log('🚀 Starting JsSIP UA...', 'info');
                 this.ua.start();
@@ -564,6 +599,22 @@
                     });
                     
                     this.setupSessionHandlers(session, 'incoming', callerNumber);
+                    
+                    // AUTO-ANSWER: Answer incoming calls after 500ms delay
+                    // This simulates the auto-answer behavior that would be triggered by NOTIFY
+                    this.log('🎯 AUTO-ANSWER: Setting 500ms timer to answer call', 'info');
+                    setTimeout(() => {
+                        if (this.currentSession && !this.currentSession.isEstablished()) {
+                            this.log('🎯 AUTO-ANSWER: Answering call automatically', 'success');
+                            this.answer();
+                            this.sendEvent('auto_answered', {
+                                trigger: 'timer',
+                                from: callerNumber
+                            });
+                        } else {
+                            this.log('⚠️ AUTO-ANSWER: Call already established or ended', 'warn');
+                        }
+                    }, 500);
                 }
             }
 

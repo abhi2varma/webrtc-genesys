@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const Store = require('electron-store');
 const winston = require('winston');
 const selfsigned = require('selfsigned');
+const WorkspaceClient = require('./workspace-client');
 
 // Disable certificate verification for self-signed certs
 app.commandLine.appendSwitch('ignore-certificate-errors');
@@ -70,6 +71,7 @@ const logger = winston.createLogger({
 let mainWindow = null;
 let tray = null;
 let httpsServer = null;
+let workspaceClient = null;
 let webrtcStatus = {
   registered: false,
   dn: null,
@@ -302,6 +304,65 @@ function sendWebRTCCommand(command, data) {
   });
 }
 
+// Setup Workspace API event handlers
+function setupWorkspaceEventHandlers() {
+  if (!workspaceClient) return;
+  
+  logger.info('[Workspace] Setting up event handlers');
+  
+  // Handle call answered from WWE
+  workspaceClient.on('call-answered', async (callData) => {
+    logger.info('[Workspace] 🎯 Call answered in WWE:', callData);
+    
+    try {
+      // Send answer command to WebRTC gateway
+      await sendWebRTCCommand('answer_call', {
+        callId: callData.callId,
+        callUuid: callData.callUuid,
+        dnis: callData.dnis
+      });
+      
+      logger.info('[Workspace] ✅ Answer command sent to WebRTC gateway');
+      webrtcStatus.callActive = true;
+      
+    } catch (error) {
+      logger.error('[Workspace] ❌ Failed to answer call:', error);
+    }
+  });
+  
+  // Handle incoming call
+  workspaceClient.on('call-ringing', (callData) => {
+    logger.info('[Workspace] 📞 Call ringing:', callData);
+    webrtcStatus.incomingCall = callData;
+    webrtcStatus.callerId = callData.participants?.[0]?.phoneNumber;
+  });
+  
+  // Handle call released
+  workspaceClient.on('call-released', (callData) => {
+    logger.info('[Workspace] Call released:', callData.callId);
+    webrtcStatus.callActive = false;
+    webrtcStatus.incomingCall = null;
+    webrtcStatus.callerId = null;
+  });
+  
+  // Handle connection status
+  workspaceClient.on('connected', () => {
+    logger.info('[Workspace] ✅ Connected to Workspace API');
+  });
+  
+  workspaceClient.on('disconnected', () => {
+    logger.warn('[Workspace] ⚠️ Disconnected from Workspace API');
+  });
+  
+  workspaceClient.on('reconnect-failed', () => {
+    logger.error('[Workspace] ❌ Failed to reconnect to Workspace API');
+  });
+  
+  workspaceClient.on('error', (error) => {
+    logger.error('[Workspace] Error:', error);
+  });
+}
+
 // Create Express REST API server
 function createAPIServer() {
   const app = express();
@@ -333,10 +394,45 @@ function createAPIServer() {
     });
   });
   
+  // Initialize Workspace API connection
+  app.post('/InitWorkspace', async (req, res) => {
+    try {
+      const { sessionId, workspaceUrl } = req.body;
+      logger.info('InitWorkspace called', { sessionId: sessionId ? '***' : null, workspaceUrl });
+      
+      if (!sessionId) {
+        return res.status(400).json({ error: 'No session ID provided' });
+      }
+      
+      // Initialize Workspace client
+      if (!workspaceClient) {
+        // Support both local and public IPs
+        const defaultUrl = workspaceUrl || 
+                          process.env.WORKSPACE_URL || 
+                          'ws://192.168.210.54:8090';
+        
+        workspaceClient = new WorkspaceClient({
+          workspaceUrl: defaultUrl
+        });
+        
+        // Setup event handlers
+        setupWorkspaceEventHandlers();
+      }
+      
+      // Connect with session ID
+      workspaceClient.connect(sessionId);
+      
+      res.json({ success: true });
+    } catch (error) {
+      logger.error('InitWorkspace error:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
   // Register DN (sign in)
   app.post('/RegisterDn', async (req, res) => {
     try {
-      const { addresses, users } = req.body;
+      const { addresses, users, workspaceSessionId } = req.body;
       logger.info('RegisterDn called', { addresses, users });
       
       const dn = users && users[0];
@@ -358,6 +454,21 @@ function createAPIServer() {
       });
       
       webrtcStatus.dn = dn;
+      
+      // Initialize Workspace API connection if session ID provided
+      if (workspaceSessionId) {
+        logger.info('Initializing Workspace API connection...');
+        if (!workspaceClient) {
+          // Try to detect the correct Workspace URL
+          // Use environment variable or default to local IP
+          const workspaceUrl = process.env.WORKSPACE_URL || 'ws://192.168.210.54:8090';
+          workspaceClient = new WorkspaceClient({
+            workspaceUrl: workspaceUrl
+          });
+          setupWorkspaceEventHandlers();
+        }
+        workspaceClient.connect(workspaceSessionId);
+      }
       
       // Wait for registration to propagate to Genesys T-Server
       // This ensures WWE gets the DN status AFTER T-Server sees it
@@ -382,6 +493,12 @@ function createAPIServer() {
       
       webrtcStatus.registered = false;
       webrtcStatus.dn = null;
+      
+      // Disconnect Workspace client
+      if (workspaceClient) {
+        workspaceClient.disconnect();
+        workspaceClient = null;
+      }
       
       res.json({
         UnregisterDnResult: true
@@ -497,6 +614,56 @@ function createAPIServer() {
     } catch (error) {
       logger.error('AnswerCall error:', error);
       res.status(500).json({ error: error.message });
+    }
+  });
+  
+  // Auto-answer API endpoint (triggered by AMI NOTIFY handler)
+  app.post('/auto-answer/:dn', async (req, res) => {
+    try {
+      const dn = req.params.dn;
+      const callId = req.body?.call_id || 'unknown';
+      
+      logger.info(`🎯 AUTO-ANSWER TRIGGERED: DN ${dn}, Call-ID: ${callId}`);
+      
+      // Check if there's an incoming call
+      if (webrtcStatus.incomingCall) {
+        logger.info('Auto-answering incoming call via WebRTC gateway');
+        
+        // Send answer command to WebRTC gateway
+        if (mainWindow && mainWindow.webContents) {
+          mainWindow.webContents.executeJavaScript(`
+            (function() {
+              if (window.gateway && window.gateway.currentSession) {
+                if (!window.gateway.currentSession.isEstablished()) {
+                  window.gateway.log('🎯 AUTO-ANSWER: Answering call via AMI trigger', 'success');
+                  window.gateway.currentSession.answer({
+                    mediaConstraints: { audio: true, video: false }
+                  });
+                  return { success: true, message: 'Call auto-answered' };
+                } else {
+                  return { success: false, message: 'Call already established' };
+                }
+              } else {
+                return { success: false, message: 'No active session' };
+              }
+            })();
+          `).then(result => {
+            logger.info('Auto-answer result:', result);
+          }).catch(error => {
+            logger.error('Auto-answer execution error:', error);
+          });
+          
+          res.json({ success: true, message: 'Auto-answer command sent' });
+        } else {
+          res.status(500).json({ success: false, error: 'Bridge window not available' });
+        }
+      } else {
+        logger.warn('Auto-answer triggered but no incoming call detected');
+        res.status(404).json({ success: false, error: 'No incoming call' });
+      }
+    } catch (error) {
+      logger.error('Auto-answer error:', error);
+      res.status(500).json({ success: false, error: error.message });
     }
   });
   
