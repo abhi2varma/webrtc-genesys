@@ -144,7 +144,7 @@ class RegistrationMonitor:
         for dn_num in range(DN_RANGE_START, DN_RANGE_END + 1):
             dn = str(dn_num)
             try:
-                await self.unregister_from_genesys(dn)
+                await self.unregister_from_genesys(dn, force=True)
             except Exception as e:
                 logger.debug(f"Failed to unregister DN {dn} on startup (may not be registered): {e}")
     
@@ -255,10 +255,15 @@ class RegistrationMonitor:
             logger.error(f"❌ Failed to register DN {dn}: {e}")
             logger.info(f"💡 Hint: Ensure [genesys_reg_{dn}] exists in pjsip.conf")
     
-    async def unregister_from_genesys(self, dn: str):
-        """Unregister DN from Genesys SIP Server"""
+    async def unregister_from_genesys(self, dn: str, force: bool = False):
+        """Unregister DN from Genesys SIP Server
         
-        if dn not in self.registered_dns:
+        Args:
+            dn: DN number to unregister
+            force: If True, attempt unregister even if not tracked as registered (for startup cleanup)
+        """
+        
+        if not force and dn not in self.registered_dns:
             logger.debug(f"DN {dn} not registered to Genesys")
             return
         
