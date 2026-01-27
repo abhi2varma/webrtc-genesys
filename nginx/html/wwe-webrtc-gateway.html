@@ -368,6 +368,9 @@
                     this.isRegistered = true;
                     this.updateStatus('connected');
                     this.sendEvent('registered', { agentId, dn });
+                    
+                    // Acquire microphone early to avoid delays during auto-answer
+                    this.acquireMediaEarly();
                 });
 
                 this.ua.on('unregistered', () => {
@@ -519,19 +522,33 @@
                 this.setupSessionHandlers(session, 'outgoing', destination);
             }
 
+            async acquireMediaEarly() {
+                try {
+                    this.log('🎤 Acquiring microphone access early for fast auto-answer...', 'info');
+                    this.localStream = await navigator.mediaDevices.getUserMedia({
+                        audio: true,
+                        video: false
+                    });
+                    this.log('✅ Microphone access granted and ready', 'success');
+                } catch (error) {
+                    this.log(`❌ Failed to acquire microphone: ${error.message}`, 'error');
+                }
+            }
+
             answerCall() {
                 if (!this.currentSession) {
                     this.log('No incoming call to answer', 'error');
                     return;
                 }
 
-                this.log('Answering call', 'info');
+                this.log('Answering call with pre-acquired media', 'info');
                 
                 const options = {
                     mediaConstraints: {
                         audio: true,
                         video: false
                     },
+                    mediaStream: this.localStream,  // Use pre-acquired media stream
                     pcConfig: {
                         iceServers: [
                             { 
