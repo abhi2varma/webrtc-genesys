@@ -40,6 +40,10 @@ GENESYS_SIP_PORT = os.getenv('GENESYS_SIP_PORT', '5060')
 DN_RANGE_START = int(os.getenv('DN_RANGE_START', '5001'))
 DN_RANGE_END = int(os.getenv('DN_RANGE_END', '5020'))
 
+# POC: Specific DNs with registration objects configured
+# Only these DNs will be unregistered on startup
+CONFIGURED_DNS = os.getenv('CONFIGURED_DNS', '1002,1003,5001,5002,5003,5004,5005').split(',')
+
 LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
 
 # Setup logging to file and console
@@ -138,11 +142,11 @@ class RegistrationMonitor:
         except Exception as e:
             logger.warning(f"Failed to query initial registrations: {e}")
         
-        # Unregister all DNs on startup to ensure clean state
-        # DNs will only be registered when WebRTC clients actually connect
-        logger.info("🧹 Unregistering all DNs from Genesys on startup...")
-        for dn_num in range(DN_RANGE_START, DN_RANGE_END + 1):
-            dn = str(dn_num)
+        # Unregister configured DNs on startup to ensure clean state
+        # Only unregister DNs that have registration objects in pjsip.conf
+        logger.info(f"🧹 Unregistering configured DNs from Genesys on startup: {', '.join(CONFIGURED_DNS)}")
+        for dn in CONFIGURED_DNS:
+            dn = dn.strip()  # Remove any whitespace
             try:
                 await self.unregister_from_genesys(dn, force=True)
             except Exception as e:
@@ -406,11 +410,11 @@ class RegistrationMonitor:
                 else:
                     # Successfully reconnected - Asterisk likely restarted
                     logger.info("✅ Reconnected to Asterisk AMI")
-                    logger.info("🧹 Cleaning up DN registrations after Asterisk restart...")
+                    logger.info(f"🧹 Cleaning up configured DNs after Asterisk restart: {', '.join(CONFIGURED_DNS)}")
                     
-                    # Unregister all DNs to ensure clean state
-                    for dn_num in range(DN_RANGE_START, DN_RANGE_END + 1):
-                        dn = str(dn_num)
+                    # Unregister only configured DNs to ensure clean state
+                    for dn in CONFIGURED_DNS:
+                        dn = dn.strip()
                         try:
                             await self.unregister_from_genesys(dn, force=True)
                         except Exception as e:
