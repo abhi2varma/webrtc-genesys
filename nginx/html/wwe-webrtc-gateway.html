@@ -553,8 +553,8 @@
                         rtcpMuxPolicy: 'require',
                         iceCandidatePoolSize: 0
                     },
-                    // Send answer after 5 seconds or when first candidate is ready
-                    iceGatheringTimeout: 5000
+                    // Send answer quickly for auto-answer - 1 second max
+                    iceGatheringTimeout: 1000
                 };
 
                 this.currentSession.answer(options);
