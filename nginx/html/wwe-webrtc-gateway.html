@@ -618,8 +618,21 @@
                     
                     this.setupSessionHandlers(session, 'incoming', callerNumber);
                     
-                    // Note: WWE controls auto-answer via the answer() API call
-                    // We don't auto-answer here to preserve WWE's answer button UX
+                    // Auto-answer immediately - WWE handles the answer button UI
+                    // The bridge just needs to establish the SIP/WebRTC connection
+                    this.log('🎯 Auto-answering call (WWE controls UI)', 'info');
+                    setTimeout(() => {
+                        if (this.currentSession && !this.currentSession.isEstablished()) {
+                            this.log('📞 Answering call for WWE', 'success');
+                            this.answerCall();
+                            this.sendEvent('auto_answered', {
+                                trigger: 'bridge',
+                                from: callerNumber
+                            });
+                        } else {
+                            this.log('⚠️ Call already established or ended', 'warn');
+                        }
+                    }, 100); // Very short delay to ensure session handlers are ready
                 }
             }
 
