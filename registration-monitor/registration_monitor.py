@@ -225,6 +225,87 @@ class RegistrationMonitor:
         elif state == 'UNAVAILABLE':
             await self.unregister_from_genesys(dn)
     
+    async def create_registration_object(self, dn: str):
+        """Dynamically create registration object in pjsip.conf via AMI UpdateConfig"""
+        registration_name = f"genesys_reg_{dn}"
+        
+        logger.info(f"📝 Creating registration object [{registration_name}] dynamically")
+        
+        try:
+            # Add registration object to pjsip.conf using UpdateConfig
+            config_updates = [
+                ('Action', 'UpdateConfig'),
+                ('SrcFilename', 'pjsip.conf'),
+                ('DstFilename', 'pjsip.conf'),
+                ('Action-000000', 'NewCat'),
+                ('Cat-000000', registration_name),
+                ('Action-000001', 'Append'),
+                ('Cat-000001', registration_name),
+                ('Var-000001', 'type'),
+                ('Value-000001', 'registration'),
+                ('Action-000002', 'Append'),
+                ('Cat-000002', registration_name),
+                ('Var-000002', 'transport'),
+                ('Value-000002', 'transport-udp-dn'),
+                ('Action-000003', 'Append'),
+                ('Cat-000003', registration_name),
+                ('Var-000003', 'outbound_auth'),
+                ('Value-000003', 'genesys_auth'),
+                ('Action-000004', 'Append'),
+                ('Cat-000004', registration_name),
+                ('Var-000004', 'server_uri'),
+                ('Value-000004', f'sip:{GENESYS_SIP_HOST}'),
+                ('Action-000005', 'Append'),
+                ('Cat-000005', registration_name),
+                ('Var-000005', 'client_uri'),
+                ('Value-000005', f'sip:{dn}@{GENESYS_SIP_HOST}'),
+                ('Action-000006', 'Append'),
+                ('Cat-000006', registration_name),
+                ('Var-000006', 'contact_user'),
+                ('Value-000006', dn),
+                ('Action-000007', 'Append'),
+                ('Cat-000007', registration_name),
+                ('Var-000007', 'retry_interval'),
+                ('Value-000007', '0'),
+                ('Action-000008', 'Append'),
+                ('Cat-000008', registration_name),
+                ('Var-000008', 'expiration'),
+                ('Value-000008', '3600'),
+                ('Action-000009', 'Append'),
+                ('Cat-000009', registration_name),
+                ('Var-000009', 'max_retries'),
+                ('Value-000009', '0'),
+            ]
+            
+            # Convert to dict for AMI
+            update_dict = dict(config_updates)
+            response = await self.ami_client.send_action(update_dict)
+            
+            if response.success:
+                logger.info(f"✅ Registration object [{registration_name}] created in pjsip.conf")
+                
+                # Reload PJSIP to pick up the new registration
+                logger.info("🔄 Reloading PJSIP module...")
+                reload_response = await self.ami_client.send_action({
+                    'Action': 'Command',
+                    'Command': 'module reload res_pjsip.so'
+                })
+                
+                if reload_response.success:
+                    logger.info("✅ PJSIP module reloaded")
+                    await asyncio.sleep(2)  # Wait for reload to complete
+                    return True
+                else:
+                    logger.warning(f"⚠️ PJSIP reload may have failed: {reload_response.message}")
+                    return True  # Continue anyway
+            else:
+                logger.error(f"❌ Failed to create registration object: {response.message}")
+                return False
+        
+        except Exception as e:
+            logger.error(f"❌ Error creating registration object for DN {dn}: {e}")
+            return False
+    
     async def register_to_genesys(self, dn: str):
         """Register DN to Genesys SIP Server via AMI PJSIP command"""
         
@@ -235,8 +316,7 @@ class RegistrationMonitor:
         logger.info(f"🔵 Registering DN {dn} to Genesys SIP Server")
         
         try:
-            # Trigger outbound registration using AMI
-            # The registration object must exist in pjsip.conf as genesys_reg_{dn}
+            # First, try to register (registration object might already exist)
             registration_name = f"genesys_reg_{dn}"
             
             response = await self.ami_client.send_action({
@@ -248,12 +328,30 @@ class RegistrationMonitor:
                 logger.info(f"✅ DN {dn} registered to Genesys (registration: {registration_name})")
                 self.registered_dns.add(dn)
             else:
-                logger.error(f"❌ Failed to register DN {dn}: {response.message}")
-                logger.info(f"💡 Hint: Ensure [{registration_name}] exists in pjsip.conf")
+                # Registration object doesn't exist, create it dynamically
+                error_msg = response.message.lower() if hasattr(response, 'message') else str(response).lower()
+                if 'unable to retrieve' in error_msg or 'not found' in error_msg:
+                    logger.info(f"📝 Registration object [{registration_name}] not found, creating dynamically...")
+                    
+                    if await self.create_registration_object(dn):
+                        # Retry registration after creating the object
+                        retry_response = await self.ami_client.send_action({
+                            'Action': 'PJSIPRegister',
+                            'Registration': registration_name
+                        })
+                        
+                        if retry_response.success:
+                            logger.info(f"✅ DN {dn} registered to Genesys (registration: {registration_name})")
+                            self.registered_dns.add(dn)
+                        else:
+                            logger.error(f"❌ Failed to register DN {dn} after creating object: {retry_response.message}")
+                    else:
+                        logger.error(f"❌ Could not create registration object for DN {dn}")
+                else:
+                    logger.error(f"❌ Failed to register DN {dn}: {response.message}")
         
         except Exception as e:
             logger.error(f"❌ Failed to register DN {dn}: {e}")
-            logger.info(f"💡 Hint: Ensure [genesys_reg_{dn}] exists in pjsip.conf")
     
     async def unregister_from_genesys(self, dn: str, force: bool = False):
         """Unregister DN from Genesys SIP Server
