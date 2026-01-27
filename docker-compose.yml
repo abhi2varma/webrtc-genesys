@@ -217,6 +217,30 @@ services:
         max-size: "5m"
         max-file: "3"
 
+  ami-auto-answer-handler:
+    build:
+      context: ./asterisk
+      dockerfile: Dockerfile.ami-handler
+    image: webrtc-ami-auto-answer-handler
+    container_name: webrtc-ami-auto-answer-handler
+    hostname: ami-auto-answer-handler
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      - ASTERISK_HOST=127.0.0.1
+      - ASTERISK_AMI_PORT=5038
+      - ASTERISK_AMI_USER=admin
+      - ASTERISK_AMI_SECRET=admin123
+      - BRIDGE_API_URL=http://192.168.210.54:8000
+      - GENESYS_SIP_HOST=192.168.210.81
+    depends_on:
+      - asterisk
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+
 
 
 
