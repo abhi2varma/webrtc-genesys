@@ -298,12 +298,27 @@ class RegistrationMonitor:
         while self.running:
             if not self.ami_client or not self.ami_client.protocol:
                 logger.warning("AMI connection lost, reconnecting...")
+                logger.info("🔄 Asterisk may have restarted, will cleanup DNs after reconnection")
                 await asyncio.sleep(5)
                 
                 if not await self.connect():
                     logger.error("Reconnection failed, retrying in 10s...")
                     await asyncio.sleep(10)
                     continue
+                else:
+                    # Successfully reconnected - Asterisk likely restarted
+                    logger.info("✅ Reconnected to Asterisk AMI")
+                    logger.info("🧹 Cleaning up DN registrations after Asterisk restart...")
+                    
+                    # Unregister all DNs to ensure clean state
+                    for dn_num in range(DN_RANGE_START, DN_RANGE_END + 1):
+                        dn = str(dn_num)
+                        try:
+                            await self.unregister_from_genesys(dn, force=True)
+                        except Exception as e:
+                            logger.debug(f"Failed to cleanup DN {dn} after reconnect: {e}")
+                    
+                    logger.info("✅ DN cleanup completed after Asterisk restart")
             
             # Keep running
             await asyncio.sleep(1)
