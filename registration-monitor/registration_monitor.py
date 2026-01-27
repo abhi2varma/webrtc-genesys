@@ -320,7 +320,6 @@ class RegistrationMonitor:
         logger.info(f"🔵 Registering DN {dn} to Genesys SIP Server")
         
         try:
-            # First, try to register (registration object might already exist)
             registration_name = f"genesys_reg_{dn}"
             
             response = await self.ami_client.send_action({
@@ -332,25 +331,10 @@ class RegistrationMonitor:
                 logger.info(f"✅ DN {dn} registered to Genesys (registration: {registration_name})")
                 self.registered_dns.add(dn)
             else:
-                # Registration object doesn't exist, create it dynamically
                 error_msg = response.message.lower() if hasattr(response, 'message') else str(response).lower()
                 if 'unable to retrieve' in error_msg or 'not found' in error_msg:
-                    logger.info(f"📝 Registration object [{registration_name}] not found, creating dynamically...")
-                    
-                    if await self.create_registration_object(dn):
-                        # Retry registration after creating the object
-                        retry_response = await self.ami_client.send_action({
-                            'Action': 'PJSIPRegister',
-                            'Registration': registration_name
-                        })
-                        
-                        if retry_response.success:
-                            logger.info(f"✅ DN {dn} registered to Genesys (registration: {registration_name})")
-                            self.registered_dns.add(dn)
-                        else:
-                            logger.error(f"❌ Failed to register DN {dn} after creating object: {retry_response.message}")
-                    else:
-                        logger.error(f"❌ Could not create registration object for DN {dn}")
+                    logger.error(f"❌ Failed to register DN {dn}: Registration object [{registration_name}] not found in pjsip.conf")
+                    logger.info(f"💡 Hint: Ensure [genesys_reg_{dn}] exists in pjsip.conf with expiration=3600")
                 else:
                     logger.error(f"❌ Failed to register DN {dn}: {response.message}")
         
@@ -372,19 +356,20 @@ class RegistrationMonitor:
         logger.info(f"🔴 Unregistering DN {dn} from Genesys SIP Server")
         
         try:
-            # Unregister via AMI
+            # Unregister via AMI using CLI command (PJSIPUnregister doesn't exist)
             registration_name = f"genesys_reg_{dn}"
             
+            # Use Command action to run Asterisk CLI command
             response = await self.ami_client.send_action({
-                'Action': 'PJSIPUnregister',
-                'Registration': registration_name
+                'Action': 'Command',
+                'Command': f'pjsip send unregister {registration_name}'
             })
             
-            if response.success:
+            if response.success or 'unregistered' in str(response).lower():
                 logger.info(f"✅ DN {dn} unregistered from Genesys (registration: {registration_name})")
                 self.registered_dns.discard(dn)
             else:
-                logger.warning(f"⚠️ Failed to unregister DN {dn}: {response.message}")
+                logger.warning(f"⚠️ Failed to unregister DN {dn}: {response}")
                 # Remove from tracking anyway
                 self.registered_dns.discard(dn)
         
