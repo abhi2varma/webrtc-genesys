@@ -618,21 +618,8 @@
                     
                     this.setupSessionHandlers(session, 'incoming', callerNumber);
                     
-                    // AUTO-ANSWER: Answer incoming calls after 500ms delay
-                    // This simulates the auto-answer behavior that would be triggered by NOTIFY
-                    this.log('🎯 AUTO-ANSWER: Setting 500ms timer to answer call', 'info');
-                    setTimeout(() => {
-                        if (this.currentSession && !this.currentSession.isEstablished()) {
-                            this.log('🎯 AUTO-ANSWER: Answering call automatically', 'success');
-                            this.answerCall();
-                            this.sendEvent('auto_answered', {
-                                trigger: 'timer',
-                                from: callerNumber
-                            });
-                        } else {
-                            this.log('⚠️ AUTO-ANSWER: Call already established or ended', 'warn');
-                        }
-                    }, 500);
+                    // Note: WWE controls auto-answer via the answer() API call
+                    // We don't auto-answer here to preserve WWE's answer button UX
                 }
             }
 
