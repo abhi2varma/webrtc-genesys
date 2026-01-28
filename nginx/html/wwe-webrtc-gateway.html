@@ -116,6 +116,26 @@
             <p><strong>Active Call:</strong> <span id="activeCall">None</span></p>
         </div>
 
+        <!-- Test Controls (for standalone testing without WWE) -->
+        <div id="testControls" class="info" style="background: #fff3cd; border-left-color: #ffc107;">
+            <h3>📞 Test Controls</h3>
+            <div style="margin: 10px 0;">
+                <input type="text" id="destinationNumber" placeholder="Enter DN (e.g., 1003)" 
+                       style="padding: 8px; width: 200px; border: 1px solid #ccc; border-radius: 4px; margin-right: 10px;">
+                <button onclick="gateway.testMakeCall()" style="padding: 8px 16px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    📞 Call
+                </button>
+            </div>
+            <div style="margin: 10px 0;">
+                <button onclick="gateway.testAnswerCall()" style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px;">
+                    ✅ Answer
+                </button>
+                <button onclick="gateway.testHangup()" style="padding: 8px 16px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    ❌ Hangup
+                </button>
+            </div>
+        </div>
+
         <audio id="remoteAudio" autoplay></audio>
 
         <div class="logs">
@@ -857,6 +877,39 @@
                 entry.textContent = `[${time}] ${message}`;
                 container.appendChild(entry);
                 container.scrollTop = container.scrollHeight;
+            }
+
+            // Test helper methods for standalone mode
+            testMakeCall() {
+                const destination = document.getElementById('destinationNumber').value;
+                if (!destination) {
+                    alert('Please enter a destination number');
+                    return;
+                }
+                if (!this.isRegistered) {
+                    alert('Not registered yet. Please wait for registration.');
+                    return;
+                }
+                this.log(`📞 Test: Making call to ${destination}`, 'info');
+                this.makeCall({ destination });
+            }
+
+            testAnswerCall() {
+                if (!this.currentSession) {
+                    alert('No incoming call to answer');
+                    return;
+                }
+                this.log('✅ Test: Answering call', 'info');
+                this.answerCall();
+            }
+
+            testHangup() {
+                if (!this.currentSession) {
+                    alert('No active call to hang up');
+                    return;
+                }
+                this.log('❌ Test: Hanging up', 'info');
+                this.hangup();
             }
         }
 
