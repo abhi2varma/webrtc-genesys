@@ -510,13 +510,26 @@
                     },
                     pcConfig: {
                         iceServers: [
+                            // Google STUN (free, public)
                             { 
                                 urls: 'stun:stun.l.google.com:19302' 
                             },
+                            // Local TURN (will work when port forwarding is configured)
                             { 
                                 urls: 'turn:103.167.180.166:3478',
                                 username: 'webrtc',
                                 credential: 'Genesys2024!SecureTurn'
+                            },
+                            // Cloud TURN fallback (Metered.ca free tier - works immediately)
+                            { 
+                                urls: 'turn:a.relay.metered.ca:80',
+                                username: '87a47860aaa39c9d5524de53',
+                                credential: 'xfOwa55SxL1cu6w+'
+                            },
+                            { 
+                                urls: 'turn:a.relay.metered.ca:80?transport=tcp',
+                                username: '87a47860aaa39c9d5524de53',
+                                credential: 'xfOwa55SxL1cu6w+'
                             }
                         ],
                         iceTransportPolicy: 'all',  // Allow all connection types
@@ -569,13 +582,26 @@
                     mediaStream: this.localStream,  // Use pre-acquired media stream
                     pcConfig: {
                         iceServers: [
+                            // Google STUN (free, public)
                             { 
                                 urls: 'stun:stun.l.google.com:19302' 
                             },
+                            // Local TURN (will work when port forwarding is configured)
                             { 
                                 urls: 'turn:103.167.180.166:3478',
                                 username: 'webrtc',
                                 credential: 'Genesys2024!SecureTurn'
+                            },
+                            // Cloud TURN fallback (Metered.ca free tier - works immediately)
+                            { 
+                                urls: 'turn:a.relay.metered.ca:80',
+                                username: '87a47860aaa39c9d5524de53',
+                                credential: 'xfOwa55SxL1cu6w+'
+                            },
+                            { 
+                                urls: 'turn:a.relay.metered.ca:80?transport=tcp',
+                                username: '87a47860aaa39c9d5524de53',
+                                credential: 'xfOwa55SxL1cu6w+'
                             }
                         ],
                         iceTransportPolicy: 'all',  // Allow all connection types
