@@ -21,12 +21,15 @@
   "author": "Your Organization",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
-    "cors": "^2.8.5",
     "body-parser": "^1.20.2",
-    "winston": "^3.11.0",
+    "cometd": "^9.0.0",
+    "cometd-nodejs-client": "^2.0.0",
+    "cors": "^2.8.5",
     "electron-store": "^8.1.0",
-    "selfsigned": "^2.4.1"
+    "express": "^4.18.2",
+    "selfsigned": "^2.4.1",
+    "winston": "^3.11.0",
+    "ws": "^8.19.0"
   },
   "devDependencies": {
     "electron": "^28.0.0",
@@ -64,4 +67,3 @@
     ]
   }
 }
-

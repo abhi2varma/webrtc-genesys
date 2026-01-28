@@ -167,7 +167,14 @@ function createWindow() {
     callback(0); // 0 means accept the certificate
   });
 
-  mainWindow.loadURL(config.gateway.iframeUrl);
+  // Clear all cache to ensure fresh load from server
+  mainWindow.webContents.session.clearCache().then(() => {
+    logger.info('Session cache cleared');
+    
+    // Add cache-busting parameter to force reload from server
+    const cacheBustUrl = `${config.gateway.iframeUrl}?v=${Date.now()}`;
+    mainWindow.loadURL(cacheBustUrl);
+  });
   
   mainWindow.webContents.on('did-finish-load', () => {
     logger.info('WebRTC gateway loaded successfully');
@@ -226,7 +233,8 @@ function handleWebRTCEvent(event) {
   switch (event.event) {
     case 'registered':
       webrtcStatus.registered = true;
-      webrtcStatus.dn = event.dn;
+      webrtcStatus.dn = event.data?.dn || event.dn;
+      logger.info(`DN registered: ${webrtcStatus.dn}`);
       updateTrayTooltip();
       break;
     
@@ -244,7 +252,7 @@ function handleWebRTCEvent(event) {
         session: event.data?.session
       };
       webrtcStatus.callerId = webrtcStatus.incomingCall.callerId;
-      logger.info('Incoming call from:', webrtcStatus.callerId);
+      logger.info('📞 Incoming call from:', webrtcStatus.callerId);
       updateTrayTooltip();
       break;
     
