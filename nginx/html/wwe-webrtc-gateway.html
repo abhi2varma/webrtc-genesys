@@ -391,6 +391,9 @@
                     
                     // Acquire microphone early to avoid delays during auto-answer
                     this.acquireMediaEarly();
+                    
+                    // Set DN to Ready state in Genesys (if Workspace API is configured)
+                    this.setGenesysReady(dn);
                 });
 
                 this.ua.on('unregistered', () => {
@@ -910,6 +913,36 @@
                 }
                 this.log('❌ Test: Hanging up', 'info');
                 this.hangup();
+            }
+
+            async setGenesysReady(dn) {
+                // Set DN to Ready state via Genesys Workspace API
+                // This requires the Genesys Workspace API to be accessible
+                const workspaceApiUrl = 'https://103.167.180.166:8443/api/v2';
+                
+                try {
+                    this.log(`🔄 Setting DN ${dn} to Ready state in Genesys...`, 'info');
+                    
+                    // Make DN Ready via Workspace API
+                    // Note: This requires authentication and proper API access
+                    const response = await fetch(`${workspaceApiUrl}/voice/dn/${dn}/ready`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include'
+                    });
+                    
+                    if (response.ok) {
+                        this.log(`✅ DN ${dn} set to Ready state in Genesys`, 'success');
+                    } else {
+                        this.log(`⚠️ Could not set Ready state: ${response.status}`, 'error');
+                        this.log(`   This is normal if Genesys auto-ready is configured`, 'info');
+                    }
+                } catch (error) {
+                    this.log(`⚠️ Genesys API not accessible: ${error.message}`, 'error');
+                    this.log(`   DN state must be managed by Genesys T-Server`, 'info');
+                }
             }
         }
 
