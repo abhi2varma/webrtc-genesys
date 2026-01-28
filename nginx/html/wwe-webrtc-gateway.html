@@ -862,6 +862,31 @@
 
         // Initialize gateway
         const gateway = new WebRTCGateway();
+        
+        // Auto-sign-in for standalone testing (no WWE)
+        // Comment this out when running with WWE
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const dn = urlParams.get('dn') || '1002'; // Default to DN 1002
+                const agentId = urlParams.get('agent') || 'agent_' + dn;
+                const password = urlParams.get('password') || dn; // Use DN as password
+                
+                console.log(`🔧 Auto-signing in as DN: ${dn}, Agent: ${agentId}`);
+                
+                gateway.handleMessage({
+                    data: {
+                        command: 'sign_in',
+                        data: {
+                            agentId: agentId,
+                            dn: dn,
+                            password: password,
+                            sipServer: 'wss://103.167.180.166:8443/ws'
+                        }
+                    }
+                });
+            }, 1000); // Wait 1 second for page to fully load
+        });
     </script>
 </body>
 </html>
