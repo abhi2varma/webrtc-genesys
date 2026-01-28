@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "WWE Integration Helper",
+  "version": "1.0.0",
+  "description": "Helper for testing WWE + webrtc-gateway-bridge integration",
+  "permissions": [
+    "cookies",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "http://192.168.210.54:8090/*",
+    "https://192.168.210.54:8090/*",
+    "http://103.167.180.166:8443/*",
+    "https://103.167.180.166:8443/*",
+    "https://127.0.0.1:8000/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://192.168.210.54:8090/*",
+        "https://192.168.210.54:8090/*",
+        "http://103.167.180.166:8443/*",
+        "https://103.167.180.166:8443/*"
+      ],
+      "js": ["content.js"]
+    }
+  ]
+}

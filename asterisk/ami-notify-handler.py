@@ -129,17 +129,29 @@ class NotifyHandler:
             # Extract details
             channel = event.get('Channel', '')
             endpoint = event.get('Endpoint', '')
+            call_id = event.get('CallID', 'unknown')
             
-            # Parse the actual SIP message to find Event header
-            # This is a simplified check - in production, parse the full SIP message
-            print(f"{YELLOW}📩 NOTIFY received on channel: {channel}{RESET}")
-            print(f"{YELLOW}   Full event: {event}{RESET}")
+            # Parse the actual SIP message to find X-Genesys-CallUUID
+            # Look in the raw SIP message body or headers
+            sip_headers = event.get('Headers', '')
+            call_uuid = None
             
-            # Trigger auto-answer
+            # Try to extract X-Genesys-CallUUID from headers
+            for key, value in event.items():
+                if 'X-Genesys-CallUUID' in key or 'CallUUID' in key:
+                    call_uuid = value
+                    break
+            
+            print(f"{YELLOW}📩 NOTIFY received{RESET}")
+            print(f"{YELLOW}   Channel: {channel}{RESET}")
+            print(f"{YELLOW}   Call-ID: {call_id}{RESET}")
+            if call_uuid:
+                print(f"{GREEN}   X-Genesys-CallUUID: {call_uuid}{RESET}")
+            
             # Extract DN from channel name (e.g., PJSIP/1002-0000000d -> 1002)
             dn = self._extract_dn(channel)
-            if dn:
-                await self.trigger_auto_answer(dn, event.get('CallID', 'unknown'))
+            if dn and call_uuid:
+                await self.notify_bridge(dn, call_id, call_uuid)
     
     def _extract_dn(self, channel: str) -> Optional[str]:
         """Extract DN from channel name"""
@@ -149,20 +161,28 @@ class NotifyHandler:
             return match.group(1)
         return None
     
-    async def trigger_auto_answer(self, dn: str, call_id: str):
-        """Trigger auto-answer via bridge API"""
-        print(f"{GREEN}🎯 AUTO-ANSWER TRIGGER: DN {dn}, Call-ID: {call_id}{RESET}")
+    async def notify_bridge(self, dn: str, call_id: str, call_uuid: str):
+        """Notify bridge about Genesys call with CallUUID"""
+        print(f"{GREEN}🎯 NOTIFY BRIDGE: DN {dn}{RESET}")
+        print(f"{GREEN}   Call-ID: {call_id}{RESET}")
+        print(f"{GREEN}   CallUUID: {call_uuid}{RESET}")
         
         try:
-            url = f"{BRIDGE_API_URL}/auto-answer/{dn}"
-            async with self.session.post(url, json={'call_id': call_id}) as resp:
+            url = f"{BRIDGE_API_URL}/genesys-call-notify"
+            payload = {
+                'dn': dn,
+                'call_id': call_id,
+                'call_uuid': call_uuid,
+                'event': 'talk'  # This is the auto-answer trigger
+            }
+            async with self.session.post(url, json=payload) as resp:
                 if resp.status == 200:
                     result = await resp.json()
-                    print(f"{GREEN}✅ Auto-answer triggered successfully: {result}{RESET}")
+                    print(f"{GREEN}✅ Bridge notified successfully: {result}{RESET}")
                 else:
-                    print(f"{RED}❌ Auto-answer failed: HTTP {resp.status}{RESET}")
+                    print(f"{RED}❌ Bridge notification failed: HTTP {resp.status}{RESET}")
         except Exception as e:
-            print(f"{RED}❌ Error triggering auto-answer: {e}{RESET}")
+            print(f"{RED}❌ Error notifying bridge: {e}{RESET}")
 
 
 async def main():

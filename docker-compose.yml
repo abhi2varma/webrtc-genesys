@@ -97,6 +97,30 @@ services:
         max-size: "5m"
         max-file: "3"
 
+  sip-notify-monitor:
+    build:
+      context: ./asterisk
+      dockerfile: Dockerfile.notify-monitor
+    image: webrtc-sip-notify-monitor
+    container_name: webrtc-sip-notify-monitor
+    hostname: sip-notify-monitor
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ./asterisk/sip-notify-parser.py:/usr/local/bin/sip-notify-parser.py:ro
+      - ./asterisk/start-notify-monitor.sh:/usr/local/bin/start-notify-monitor.sh:ro
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    command: ["/bin/bash", "/usr/local/bin/start-notify-monitor.sh"]
+    depends_on:
+      - asterisk
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+
   dashboard-api:
     image: webrtc-dashboard-api
     build: ./dashboard

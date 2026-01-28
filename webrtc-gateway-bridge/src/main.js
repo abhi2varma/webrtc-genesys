@@ -675,6 +675,68 @@ function createAPIServer() {
     }
   });
   
+  // Genesys Call NOTIFY endpoint - receives CallUUID from AMI handler
+  app.post('/genesys-call-notify', async (req, res) => {
+    try {
+      const { dn, call_id, call_uuid, event } = req.body;
+      
+      logger.info(`📞 GENESYS CALL NOTIFY: DN ${dn}`);
+      logger.info(`   CallUUID: ${call_uuid}`);
+      logger.info(`   Event: ${event}`);
+      
+      // Store the CallUUID with the incoming call
+      if (webrtcStatus.incomingCall) {
+        webrtcStatus.incomingCall.genesysCallUUID = call_uuid;
+        webrtcStatus.incomingCall.genesysCallId = call_id;
+        
+        logger.info(`✅ CallUUID stored for incoming call from ${webrtcStatus.incomingCall.callerId}`);
+      } else {
+        // Create incoming call record if it doesn't exist yet
+        // This can happen if NOTIFY arrives before WebRTC INVITE
+        webrtcStatus.incomingCall = {
+          callerId: 'Unknown',
+          timestamp: Date.now(),
+          genesysCallUUID: call_uuid,
+          genesysCallId: call_id
+        };
+        logger.info(`⚠️ NOTIFY received before INVITE - CallUUID stored preemptively`);
+      }
+      
+      // If event is 'talk', trigger auto-answer
+      if (event === 'talk') {
+        logger.info(`🎯 Event: talk - Auto-answering call`);
+        
+        if (mainWindow && mainWindow.webContents) {
+          mainWindow.webContents.executeJavaScript(`
+            (function() {
+              if (window.gateway && window.gateway.currentSession) {
+                if (!window.gateway.currentSession.isEstablished()) {
+                  window.gateway.log('🎯 AUTO-ANSWER: Genesys Event=talk trigger', 'success');
+                  window.gateway.currentSession.answer({
+                    mediaConstraints: { audio: true, video: false },
+                    pcConfig: window.gateway.pcConfig,
+                    iceGatheringTimeout: 0  // Immediate answer
+                  });
+                  return { success: true };
+                }
+              }
+              return { success: false };
+            })();
+          `).then(result => {
+            logger.info(`Auto-answer result:`, result);
+          }).catch(error => {
+            logger.error('Auto-answer error:', error);
+          });
+        }
+      }
+      
+      res.json({ success: true, message: 'CallUUID received' });
+    } catch (error) {
+      logger.error('Genesys call notify error:', error);
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+  
   // Get incoming call status - WWE polls this to detect incoming calls
   app.get('/GetIncomingCall', (req, res) => {
     logger.info('GetIncomingCall called');

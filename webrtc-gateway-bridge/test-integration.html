@@ -1,0 +1,70 @@
+<!-- WWE Integration Test Bookmarklet -->
+<!-- Open this file in a browser and drag the link below to your bookmarks bar -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WWE Integration Test - Bookmarklet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .bookmarklet {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: move;
+        }
+        .bookmarklet:hover {
+            background: #0056b3;
+        }
+        .instructions {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        code {
+            background: #eee;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 WWE Integration Test</h1>
+    
+    <div class="instructions">
+        <h2>Instructions:</h2>
+        <ol>
+            <li><strong>Drag</strong> the blue button below to your browser's bookmarks bar</li>
+            <li>Login to WWE at <code>http://192.168.210.54:8090</code></li>
+            <li>Click the bookmark you just created</li>
+            <li>Follow the prompts</li>
+        </ol>
+    </div>
+    
+    <div style="text-align: center; margin: 40px 0;">
+        <a href="javascript:(async function(){const sessionId=document.cookie.split('; ').find(row=>row.startsWith('WORKSPACE-SESSIONID='))?.split('=')[1];if(!sessionId){alert('ERROR: Not logged in to WWE');return;}const dn=prompt('Enter your DN (e.g., 1000):','1000');if(!dn)return;try{const r=await fetch('https://127.0.0.1:8000/RegisterDn',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({users:[dn],addresses:[dn],workspaceSessionId:sessionId})});const d=await r.json();alert('✅ Registration Success!\n\nDN: '+dn+'\n\nNow make a test call and click Accept!');}catch(e){alert('❌ Error: '+e.message+'\n\nMake sure webrtc-gateway-bridge is running.');}})();" class="bookmarklet">
+            🚀 WWE Integration Test
+        </a>
+    </div>
+    
+    <div class="instructions">
+        <h3>Alternative: Manual URLs</h3>
+        <p>Or open these URLs directly after logging into WWE:</p>
+        <ol>
+            <li>Get Session ID: <a href="javascript:alert(document.cookie.split('; ').find(row=>row.startsWith('WORKSPACE-SESSIONID='))?.split('=')[1]||'Not logged in')">Show Session ID</a></li>
+            <li>Then visit: <code>https://127.0.0.1:8000/RegisterDn</code> (see below)</li>
+        </ol>
+    </div>
+</body>
+</html>

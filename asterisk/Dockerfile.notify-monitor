@@ -1,0 +1,24 @@
+FROM python:3.11-slim
+
+# Install tcpdump and other utilities
+RUN apt-get update && apt-get install -y \
+    tcpdump \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+RUN pip install --no-cache-dir requests urllib3
+
+# Set working directory
+WORKDIR /app
+
+# Copy scripts
+COPY sip-notify-parser.py /usr/local/bin/sip-notify-parser.py
+COPY start-notify-monitor.sh /usr/local/bin/start-notify-monitor.sh
+
+# Make scripts executable
+RUN chmod +x /usr/local/bin/sip-notify-parser.py && \
+    chmod +x /usr/local/bin/start-notify-monitor.sh
+
+# Run the monitor
+CMD ["/bin/bash", "/usr/local/bin/start-notify-monitor.sh"]
