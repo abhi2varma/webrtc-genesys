@@ -870,7 +870,7 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const dn = urlParams.get('dn') || '1002'; // Default to DN 1002
                 const agentId = urlParams.get('agent') || 'agent_' + dn;
-                const password = urlParams.get('password') || dn; // Use DN as password
+                const password = urlParams.get('password') || 'Genesys2024!WebRTC'; // Default password from pjsip.conf
                 
                 console.log(`🔧 Auto-signing in as DN: ${dn}, Agent: ${agentId}`);
                 
