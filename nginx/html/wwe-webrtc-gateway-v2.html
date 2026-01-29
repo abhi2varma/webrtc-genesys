@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Gateway - WWE Integration</title>
+    <script src="/jssip.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .status {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .status.disconnected { background: #fee; color: #c33; }
+        .status.connecting { background: #fef3cd; color: #856404; }
+        .status.connected { background: #d4edda; color: #155724; }
+        .status.calling { background: #cce5ff; color: #004085; }
+        .status.incall { background: #d1ecf1; color: #0c5460; }
+
+        .info {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #0066cc;
+        }
+
+        .info h3 {
+            margin-bottom: 10px;
+            color: #0066cc;
+        }
+
+        .info p {
+            margin: 5px 0;
+            color: #333;
+        }
+
+        .logs {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        .log-entry {
+            padding: 4px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        .log-entry.info { color: #0066cc; }
+        .log-entry.success { color: #28a745; }
+        .log-entry.error { color: #dc3545; }
+        .log-entry.event { color: #6c757d; }
+
+        audio {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎧 WebRTC Gateway</h1>
+        
+        <div id="status" class="status disconnected">
+            Disconnected
+        </div>
+
+        <div class="info">
+            <h3>Integration Status</h3>
+            <p><strong>Agent ID:</strong> <span id="agentId">Not signed in</span></p>
+            <p><strong>DN:</strong> <span id="agentDn">-</span></p>
+            <p><strong>SIP Status:</strong> <span id="sipStatus">Disconnected</span></p>
+            <p><strong>Active Call:</strong> <span id="activeCall">None</span></p>
+        </div>
+
+        <!-- Test Controls (for standalone testing without WWE) -->
+        <div id="testControls" class="info" style="background: #fff3cd; border-left-color: #ffc107;">
+            <h3>📞 Test Controls</h3>
+            <div style="margin: 10px 0;">
+                <input type="text" id="destinationNumber" placeholder="Enter DN (e.g., 1003)" 
+                       style="padding: 8px; width: 200px; border: 1px solid #ccc; border-radius: 4px; margin-right: 10px;">
+                <button onclick="gateway.testMakeCall()" style="padding: 8px 16px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    📞 Call
+                </button>
+            </div>
+            <div style="margin: 10px 0;">
+                <button onclick="gateway.testAnswerCall()" style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px;">
+                    ✅ Answer
+                </button>
+                <button onclick="gateway.testHangup()" style="padding: 8px 16px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    ❌ Hangup
+                </button>
+            </div>
+        </div>
+
+        <audio id="remoteAudio" autoplay></audio>
+
+        <div class="logs">
+            <div id="logContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // Enable JsSIP debug logging
+        JsSIP.debug.enable('JsSIP:*');
+        
+        // WebRTC Gateway - WWE Integration via postMessage
+        class WebRTCGateway {
+            constructor() {
+                this.ua = null;
+                this.currentSession = null;
+                this.agentId = null;
+                this.agentDn = null;
+                this.sipServer = null;
+                this.isRegistered = false;
+                
+                this.remoteAudio = document.getElementById('remoteAudio');
+                
+                // Listen for postMessage commands from parent (WWE)
+                window.addEventListener('message', (event) => this.handleMessage(event));
+                
+                // Notify parent that we're ready
+                this.sendEvent('ready', { version: '1.0.0' });
+                this.log('🟢 PHASE 0 - WebRTC Gateway initialized', 'info');
+                
+                // Log WebSocket events
+                this.setupDebugLogging();
+            }
+            
+            setupDebugLogging() {
+                // Intercept WebSocket for detailed logging
+                const originalWebSocket = window.WebSocket;
+                const self = this;
+                
+                window.WebSocket = function(url, protocols) {
+                    self.log(`🟢 PHASE 1 - WebSocket connecting to: ${url}`, 'info');
+                    const ws = new originalWebSocket(url, protocols);
+                    
+                    ws.addEventListener('open', () => {
+                        self.log('✅ WebSocket OPEN', 'success');
+                    });
+                    
+                    ws.addEventListener('message', (event) => {
+                        // Parse SIP message
+                        const sipInfo = self.parseSIPMessage(event.data, 'RX');
+                        if (sipInfo) {
+                            self.log(`⬇️ RX [${sipInfo.method}] ${sipInfo.from} → ${sipInfo.to}`, 'info');
+                            self.log(`   Via: ${sipInfo.via}`, 'info');
+                            self.log(`   Call-ID: ${sipInfo.callId}`, 'info');
+                        }
+                        self.log(`⬇️ WS RX: ${event.data.substring(0, 500)}`, 'info');
+                    });
+                    
+                    ws.addEventListener('close', (event) => {
+                        self.log(`❌ WebSocket CLOSED: ${event.code} ${event.reason}`, 'error');
+                    });
+                    
+                    ws.addEventListener('error', (event) => {
+                        self.log('❌ WebSocket ERROR', 'error');
+                    });
+                    
+                    // Intercept send
+                    const originalSend = ws.send.bind(ws);
+                    ws.send = function(data) {
+                        // Parse SIP message
+                        const sipInfo = self.parseSIPMessage(data, 'TX');
+                        if (sipInfo) {
+                            self.log(`⬆️ TX [${sipInfo.method}] ${sipInfo.from} → ${sipInfo.to}`, 'success');
+                            self.log(`   Via: ${sipInfo.via}`, 'success');
+                            self.log(`   Call-ID: ${sipInfo.callId}`, 'success');
+                        }
+                        self.log(`⬆️ WS TX: ${data.substring(0, 500)}`, 'success');
+                        return originalSend(data);
+                    };
+                    
+                    return ws;
+                };
+            }
+            
+            parseSIPMessage(data, direction) {
+                try {
+                    const lines = data.split('\r\n');
+                    const firstLine = lines[0];
+                    
+                    let method = '';
+                    let from = '';
+                    let to = '';
+                    let via = '';
+                    let callId = '';
+                    let contactIP = '';
+                    
+                    // Parse request line (INVITE, REGISTER, etc.) or response (SIP/2.0 200 OK)
+                    if (firstLine.startsWith('SIP/2.0')) {
+                        const parts = firstLine.split(' ');
+                        method = `${parts[1]} ${parts.slice(2).join(' ')}`;  // "200 OK", "180 Ringing", etc.
+                    } else {
+                        const parts = firstLine.split(' ');
+                        method = parts[0];  // INVITE, REGISTER, ACK, BYE, etc.
+                    }
+                    
+                    // Parse headers
+                    for (const line of lines) {
+                        if (line.startsWith('From:') || line.startsWith('f:')) {
+                            from = this.extractSIPAddress(line);
+                        } else if (line.startsWith('To:') || line.startsWith('t:')) {
+                            to = this.extractSIPAddress(line);
+                        } else if (line.startsWith('Via:') || line.startsWith('v:')) {
+                            via = this.extractViaInfo(line);
+                        } else if (line.startsWith('Call-ID:') || line.startsWith('i:')) {
+                            callId = line.split(':')[1].trim().substring(0, 30) + '...';
+                        } else if (line.startsWith('Contact:') || line.startsWith('m:')) {
+                            contactIP = this.extractSIPAddress(line);
+                        }
+                    }
+                    
+                    return {
+                        method,
+                        from: from || 'unknown',
+                        to: to || 'unknown',
+                        via: via || 'unknown',
+                        callId: callId || 'unknown',
+                        direction
+                    };
+                } catch (e) {
+                    return null;
+                }
+            }
+            
+            extractSIPAddress(line) {
+                // Extract SIP address from headers like "From: <sip:user@host:port>"
+                const match = line.match(/<sip:([^>]+)>/);
+                if (match) {
+                    return match[1];
+                }
+                // Try without brackets
+                const match2 = line.match(/sip:([^\s;]+)/);
+                if (match2) {
+                    return match2[1];
+                }
+                return line.split(':')[1]?.trim() || 'unknown';
+            }
+            
+            extractViaInfo(line) {
+                // Extract Via info like "Via: SIP/2.0/WS client:port;received=ip"
+                // Format: protocol transport ip:port
+                const parts = line.split(' ');
+                if (parts.length >= 3) {
+                    const transport = parts[1];  // SIP/2.0/WS or SIP/2.0/UDP
+                    const endpoint = parts[2].split(';')[0];  // ip:port
+                    
+                    // Check for received parameter
+                    const receivedMatch = line.match(/received=([^\s;]+)/);
+                    const rprtMatch = line.match(/rport=(\d+)/);
+                    
+                    if (receivedMatch || rprtMatch) {
+                        const receivedIP = receivedMatch ? receivedMatch[1] : '';
+                        const receivedPort = rprtMatch ? rprtMatch[1] : '';
+                        return `${transport} ${endpoint} (actual: ${receivedIP}:${receivedPort})`;
+                    }
+                    
+                    return `${transport} ${endpoint}`;
+                }
+                return line;
+            }
+
+            handleMessage(event) {
+                const { command, data } = event.data;
+                
+                if (!command) return;
+                
+                this.log(`Received command: ${command}`, 'event');
+                
+                switch (command) {
+                    case 'sign_in':
+                        this.signIn(data);
+                        break;
+                    case 'sign_out':
+                        this.signOut();
+                        break;
+                    case 'make_call':
+                        this.makeCall(data);
+                        break;
+                    case 'answer_call':
+                        this.answerCall();
+                        break;
+                    case 'hangup':
+                        this.hangup();
+                        break;
+                    case 'mute':
+                        this.setMute(true);
+                        break;
+                    case 'unmute':
+                        this.setMute(false);
+                        break;
+                    default:
+                        this.log(`Unknown command: ${command}`, 'error');
+                }
+            }
+
+            signIn({ agentId, dn, password, sipServer }) {
+                this.log(`🟢 PHASE 1 - Signing in agent ${agentId} (DN: ${dn})`, 'info');
+                
+                this.agentId = agentId;
+                this.agentDn = dn;
+                // Connect via nginx proxy which forwards to Asterisk WSS (bypasses Kamailio proxy loop)
+                this.sipServer = sipServer || 'wss://103.167.180.166:8443/ws';
+                
+                // Update UI
+                document.getElementById('agentId').textContent = agentId;
+                document.getElementById('agentDn').textContent = dn;
+                this.updateStatus('connecting');
+                
+                this.log(`📡 Connecting to SIP server: ${this.sipServer}`, 'info');
+                
+                // Configure JsSIP
+                const socket = new JsSIP.WebSocketInterface(this.sipServer);
+                const configuration = {
+                    sockets: [socket],
+                    uri: `sip:${dn}@${this.sipServer.replace(/^wss?:\/\//, '').split(':')[0]}`,
+                    password: password,
+                    display_name: dn,
+                    session_timers: false,
+                    register: true
+                };
+
+                this.log(`🔧 JsSIP Configuration: ${JSON.stringify(configuration, null, 2)}`, 'info');
+                this.ua = new JsSIP.UA(configuration);
+
+                // Set up UA event handlers
+                this.ua.on('connected', () => {
+                    this.log('✅ SIP WebSocket connected', 'success');
+                    document.getElementById('sipStatus').textContent = 'Connected';
+                    this.sendEvent('sip_connected');
+                });
+
+                this.ua.on('disconnected', () => {
+                    this.log('❌ SIP disconnected', 'error');
+                    document.getElementById('sipStatus').textContent = 'Disconnected';
+                    this.updateStatus('disconnected');
+                    this.sendEvent('sip_disconnected');
+                });
+
+                this.ua.on('registered', () => {
+                    this.log('✅ SIP registered successfully', 'success');
+                    this.isRegistered = true;
+                    this.updateStatus('connected');
+                    this.sendEvent('registered', { agentId, dn });
+                    
+                    // Acquire microphone early to avoid delays during auto-answer
+                    this.acquireMediaEarly();
+                    
+                    // Set DN to Ready state in Genesys (if Workspace API is configured)
+                    this.setGenesysReady(dn);
+                });
+
+                this.ua.on('unregistered', () => {
+                    this.log('ℹ️ SIP unregistered', 'info');
+                    this.isRegistered = false;
+                    this.sendEvent('unregistered');
+                });
+
+                this.ua.on('registrationFailed', (e) => {
+                    this.log(`❌ Registration failed: ${e.cause}`, 'error');
+                    this.sendEvent('registration_failed', { cause: e.cause });
+                });
+
+                this.ua.on('newRTCSession', (e) => {
+                    this.log(`📞 New RTC Session: ${e.originator}`, 'info');
+                    this.handleNewSession(e.session, e.originator);
+                });
+
+                // Handle incoming NOTIFY messages for auto-answer
+                this.ua.on('newMessage', (e) => {
+                    const request = e.request;
+                    this.log(`📩 Received SIP message: ${request.method}`, 'info');
+                    
+                    if (request.method === 'NOTIFY') {
+                        const eventHeader = request.getHeader('Event');
+                        this.log(`📩 NOTIFY Event: ${eventHeader}`, 'info');
+                        
+                        if (eventHeader === 'talk') {
+                            this.log('🎯 AUTO-ANSWER TRIGGER: Received NOTIFY with Event: talk', 'success');
+                            
+                            // Check if there's an incoming call session in progress
+                            if (this.currentSession && !this.currentSession.isEstablished()) {
+                                this.log('📞 Auto-answering incoming call...', 'success');
+                                
+                                // Answer the call
+                                this.currentSession.answer({
+                                    mediaConstraints: {
+                                        audio: true,
+                                        video: false
+                                    }
+                                });
+                                
+                                this.sendEvent('auto_answered', {
+                                    trigger: 'notify_talk',
+                                    callId: request.getHeader('Call-ID')
+                                });
+                            } else {
+                                this.log('⚠️ No pending call to auto-answer', 'warn');
+                            }
+                        }
+                    }
+                });
+
+                // Start UA
+                this.log('🚀 Starting JsSIP UA...', 'info');
+                this.ua.start();
+            }
+
+            signOut() {
+                this.log('Signing out', 'info');
+                
+                if (this.currentSession) {
+                    this.currentSession.terminate();
+                }
+                
+                if (this.ua) {
+                    // Explicitly unregister before stopping
+                    if (this.ua.isRegistered()) {
+                        this.log('📤 Unregistering from SIP server...', 'info');
+                        this.ua.unregister({
+                            all: true  // Unregister all registrations
+                        });
+                        
+                        // Wait a bit for the unregister message to be sent
+                        setTimeout(() => {
+                            this.ua.stop();
+                            this.ua = null;
+                        }, 500);
+                    } else {
+                        this.ua.stop();
+                        this.ua = null;
+                    }
+                }
+                
+                this.agentId = null;
+                this.agentDn = null;
+                this.isRegistered = false;
+                
+                document.getElementById('agentId').textContent = 'Not signed in';
+                document.getElementById('agentDn').textContent = '-';
+                document.getElementById('sipStatus').textContent = 'Disconnected';
+                this.updateStatus('disconnected');
+                
+                this.sendEvent('signed_out');
+            }
+
+            makeCall({ destination }) {
+                if (!this.isRegistered) {
+                    this.log('❌ Cannot make call: not registered', 'error');
+                    this.sendEvent('call_failed', { reason: 'Not registered' });
+                    return;
+                }
+
+                this.log(`🟢 PHASE 3 - Making call to ${destination}`, 'info');
+                this.updateStatus('calling');
+                document.getElementById('activeCall').textContent = `Calling ${destination}`;
+
+                this.log('🟢 PHASE 2 - Requesting microphone access', 'info');
+                
+                const options = {
+                    mediaConstraints: {
+                        audio: true,
+                        video: false
+                    },
+                    pcConfig: {
+                        iceServers: [
+                            // Google STUN (free, public)
+                            { 
+                                urls: 'stun:stun.l.google.com:19302' 
+                            },
+                            // Local TURN (will work when port forwarding is configured)
+                            { 
+                                urls: 'turn:103.167.180.166:3478',
+                                username: 'webrtc',
+                                credential: 'Genesys2024!SecureTurn'
+                            },
+                            // Cloud TURN fallback (Metered.ca free tier - works immediately)
+                            { 
+                                urls: 'turn:a.relay.metered.ca:80',
+                                username: '87a47860aaa39c9d5524de53',
+                                credential: 'xfOwa55SxL1cu6w+'
+                            },
+                            { 
+                                urls: 'turn:a.relay.metered.ca:80?transport=tcp',
+                                username: '87a47860aaa39c9d5524de53',
+                                credential: 'xfOwa55SxL1cu6w+'
+                            }
+                        ],
+                        iceTransportPolicy: 'all',  // Allow all connection types
+                        bundlePolicy: 'max-bundle',
+                        rtcpMuxPolicy: 'require',
+                        iceCandidatePoolSize: 0
+                    },
+                    // Send INVITE after 5 seconds or when first candidate is ready
+                    rtcOfferConstraints: {
+                        offerToReceiveAudio: true,
+                        offerToReceiveVideo: false
+                    },
+                    // Increased timeout to allow TURN candidates to be gathered
+                    iceGatheringTimeout: 5000
+                };
+
+                this.log(`🔧 Call options: ${JSON.stringify(options, null, 2)}`, 'info');
+                this.log('🟢 PHASE 4 - Creating SDP offer', 'info');
+                
+                const session = this.ua.call(`sip:${destination}@${this.sipServer.replace(/^wss?:\/\//, '').split(':')[0]}`, options);
+                this.setupSessionHandlers(session, 'outgoing', destination);
+            }
+
+            async acquireMediaEarly() {
+                try {
+                    this.log('🎤 Acquiring microphone access early for fast auto-answer...', 'info');
+                    this.localStream = await navigator.mediaDevices.getUserMedia({
+                        audio: true,
+                        video: false
+                    });
+                    this.log('✅ Microphone access granted and ready', 'success');
+                } catch (error) {
+                    this.log(`❌ Failed to acquire microphone: ${error.message}`, 'error');
+                }
+            }
+
+            answerCall() {
+                if (!this.currentSession) {
+                    this.log('No incoming call to answer', 'error');
+                    return;
+                }
+
+                this.log('Answering call with pre-acquired media', 'info');
+                
+                const options = {
+                    mediaConstraints: {
+                        audio: true,
+                        video: false
+                    },
+                    mediaStream: this.localStream,  // Use pre-acquired media stream
+                    pcConfig: {
+                        iceServers: [
+                            // Google STUN (free, public)
+                            { 
+                                urls: 'stun:stun.l.google.com:19302' 
+                            },
+                            // Local TURN (will work when port forwarding is configured)
+                            { 
+                                urls: 'turn:103.167.180.166:3478',
+                                username: 'webrtc',
+                                credential: 'Genesys2024!SecureTurn'
+                            },
+                            // Cloud TURN fallback (Metered.ca free tier - works immediately)
+                            { 
+                                urls: 'turn:a.relay.metered.ca:80',
+                                username: '87a47860aaa39c9d5524de53',
+                                credential: 'xfOwa55SxL1cu6w+'
+                            },
+                            { 
+                                urls: 'turn:a.relay.metered.ca:80?transport=tcp',
+                                username: '87a47860aaa39c9d5524de53',
+                                credential: 'xfOwa55SxL1cu6w+'
+                            }
+                        ],
+                        iceTransportPolicy: 'all',  // Allow all connection types
+                        bundlePolicy: 'max-bundle',
+                        rtcpMuxPolicy: 'require',
+                        iceCandidatePoolSize: 0
+                    },
+                    // Send answer immediately without waiting for ICE candidates
+                    // Use trickle ICE to send candidates after the initial answer
+                    iceGatheringTimeout: 0
+                };
+
+                this.currentSession.answer(options);
+            }
+
+            hangup() {
+                if (!this.currentSession) {
+                    this.log('No active call to hangup', 'error');
+                    return;
+                }
+
+                this.log('Hanging up', 'info');
+                this.currentSession.terminate();
+            }
+
+            setMute(muted) {
+                if (!this.currentSession) return;
+                
+                if (muted) {
+                    this.currentSession.mute();
+                    this.log('Muted', 'info');
+                    this.sendEvent('muted');
+                } else {
+                    this.currentSession.unmute();
+                    this.log('Unmuted', 'info');
+                    this.sendEvent('unmuted');
+                }
+            }
+
+            handleNewSession(session, originator) {
+                this.currentSession = session;
+
+                if (originator === 'remote') {
+                    // Incoming call
+                    const callerNumber = session.remote_identity.uri.user;
+                    this.log(`Incoming call from ${callerNumber}`, 'info');
+                    document.getElementById('activeCall').textContent = `Incoming: ${callerNumber}`;
+                    
+                    this.sendEvent('incoming_call', {
+                        from: callerNumber,
+                        displayName: session.remote_identity.display_name
+                    });
+                    
+                    this.setupSessionHandlers(session, 'incoming', callerNumber);
+                    
+                    // Auto-answer immediately with minimal delay to prevent timeout
+                    this.log('📞 Auto-answering call immediately to prevent timeout...', 'info');
+                    setTimeout(() => {
+                        if (this.currentSession && !this.currentSession.isEstablished()) {
+                            this.log('🎯 Executing immediate auto-answer', 'success');
+                            const options = {
+                                mediaConstraints: {
+                                    audio: true,
+                                    video: false
+                                },
+                                pcConfig: {
+                                    iceServers: [
+                                        { urls: 'stun:103.167.180.166:3478' },
+                                        { 
+                                            urls: 'turn:103.167.180.166:3478',
+                                            username: 'webrtc',
+                                            credential: 'Genesys2024!SecureTurn'
+                                        },
+                                        { 
+                                            urls: 'turns:103.167.180.166:5349',
+                                            username: 'webrtc',
+                                            credential: 'Genesys2024!SecureTurn'
+                                        }
+                                    ],
+                                    iceTransportPolicy: 'all',
+                                    bundlePolicy: 'max-bundle',
+                                    rtcpMuxPolicy: 'require',
+                                    iceCandidatePoolSize: 0
+                                },
+                                iceGatheringTimeout: 0
+                            };
+                            this.currentSession.answer(options);
+                            this.sendEvent('auto_answered', {
+                                trigger: 'immediate',
+                                from: callerNumber
+                            });
+                        }
+                    }, 500);
+                }
+            }
+
+            setupSessionHandlers(session, direction, otherParty) {
+                this.currentSession = session;
+
+                session.on('peerconnection', (e) => {
+                    this.log('🟢 PHASE 9 - PeerConnection created', 'info');
+                    const pc = e.peerconnection;
+                    
+                    // Log local/remote descriptions when set
+                    if (pc.localDescription) {
+                        this.logMediaEndpoints(pc.localDescription.sdp, 'LOCAL');
+                    }
+                    if (pc.remoteDescription) {
+                        this.logMediaEndpoints(pc.remoteDescription.sdp, 'REMOTE');
+                    }
+                    
+                    // Log ICE connection state changes
+                    pc.oniceconnectionstatechange = () => {
+                        this.log(`🧊 ICE Connection State: ${pc.iceConnectionState}`, 'info');
+                    };
+                    
+                    // Log ICE gathering state
+                    pc.onicegatheringstatechange = () => {
+                        this.log(`🟢 PHASE 5 - ICE Gathering State: ${pc.iceGatheringState}`, 'info');
+                    };
+                    
+                    // Log each ICE candidate with details
+                    pc.onicecandidate = (event) => {
+                        if (event.candidate) {
+                            const c = event.candidate;
+                            this.log(`🧊 ICE Candidate [${c.type}]: ${c.address}:${c.port} (${c.protocol}) priority=${c.priority}`, 'info');
+                        } else {
+                            this.log('🧊 ICE Candidate gathering complete', 'success');
+                        }
+                    };
+                    
+                    // Log connection state
+                    pc.onconnectionstatechange = () => {
+                        this.log(`🔗 Connection State: ${pc.connectionState}`, 'info');
+                        
+                        // Log selected candidate pair when connected
+                        if (pc.connectionState === 'connected') {
+                            pc.getStats().then(stats => {
+                                stats.forEach(report => {
+                                    if (report.type === 'candidate-pair' && report.state === 'succeeded') {
+                                        this.log(`✅ Selected Candidate Pair:`, 'success');
+                                        this.log(`   Local: ${report.localCandidateId}`, 'success');
+                                        this.log(`   Remote: ${report.remoteCandidateId}`, 'success');
+                                    }
+                                    if (report.type === 'local-candidate' && report.id === report.localCandidateId) {
+                                        this.log(`   📍 Local Endpoint: ${report.address || report.ip}:${report.port} (${report.protocol})`, 'success');
+                                    }
+                                    if (report.type === 'remote-candidate' && report.id === report.remoteCandidateId) {
+                                        this.log(`   📍 Remote Endpoint: ${report.address || report.ip}:${report.port} (${report.protocol})`, 'success');
+                                    }
+                                });
+                            });
+                        }
+                    };
+                    
+                    // Log signaling state
+                    pc.onsignalingstatechange = () => {
+                        this.log(`📡 Signaling State: ${pc.signalingState}`, 'info');
+                    };
+                    
+                    pc.addEventListener('addstream', (e) => {
+                        this.remoteAudio.srcObject = e.stream;
+                        this.log('🟢 PHASE 11 - Remote audio stream added', 'success');
+                    });
+
+                    pc.addEventListener('track', (e) => {
+                        if (e.streams && e.streams[0]) {
+                            this.remoteAudio.srcObject = e.streams[0];
+                            this.log('🟢 PHASE 11 - Remote audio track added', 'success');
+                        }
+                    });
+                });
+
+                session.on('progress', () => {
+                    this.log('📞 Call progress (ringing)', 'info');
+                    this.sendEvent('call_progress');
+                });
+
+                session.on('accepted', () => {
+                    this.log('✅ Call accepted', 'success');
+                    this.updateStatus('incall');
+                    document.getElementById('activeCall').textContent = `In call with ${otherParty}`;
+                    this.sendEvent('call_accepted', { direction, otherParty });
+                });
+
+                session.on('confirmed', () => {
+                    this.log('🟢 PHASE 10 - Call confirmed (DTLS handshake complete)', 'success');
+                    this.sendEvent('call_confirmed');
+                });
+
+                session.on('ended', () => {
+                    this.log('📴 Call ended', 'info');
+                    this.updateStatus('connected');
+                    document.getElementById('activeCall').textContent = 'None';
+                    this.currentSession = null;
+                    this.sendEvent('call_ended');
+                });
+
+                session.on('failed', (e) => {
+                    this.log(`❌ Call failed: ${e.cause}`, 'error');
+                    if (e.message) {
+                        this.log(`❌ Error message: ${e.message}`, 'error');
+                    }
+                    if (e.originator) {
+                        this.log(`❌ Originator: ${e.originator}`, 'error');
+                    }
+                    this.updateStatus('connected');
+                    document.getElementById('activeCall').textContent = 'None';
+                    this.currentSession = null;
+                    // Send simplified event data to avoid cloning errors
+                    this.sendEvent('call_failed', { 
+                        cause: e.cause || 'Unknown',
+                        message: e.message?.toString() || 'Call failed'
+                    });
+                });
+                
+                // Log SDP
+                session.on('sdp', (e) => {
+                    this.log(`🟢 PHASE ${e.type === 'offer' ? '4' : '8'} - SDP ${e.type.toUpperCase()}:`, 'info');
+                    this.log(e.sdp, 'info');
+                    this.logMediaEndpoints(e.sdp, e.type.toUpperCase());
+                });
+            }
+            
+            logMediaEndpoints(sdp, label) {
+                // Extract media endpoints from SDP
+                const lines = sdp.split('\n');
+                let connectionIP = '';
+                let mediaPort = '';
+                
+                for (const line of lines) {
+                    if (line.startsWith('c=')) {
+                        // c=IN IP4 192.168.210.54
+                        const parts = line.split(' ');
+                        connectionIP = parts[2];
+                    } else if (line.startsWith('m=audio')) {
+                        // m=audio 12345 RTP/AVP 0 8
+                        const parts = line.split(' ');
+                        mediaPort = parts[1];
+                    }
+                }
+                
+                if (connectionIP && mediaPort) {
+                    this.log(`🎤 ${label} Media Endpoint: ${connectionIP}:${mediaPort}`, 'info');
+                }
+            }
+
+            updateStatus(status) {
+                const statusEl = document.getElementById('status');
+                statusEl.className = `status ${status}`;
+                
+                const statusText = {
+                    'disconnected': 'Disconnected',
+                    'connecting': 'Connecting...',
+                    'connected': 'Connected & Ready',
+                    'calling': 'Calling...',
+                    'incall': 'In Call'
+                };
+                
+                statusEl.textContent = statusText[status] || status;
+            }
+
+            sendEvent(event, data = {}) {
+                const message = {
+                    event,
+                    data,
+                    timestamp: Date.now()
+                };
+                
+                // Send to parent window (WWE) or to Electron bridge
+                if (window.parent !== window) {
+                    // Running in WWE iframe - send to parent
+                    window.parent.postMessage(message, '*');
+                } else if (window.electronBridge && window.electronBridge.sendEvent) {
+                    // Running in Electron - use exposed bridge
+                    console.log('[Gateway] Sending event to Electron bridge:', message);
+                    window.electronBridge.sendEvent(message);
+                } else {
+                    // Fallback - send to window for preload script to catch
+                    console.log('[Gateway] Sending event via postMessage:', message);
+                    window.postMessage(message, '*');
+                }
+                
+                this.log(`Event: ${event}`, 'event');
+            }
+
+            log(message, type = 'info') {
+                const container = document.getElementById('logContainer');
+                const entry = document.createElement('div');
+                entry.className = `log-entry ${type}`;
+                const time = new Date().toLocaleTimeString();
+                entry.textContent = `[${time}] ${message}`;
+                container.appendChild(entry);
+                container.scrollTop = container.scrollHeight;
+            }
+
+            // Test helper methods for standalone mode
+            testMakeCall() {
+                const destination = document.getElementById('destinationNumber').value;
+                if (!destination) {
+                    alert('Please enter a destination number');
+                    return;
+                }
+                if (!this.isRegistered) {
+                    alert('Not registered yet. Please wait for registration.');
+                    return;
+                }
+                this.log(`📞 Test: Making call to ${destination}`, 'info');
+                this.makeCall({ destination });
+            }
+
+            testAnswerCall() {
+                if (!this.currentSession) {
+                    alert('No incoming call to answer');
+                    return;
+                }
+                this.log('✅ Test: Answering call', 'info');
+                this.answerCall();
+            }
+
+            testHangup() {
+                if (!this.currentSession) {
+                    alert('No active call to hang up');
+                    return;
+                }
+                this.log('❌ Test: Hanging up', 'info');
+                this.hangup();
+            }
+
+            async setGenesysReady(dn) {
+                // Set DN to Ready state via Genesys Workspace API
+                // This requires the Genesys Workspace API to be accessible
+                const workspaceApiUrl = 'https://103.167.180.166:8443/api/v2';
+                
+                try {
+                    this.log(`🔄 Setting DN ${dn} to Ready state in Genesys...`, 'info');
+                    
+                    // Make DN Ready via Workspace API
+                    // Note: This requires authentication and proper API access
+                    const response = await fetch(`${workspaceApiUrl}/voice/dn/${dn}/ready`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include'
+                    });
+                    
+                    if (response.ok) {
+                        this.log(`✅ DN ${dn} set to Ready state in Genesys`, 'success');
+                    } else {
+                        this.log(`⚠️ Could not set Ready state: ${response.status}`, 'error');
+                        this.log(`   This is normal if Genesys auto-ready is configured`, 'info');
+                    }
+                } catch (error) {
+                    this.log(`⚠️ Genesys API not accessible: ${error.message}`, 'error');
+                    this.log(`   DN state must be managed by Genesys T-Server`, 'info');
+                }
+            }
+        }
+
+        // Initialize gateway
+        const gateway = new WebRTCGateway();
+        
+        // Auto-sign-in for standalone testing (no WWE)
+        // Only auto-signin if NOT running inside Electron (standalone mode)
+        // Detect Electron by checking for process.versions.electron or file:// protocol
+        const isElectron = (typeof process !== 'undefined' && process.versions && process.versions.electron) ||
+                          window.location.protocol === 'file:' ||
+                          window.navigator.userAgent.toLowerCase().includes('electron');
+        
+        if (!isElectron) {
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const dn = urlParams.get('dn') || '1002'; // Default to DN 1002
+                    const agentId = urlParams.get('agent') || 'agent_' + dn;
+                    const password = urlParams.get('password') || 'Genesys2024!WebRTC'; // Default password from pjsip.conf
+                    
+                    console.log(`🔧 Auto-signing in as DN: ${dn}, Agent: ${agentId}`);
+                    
+                    gateway.handleMessage({
+                        data: {
+                            command: 'sign_in',
+                            data: {
+                                agentId: agentId,
+                                dn: dn,
+                                password: password,
+                                sipServer: 'wss://103.167.180.166:8443/ws'
+                            }
+                        }
+                    });
+                }, 1000); // Wait 1 second for page to fully load
+            });
+        } else {
+            console.log('🔧 Running inside Electron - waiting for WWE sign_in command');
+        }
+    </script>
+</body>
+</html>

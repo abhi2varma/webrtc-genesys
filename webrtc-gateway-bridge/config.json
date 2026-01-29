@@ -1,6 +1,6 @@
 {
-  "comment": "WebRTC Gateway Bridge Configuration - Using public IP to load HTML with cloud TURN",
+  "comment": "WebRTC Gateway Bridge Configuration - Using v2 filename to bypass cache",
   "gatewayUrl": "https://103.167.180.166:8443",
-  "iframeUrl": "https://103.167.180.166:8443/wwe-webrtc-gateway.html",
+  "iframeUrl": "https://103.167.180.166:8443/wwe-webrtc-gateway-v2.html",
   "sipServer": "wss://103.167.180.166:8443/ws"
 }
