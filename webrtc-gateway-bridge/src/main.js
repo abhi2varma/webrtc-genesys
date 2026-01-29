@@ -167,12 +167,26 @@ function createWindow() {
     callback(0); // 0 means accept the certificate
   });
 
-  // Clear all cache to ensure fresh load from server
-  mainWindow.webContents.session.clearCache().then(() => {
-    logger.info('Session cache cleared');
+  // Always load from HTTPS server with aggressive cache busting
+  // Loading from file:// blocks WebSocket connections due to security
+  Promise.all([
+    mainWindow.webContents.session.clearCache(),
+    mainWindow.webContents.session.clearStorageData(),
+    mainWindow.webContents.session.clearHostResolverCache()
+  ]).then(() => {
+    logger.info('All caches cleared');
     
-    // Add cache-busting parameter to force reload from server
-    const cacheBustUrl = `${config.gateway.iframeUrl}?v=${Date.now()}`;
+    // Disable cache and bypass ETags
+    mainWindow.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
+      details.requestHeaders['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0';
+      details.requestHeaders['Pragma'] = 'no-cache';
+      details.requestHeaders['If-None-Match'] = ''; // Bypass ETag
+      details.requestHeaders['If-Modified-Since'] = ''; // Bypass Last-Modified
+      callback({ requestHeaders: details.requestHeaders });
+    });
+    
+    const cacheBustUrl = `${config.gateway.iframeUrl}?nocache=${Date.now()}&random=${Math.random()}`;
+    logger.info(`Loading gateway from: ${cacheBustUrl}`);
     mainWindow.loadURL(cacheBustUrl);
   });
   

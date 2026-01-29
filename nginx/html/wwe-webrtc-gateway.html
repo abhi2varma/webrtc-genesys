@@ -967,7 +967,10 @@
         
         // Auto-sign-in for standalone testing (no WWE)
         // Only auto-signin if NOT running inside Electron (standalone mode)
-        const isElectron = window.navigator.userAgent.toLowerCase().includes('electron');
+        // Detect Electron by checking for process.versions.electron or file:// protocol
+        const isElectron = (typeof process !== 'undefined' && process.versions && process.versions.electron) ||
+                          window.location.protocol === 'file:' ||
+                          window.navigator.userAgent.toLowerCase().includes('electron');
         
         if (!isElectron) {
             window.addEventListener('load', () => {

@@ -514,13 +514,7 @@
                             { 
                                 urls: 'stun:stun.l.google.com:19302' 
                             },
-                            // Local TURN (will work when port forwarding is configured)
-                            { 
-                                urls: 'turn:103.167.180.166:3478',
-                                username: 'webrtc',
-                                credential: 'Genesys2024!SecureTurn'
-                            },
-                            // Cloud TURN fallback (Metered.ca free tier - works immediately)
+                            // Metered.ca cloud TURN (works from anywhere, 50GB free)
                             { 
                                 urls: 'turn:a.relay.metered.ca:80',
                                 username: '87a47860aaa39c9d5524de53',
@@ -528,6 +522,16 @@
                             },
                             { 
                                 urls: 'turn:a.relay.metered.ca:80?transport=tcp',
+                                username: '87a47860aaa39c9d5524de53',
+                                credential: 'xfOwa55SxL1cu6w+'
+                            },
+                            { 
+                                urls: 'turn:a.relay.metered.ca:443',
+                                username: '87a47860aaa39c9d5524de53',
+                                credential: 'xfOwa55SxL1cu6w+'
+                            },
+                            { 
+                                urls: 'turn:a.relay.metered.ca:443?transport=tcp',
                                 username: '87a47860aaa39c9d5524de53',
                                 credential: 'xfOwa55SxL1cu6w+'
                             }
@@ -593,13 +597,7 @@
                             { 
                                 urls: 'stun:stun.l.google.com:19302' 
                             },
-                            // Local TURN (will work when port forwarding is configured)
-                            { 
-                                urls: 'turn:103.167.180.166:3478',
-                                username: 'webrtc',
-                                credential: 'Genesys2024!SecureTurn'
-                            },
-                            // Cloud TURN fallback (Metered.ca free tier - works immediately)
+                            // Metered.ca cloud TURN (works from anywhere, 50GB free)
                             { 
                                 urls: 'turn:a.relay.metered.ca:80',
                                 username: '87a47860aaa39c9d5524de53',
@@ -607,6 +605,16 @@
                             },
                             { 
                                 urls: 'turn:a.relay.metered.ca:80?transport=tcp',
+                                username: '87a47860aaa39c9d5524de53',
+                                credential: 'xfOwa55SxL1cu6w+'
+                            },
+                            { 
+                                urls: 'turn:a.relay.metered.ca:443',
+                                username: '87a47860aaa39c9d5524de53',
+                                credential: 'xfOwa55SxL1cu6w+'
+                            },
+                            { 
+                                urls: 'turn:a.relay.metered.ca:443?transport=tcp',
                                 username: '87a47860aaa39c9d5524de53',
                                 credential: 'xfOwa55SxL1cu6w+'
                             }
