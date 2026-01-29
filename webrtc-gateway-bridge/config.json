@@ -1,6 +1,6 @@
 {
-  "comment": "WebRTC Gateway Bridge Configuration",
-  "gatewayUrl": "https://192.168.210.54:8443",
-  "iframeUrl": "https://192.168.210.54:8443/wwe-webrtc-gateway.html",
-  "sipServer": "ws://192.168.210.54:8080"
+  "comment": "WebRTC Gateway Bridge Configuration - Using public IP to load HTML with cloud TURN",
+  "gatewayUrl": "https://103.167.180.166:8443",
+  "iframeUrl": "https://103.167.180.166:8443/wwe-webrtc-gateway.html",
+  "sipServer": "wss://103.167.180.166:8443/ws"
 }
