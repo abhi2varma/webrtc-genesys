@@ -25,7 +25,7 @@ const config = {
     // Port 8443 is HTTPS with WSS WebSocket (nginx proxy)
     // Port 8089 is Asterisk direct WSS (bypasses Kamailio to avoid proxy loop)
     url: store.get('gatewayUrl', 'https://103.167.180.166:8443'),
-    iframeUrl: store.get('iframeUrl', 'https://103.167.180.166:8443/wwe-webrtc-gateway.html'),
+    iframeUrl: store.get('iframeUrl', 'https://103.167.180.166:8443/wwe-webrtc-gateway-v2.html'),
     sipServer: store.get('sipServer', 'wss://103.167.180.166:8443/ws')  // Now proxies to Asterisk:8089
   },
   wwe: {
