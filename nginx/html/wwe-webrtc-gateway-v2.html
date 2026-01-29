@@ -546,6 +546,13 @@
                     iceGatheringTimeout: 5000
                 };
 
+                // *** LOG ICE SERVERS CONFIGURATION ***
+                this.log('🔧 ICE Servers Configuration:', 'info');
+                options.pcConfig.iceServers.forEach((server, index) => {
+                    const serverInfo = typeof server.urls === 'string' ? server.urls : server.urls[0];
+                    this.log(`   ${index + 1}. ${serverInfo} ${server.username ? '(authenticated)' : '(no auth)'}`, 'info');
+                });
+
                 this.log(`🔧 Call options: ${JSON.stringify(options, null, 2)}`, 'info');
                 this.log('🟢 PHASE 4 - Creating SDP offer', 'info');
                 
