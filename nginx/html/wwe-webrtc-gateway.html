@@ -701,15 +701,13 @@
                             this.log('📞 Calling session.answer() with options', 'info');
                             this.log(`🔧 Answer options: iceGatheringTimeout=${options.iceGatheringTimeout}`, 'info');
                             
-                            // WORKAROUND: JsSIP 3.10.0 iceGatheringTimeout doesn't work for answers
-                            // We need to manually call answer WITHOUT constraints first,
-                            // then let it gather candidates naturally
+                            // CRITICAL FIX: Use iceGatheringTimeout: 0 to send 200 OK immediately
+                            // This enables proper trickle ICE where 200 OK is sent right away
+                            // and ICE candidates are sent incrementally via re-INVITEs
                             try {
-                                // Remove the timeout as it doesn't work for answers in JsSIP 3.10.0
-                                delete options.iceGatheringTimeout;
-                                delete options.rtcAnswerConstraints;
+                                options.iceGatheringTimeout = 0;  // Send 200 OK immediately!
                                 
-                                this.log('⚡ Calling answer() without gathering timeout (JsSIP 3.10.0 workaround)', 'info');
+                                this.log('⚡ Using iceGatheringTimeout=0 for immediate 200 OK with trickle ICE', 'info');
                                 const answerPromise = this.currentSession.answer(options);
                                 
                                 // JsSIP answer() might return a promise or be synchronous
