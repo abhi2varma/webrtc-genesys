@@ -15,6 +15,10 @@ app.commandLine.appendSwitch('ignore-certificate-errors');
 
 // Configuration
 const store = new Store();
+
+// Force reset store to use correct URL (temporary fix for cached v2 URL)
+store.set('iframeUrl', 'https://103.167.180.166:8443/wwe-webrtc-gateway.html');
+
 const config = {
   bridge: {
     host: '127.0.0.1',
@@ -25,7 +29,7 @@ const config = {
     // Port 8443 is HTTPS with WSS WebSocket (nginx proxy)
     // Port 8089 is Asterisk direct WSS (bypasses Kamailio to avoid proxy loop)
     url: store.get('gatewayUrl', 'https://103.167.180.166:8443'),
-    iframeUrl: store.get('iframeUrl', 'https://103.167.180.166:8443/wwe-webrtc-gateway-v2.html'),
+    iframeUrl: store.get('iframeUrl', 'https://103.167.180.166:8443/wwe-webrtc-gateway.html'),
     sipServer: store.get('sipServer', 'wss://103.167.180.166:8443/ws')  // Now proxies to Asterisk:8089
   },
   wwe: {

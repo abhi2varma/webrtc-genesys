@@ -699,8 +699,17 @@
                             };
                             
                             this.log('📞 Calling session.answer() with options', 'info');
+                            this.log(`🔧 Answer options: iceGatheringTimeout=${options.iceGatheringTimeout}`, 'info');
+                            
+                            // WORKAROUND: JsSIP 3.10.0 iceGatheringTimeout doesn't work for answers
+                            // We need to manually call answer WITHOUT constraints first,
+                            // then let it gather candidates naturally
                             try {
-                                // Set up error handlers BEFORE calling answer
+                                // Remove the timeout as it doesn't work for answers in JsSIP 3.10.0
+                                delete options.iceGatheringTimeout;
+                                delete options.rtcAnswerConstraints;
+                                
+                                this.log('⚡ Calling answer() without gathering timeout (JsSIP 3.10.0 workaround)', 'info');
                                 const answerPromise = this.currentSession.answer(options);
                                 
                                 // JsSIP answer() might return a promise or be synchronous
