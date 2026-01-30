@@ -682,9 +682,13 @@
                                     bundlePolicy: 'max-bundle',
                                     rtcpMuxPolicy: 'require',
                                     iceCandidatePoolSize: 0
+                                },
+                                rtcAnswerConstraints: {
+                                    offerToReceiveAudio: true,
+                                    offerToReceiveVideo: false
                                 }
-                                // REMOVED iceGatheringTimeout: 0 - it's broken in JsSIP!
-                                // Let JsSIP gather ICE candidates naturally and send 200 OK when ready
+                                // Note: JsSIP waits for ICE gathering to complete before sending 200 OK
+                                // This is standard behavior - we must wait for it
                             };
                             
                             this.log('📞 Calling session.answer() with options', 'info');
@@ -759,7 +763,7 @@
                             const c = event.candidate;
                             this.log(`🧊 ICE Candidate [${c.type}]: ${c.address}:${c.port} (${c.protocol}) priority=${c.priority}`, 'info');
                         } else {
-                            this.log('🧊🧊🧊 ICE Candidate gathering COMPLETE - 200 OK should be sent now!', 'success');
+                            this.log('🧊 ICE Candidate gathering complete', 'success');
                         }
                     };
                     
