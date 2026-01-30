@@ -682,8 +682,9 @@
                                     bundlePolicy: 'max-bundle',
                                     rtcpMuxPolicy: 'require',
                                     iceCandidatePoolSize: 0
-                                },
-                                iceGatheringTimeout: 0
+                                }
+                                // REMOVED iceGatheringTimeout: 0 - it's broken in JsSIP!
+                                // Let JsSIP gather ICE candidates naturally and send 200 OK when ready
                             };
                             
                             this.log('📞 Calling session.answer() with options', 'info');
