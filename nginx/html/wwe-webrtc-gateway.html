@@ -688,7 +688,18 @@
                             
                             this.log('📞 Calling session.answer() with options', 'info');
                             try {
-                                this.currentSession.answer(options);
+                                // Set up error handlers BEFORE calling answer
+                                const answerPromise = this.currentSession.answer(options);
+                                
+                                // JsSIP answer() might return a promise or be synchronous
+                                if (answerPromise && answerPromise.then) {
+                                    answerPromise.then(() => {
+                                        this.log('✅ answer() promise resolved', 'success');
+                                    }).catch((error) => {
+                                        this.log(`❌ answer() promise rejected: ${error.message}`, 'error');
+                                    });
+                                }
+                                
                                 this.log('✅ session.answer() called successfully', 'success');
                                 this.sendEvent('auto_answered', {
                                     trigger: 'immediate',
@@ -830,6 +841,10 @@
                     this.log(`🟢 PHASE ${e.type === 'offer' ? '4' : '8'} - SDP ${e.type.toUpperCase()}:`, 'info');
                     this.log(e.sdp, 'info');
                     this.logMediaEndpoints(e.sdp, e.type.toUpperCase());
+                    
+                    if (e.type === 'answer') {
+                        this.log('✅✅✅ ANSWER SDP CREATED - 200 OK should be sent now!', 'success');
+                    }
                 });
             }
             
