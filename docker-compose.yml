@@ -182,6 +182,34 @@ services:
     depends_on:
       - redis
       - asterisk
+      - rtpengine
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+  rtpengine:
+    image: sipwise/rtpengine:latest
+    container_name: webrtc-rtpengine
+    hostname: rtpengine
+    network_mode: host
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    command:
+      - "rtpengine"
+      - "--interface=192.168.210.54"
+      - "--advertised-address=103.167.180.166"
+      - "--listen-ng=127.0.0.1:2223"
+      - "--port-min=10000"
+      - "--port-max=20000"
+      - "--table=0"
+      - "--no-kernel"
+      - "--foreground"
+      - "--log-stderr"
+      - "--log-level=6"
     logging:
       driver: "json-file"
       options:
