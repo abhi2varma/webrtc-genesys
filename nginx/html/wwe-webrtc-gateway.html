@@ -597,9 +597,14 @@
                         rtcpMuxPolicy: 'require',
                         iceCandidatePoolSize: 0
                     },
-                    // Send answer immediately without waiting for ICE candidates
-                    // Use trickle ICE to send candidates after the initial answer
-                    iceGatheringTimeout: 0
+                    // Wait up to 3 seconds for ICE gathering to complete
+                    // If it doesn't complete, send 200 OK anyway with available candidates
+                    // Additional candidates will be sent via trickle ICE
+                    iceGatheringTimeout: 3000,
+                    rtcAnswerConstraints: {
+                        offerToReceiveAudio: true,
+                        offerToReceiveVideo: false
+                    }
                 };
 
                 this.currentSession.answer(options);
