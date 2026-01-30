@@ -510,23 +510,14 @@
                     },
                     pcConfig: {
                         iceServers: [
-                            // Google STUN (free, public)
+                            // FORCE TURN RELAY ONLY - no host/srflx candidates
                             { 
-                                urls: 'stun:stun.l.google.com:19302' 
-                            },
-                            // Local TURN (router UDP forwarding now configured!)
-                            { 
-                                urls: 'turn:103.167.180.166:3478',
-                                username: 'webrtc',
-                                credential: 'Genesys2024!SecureTurn'
-                            },
-                            {
-                                urls: 'turns:103.167.180.166:5349',
+                                urls: 'turn:103.167.180.166:3478?transport=udp',
                                 username: 'webrtc',
                                 credential: 'Genesys2024!SecureTurn'
                             }
                         ],
-                        iceTransportPolicy: 'all',  // Allow all connection types
+                        iceTransportPolicy: 'relay',  // FORCE TURN ONLY!
                         bundlePolicy: 'max-bundle',
                         rtcpMuxPolicy: 'require',
                         iceCandidatePoolSize: 0
@@ -683,10 +674,8 @@
                                     rtcpMuxPolicy: 'require',
                                     iceCandidatePoolSize: 0
                                 },
-                                // Wait up to 3 seconds for ICE gathering to complete
-                                // If it doesn't complete, send 200 OK anyway with available candidates
-                                // Additional candidates will be sent via trickle ICE
-                                iceGatheringTimeout: 0,  // Send 200 OK immediately!
+                                // Send 200 OK immediately and trickle ICE candidates
+                                iceGatheringTimeout: 0,
                                 rtcAnswerConstraints: {
                                     offerToReceiveAudio: true,
                                     offerToReceiveVideo: false
@@ -696,12 +685,8 @@
                             this.log('📞 Calling session.answer() with options', 'info');
                             this.log(`🔧 Answer options: iceGatheringTimeout=${options.iceGatheringTimeout}`, 'info');
                             
-                            // CRITICAL FIX: Use iceGatheringTimeout: 0 to send 200 OK immediately
-                            // This enables proper trickle ICE where 200 OK is sent right away
-                            // and ICE candidates are sent incrementally via re-INVITEs
+                            // Send 200 OK immediately and trickle ICE candidates.
                             try {
-                                options.iceGatheringTimeout = 0;  // Send 200 OK immediately!
-                                
                                 this.log('⚡ Using iceGatheringTimeout=0 for immediate 200 OK with trickle ICE', 'info');
                                 const answerPromise = this.currentSession.answer(options);
                                 
