@@ -671,19 +671,14 @@
                                 mediaStream: this.localStream,  // Explicitly pass the stream
                                 pcConfig: {
                                     iceServers: [
-                                        { urls: 'stun:103.167.180.166:3478' },
+                                        // FORCE TURN RELAY ONLY - no host/srflx candidates
                                         { 
-                                            urls: 'turn:103.167.180.166:3478',
-                                            username: 'webrtc',
-                                            credential: 'Genesys2024!SecureTurn'
-                                        },
-                                        { 
-                                            urls: 'turns:103.167.180.166:5349',
+                                            urls: 'turn:103.167.180.166:3478?transport=udp',
                                             username: 'webrtc',
                                             credential: 'Genesys2024!SecureTurn'
                                         }
                                     ],
-                                    iceTransportPolicy: 'all',
+                                    iceTransportPolicy: 'relay',  // FORCE TURN ONLY!
                                     bundlePolicy: 'max-bundle',
                                     rtcpMuxPolicy: 'require',
                                     iceCandidatePoolSize: 0
@@ -691,7 +686,7 @@
                                 // Wait up to 3 seconds for ICE gathering to complete
                                 // If it doesn't complete, send 200 OK anyway with available candidates
                                 // Additional candidates will be sent via trickle ICE
-                                iceGatheringTimeout: 3000,
+                                iceGatheringTimeout: 0,  // Send 200 OK immediately!
                                 rtcAnswerConstraints: {
                                     offerToReceiveAudio: true,
                                     offerToReceiveVideo: false
