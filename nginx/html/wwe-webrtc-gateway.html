@@ -688,12 +688,14 @@
                                     rtcpMuxPolicy: 'require',
                                     iceCandidatePoolSize: 0
                                 },
+                                // Wait up to 3 seconds for ICE gathering to complete
+                                // If it doesn't complete, send 200 OK anyway with available candidates
+                                // Additional candidates will be sent via trickle ICE
+                                iceGatheringTimeout: 3000,
                                 rtcAnswerConstraints: {
                                     offerToReceiveAudio: true,
                                     offerToReceiveVideo: false
                                 }
-                                // Note: JsSIP waits for ICE gathering to complete before sending 200 OK
-                                // This is standard behavior - we must wait for it
                             };
                             
                             this.log('📞 Calling session.answer() with options', 'info');
