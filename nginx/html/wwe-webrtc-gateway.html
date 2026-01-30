@@ -650,11 +650,20 @@
                     setTimeout(() => {
                         if (this.currentSession && !this.currentSession.isEstablished()) {
                             this.log('🎯 Executing immediate auto-answer', 'success');
+                            
+                            // Check if we have microphone access
+                            if (!this.localStream || !this.localStream.getAudioTracks().length) {
+                                this.log('⚠️ WARNING: No local audio stream available, answering anyway', 'warning');
+                            } else {
+                                this.log(`✅ Local stream ready with ${this.localStream.getAudioTracks().length} audio tracks`, 'info');
+                            }
+                            
                             const options = {
                                 mediaConstraints: {
                                     audio: true,
                                     video: false
                                 },
+                                mediaStream: this.localStream,  // Explicitly pass the stream
                                 pcConfig: {
                                     iceServers: [
                                         { urls: 'stun:103.167.180.166:3478' },
@@ -676,11 +685,21 @@
                                 },
                                 iceGatheringTimeout: 0
                             };
-                            this.currentSession.answer(options);
-                            this.sendEvent('auto_answered', {
-                                trigger: 'immediate',
-                                from: callerNumber
-                            });
+                            
+                            this.log('📞 Calling session.answer() with options', 'info');
+                            try {
+                                this.currentSession.answer(options);
+                                this.log('✅ session.answer() called successfully', 'success');
+                                this.sendEvent('auto_answered', {
+                                    trigger: 'immediate',
+                                    from: callerNumber
+                                });
+                            } catch (error) {
+                                this.log(`❌ ERROR in session.answer(): ${error.message}`, 'error');
+                                this.log(`❌ Stack: ${error.stack}`, 'error');
+                            }
+                        } else {
+                            this.log('⚠️ Cannot auto-answer: session not available or already established', 'warning');
                         }
                     }, 500);
                 }
@@ -769,7 +788,7 @@
                 });
 
                 session.on('accepted', () => {
-                    this.log('✅ Call accepted', 'success');
+                    this.log('✅✅✅ Call accepted - 200 OK sent!', 'success');
                     this.updateStatus('incall');
                     document.getElementById('activeCall').textContent = `In call with ${otherParty}`;
                     this.sendEvent('call_accepted', { direction, otherParty });
