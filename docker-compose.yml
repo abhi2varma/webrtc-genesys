@@ -190,7 +190,8 @@ services:
         max-file: "3"
 
   rtpengine:
-    image: rtpengine/rtpengine:latest
+    build: ./rtpengine
+    image: webrtc-rtpengine
     container_name: webrtc-rtpengine
     hostname: rtpengine
     network_mode: host
