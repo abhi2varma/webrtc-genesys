@@ -724,6 +724,17 @@
                     this.log('🟢 PHASE 9 - PeerConnection created', 'info');
                     const pc = e.peerconnection;
                     
+                    // Hook into setLocalDescription to detect when answer is set
+                    const originalSetLocal = pc.setLocalDescription.bind(pc);
+                    pc.setLocalDescription = async (description) => {
+                        this.log(`🔧 setLocalDescription called: type=${description?.type}`, 'info');
+                        if (description && description.type === 'answer') {
+                            this.log('🎯 ANSWER SDP being set locally!', 'success');
+                            this.log(description.sdp.substring(0, 500), 'info');
+                        }
+                        return originalSetLocal(description);
+                    };
+                    
                     // Log local/remote descriptions when set
                     if (pc.localDescription) {
                         this.logMediaEndpoints(pc.localDescription.sdp, 'LOCAL');
