@@ -190,7 +190,7 @@ services:
         max-file: "3"
 
   rtpengine:
-    image: ghcr.io/sipwise/rtpengine:latest
+    image: rtpengine/rtpengine:latest
     container_name: webrtc-rtpengine
     hostname: rtpengine
     network_mode: host
