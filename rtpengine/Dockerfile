@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libglib2.0-dev \
     libevent-dev \
     libpcre3 \
+    libwebsockets-dev \
     iptables \
     # Codec support (optional but recommended)
     libavcodec-dev \
@@ -49,6 +50,7 @@ RUN git clone https://github.com/sipwise/rtpengine.git /tmp/rtpengine \
         libpcap-dev \
         libglib2.0-dev \
         libevent-dev \
+        libwebsockets-dev \
         libavcodec-dev \
         libavfilter-dev \
         libavformat-dev \
