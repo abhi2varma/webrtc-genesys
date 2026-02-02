@@ -517,7 +517,7 @@
                                 credential: 'Genesys2024!SecureTurn'
                             }
                         ],
-                        iceTransportPolicy: 'relay',  // FORCE TURN ONLY!
+                        iceTransportPolicy: 'all',  // Allow all candidates (RTPengine provides relay)
                         bundlePolicy: 'max-bundle',
                         rtcpMuxPolicy: 'require',
                         iceCandidatePoolSize: 0
