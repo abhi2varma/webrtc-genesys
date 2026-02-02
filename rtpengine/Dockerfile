@@ -52,39 +52,7 @@ RUN git clone https://github.com/sipwise/rtpengine.git /tmp/rtpengine \
     && cp rtpengine /usr/local/bin/ \
     && chmod +x /usr/local/bin/rtpengine \
     && cd / \
-    && rm -rf /tmp/rtpengine \
-    # Clean up build dependencies to reduce image size
-    && apt-get purge -y --auto-remove \
-        build-essential \
-        git \
-        pkg-config \
-        libcurl4-openssl-dev \
-        libpcre3-dev \
-        libssl-dev \
-        libxmlrpc-core-c3-dev \
-        libhiredis-dev \
-        libjson-glib-dev \
-        libpcap-dev \
-        libglib2.0-dev \
-        libevent-dev \
-        libwebsockets-dev \
-        libncurses-dev \
-        libopus-dev \
-        libjwt-dev \
-        libiptc-dev \
-        libmnl-dev \
-        libnetfilter-conntrack-dev \
-        libnftnl-dev \
-        libmariadb-dev \
-        default-libmysqlclient-dev \
-        libsystemd-dev \
-        libbcg729-dev \
-        libavcodec-dev \
-        libavfilter-dev \
-        libavformat-dev \
-        libavutil-dev \
-        libswresample-dev \
-        libspandsp-dev
+    && rm -rf /tmp/rtpengine
 
 # Expose RTPengine ports
 EXPOSE 2223/udp 10000-20000/udp
