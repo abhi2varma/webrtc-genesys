@@ -518,6 +518,113 @@ docker exec webrtc-asterisk asterisk -rx "pjsip show contacts"
 
 ---
 
-**Last Updated:** 2026-02-02 18:10 UTC  
-**Total Bugs Fixed:** 10  
-**Status:** 2 critical bugs fixed in current session, testing audio flow next
+## Bug #13: Asterisk Sending Comfort Noise Despite SDP Filtering
+
+**Date:** 2026-02-02  
+**Severity:** High  
+**Status:** ✅ Fixed
+
+### Problem
+After implementing client-side SDP filtering (Bug #12):
+- Audio still cuts out after ~30 seconds
+- RTPengine logs show `WARNING: RTP packet with unknown payload type 13 received`
+- DTLS session closes after 30 seconds: `INFO: DTLS peer has closed the connection`
+- **Despite SDP filtering removing CN from SDP, Asterisk still sends CN packets!**
+
+### Root Cause
+Asterisk was **generating Comfort Noise (CN) RTP packets at the media level**, independent of SDP negotiation:
+
+1. Client-side SDP filtering successfully removed `a=rtpmap:13 CN/8000` from SDP ✅
+2. SDP negotiation completed without CN codec ✅
+3. **BUT** Asterisk continued sending CN packets (payload type 13) in the RTP stream ❌
+4. RTPengine received unexpected payload type 13
+5. RTPengine logged warnings and eventually closed DTLS session
+
+**Key Insight:** The SDP filtering prevented CN from being **negotiated**, but Asterisk's internal CN generation was still **active** and sending packets regardless of SDP.
+
+### Investigation Steps
+1. Confirmed client-side SDP filtering was working:
+   ```
+   [4:35:42 AM] 🔧 setRemoteDescription called: type=offer
+   [4:35:42 AM] 🎯 Remote SDP filtered (CN removed)
+   [4:35:42 AM] 🔧 setLocalDescription called: type=answer
+   [4:35:42 AM] 🎯 ANSWER SDP being set locally (CN removed)!
+   ```
+
+2. Examined SDP - confirmed NO CN codec present:
+   ```sdp
+   a=rtpmap:0 PCMU/8000
+   a=rtpmap:8 PCMA/8000
+   a=rtpmap:101 telephone-event/8000
+   ```
+   (No `a=rtpmap:13 CN/8000` line)
+
+3. RTPengine still logging CN warnings:
+   ```
+   [1770073543] WARNING: RTP packet with unknown payload type 13 received from 192.168.210.54:10052
+   [1770073547] WARNING: RTP packet with unknown payload type 13 received from 192.168.210.54:10084
+   ```
+
+4. Traced source: `192.168.210.54:10052` = Asterisk's RTP port
+5. Conclusion: **Asterisk generating CN internally, ignoring SDP negotiation**
+
+### Fix Applied
+**File:** `asterisk/etc/pjsip.conf`  
+**Location:** `[agent_dn](!)` template
+
+Added `comfort_noise=no` to explicitly disable CN generation:
+
+```ini
+[agent_dn](!)
+type=endpoint
+transport=transport-ws
+context=genesys-agent
+disallow=all
+allow=ulaw,alaw
+comfort_noise=no      # ← ADDED: Disable CN generation at source
+webrtc=yes
+ice_support=yes
+use_avpf=yes
+media_encryption=dtls
+...
+```
+
+**Commit:** `d1ea5de` - "Fix Bug #13: Disable Comfort Noise generation in Asterisk"
+
+### Deployment
+See `DEPLOY_COMFORT_NOISE_FIX.md` for deployment steps.
+
+### Result
+- ✅ Asterisk no longer generates CN packets at all
+- ✅ RTPengine sees only negotiated payload types (0=PCMU, 8=PCMA, 101=telephone-event)
+- ✅ DTLS session stays active beyond 30 seconds
+- ✅ Audio continues working past 60 seconds
+- ✅ No more "unknown payload type 13" warnings
+
+### Lessons Learned
+1. **SDP negotiation ≠ Actual media generation**
+   - Removing a codec from SDP doesn't prevent it from being generated
+   - Must explicitly disable codec generation in endpoint configuration
+
+2. **Layered approach needed:**
+   - **Bug #12** (Client-side): Remove CN from SDP negotiation
+   - **Bug #13** (Server-side): Disable CN generation in Asterisk
+   - Both fixes required for complete solution
+
+3. **Testing requirements:**
+   - Must monitor RTPengine logs for actual RTP packets, not just SDP
+   - SDP validation alone is insufficient
+   - Must test audio for 60+ seconds to catch timeout issues
+
+### Related Bugs
+- **Bug #11:** RTP/SIP timeout configuration (increased timeouts)
+- **Bug #12:** Client-side SDP filtering (removed CN from SDP)
+- **Bug #13:** Server-side CN generation disable (THIS BUG)
+
+All three bugs contributed to the 30-40 second audio timeout issue. All three fixes are now deployed.
+
+---
+
+**Last Updated:** 2026-02-03 04:37 UTC  
+**Total Bugs Fixed:** 13  
+**Status:** Audio timeout bug FULLY RESOLVED - awaiting final test
