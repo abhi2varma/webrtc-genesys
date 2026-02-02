@@ -568,38 +568,63 @@ Asterisk was **generating Comfort Noise (CN) RTP packets at the media level**, i
 4. Traced source: `192.168.210.54:10052` = Asterisk's RTP port
 5. Conclusion: **Asterisk generating CN internally, ignoring SDP negotiation**
 
-### Fix Applied
+### Fix Applied - ATTEMPT 1 (Failed)
 **File:** `asterisk/etc/pjsip.conf`  
 **Location:** `[agent_dn](!)` template
 
-Added `comfort_noise=no` to explicitly disable CN generation:
+Initially tried adding `comfort_noise=no` to disable CN generation:
 
 ```ini
 [agent_dn](!)
-type=endpoint
-transport=transport-ws
-context=genesys-agent
-disallow=all
-allow=ulaw,alaw
-comfort_noise=no      # ← ADDED: Disable CN generation at source
-webrtc=yes
-ice_support=yes
-use_avpf=yes
-media_encryption=dtls
-...
+comfort_noise=no      # ← UNSUPPORTED! Caused endpoints to fail loading
 ```
 
-**Commit:** `d1ea5de` - "Fix Bug #13: Disable Comfort Noise generation in Asterisk"
+**Result:** ❌ Asterisk failed to load endpoints
+- Error: "No matching endpoint found"
+- Reason: `comfort_noise=no` is not a valid PJSIP parameter in this Asterisk version
+- All endpoints inheriting from `[agent_dn](!)` template failed to load
+
+**Commit:** `d1ea5de` - "Fix Bug #13: Disable Comfort Noise generation in Asterisk" (REVERTED)
+
+---
+
+### Fix Applied - ATTEMPT 2 (Success)
+**File:** `asterisk/etc/extensions-sip-endpoint.conf`  
+**Location:** ALL `Dial()` contexts in `[genesys-agent]` and `[from-genesys]`
+
+Added dialplan-level codec restrictions before EVERY `Dial()`:
+
+```asterisk
+; Explicitly remove Comfort Noise codec
+same => n,Set(SIP_CODEC_INBOUND=ulaw,alaw)
+same => n,Set(SIP_CODEC_OUTBOUND=ulaw,alaw)
+same => n,Dial(...)
+```
+
+**What This Does:**
+1. `SIP_CODEC_INBOUND=ulaw,alaw` - Forces Asterisk to only accept ulaw/alaw from remote
+2. `SIP_CODEC_OUTBOUND=ulaw,alaw` - Forces Asterisk to only send ulaw/alaw to remote
+3. Explicitly excludes CN (payload type 13) at the **channel level**
+4. Prevents CN generation during silence, even if CN was in original SDP
+
+**Affected Contexts:**
+- `[genesys-agent]` - Outbound calls: _1XXX, _5XXX, _8[1-9]XXX, _X.
+- `[from-genesys]` - Inbound calls: _5XXX, _1XXX, _X.
+
+**Commit:** `586b3a9` - "Fix: Add dialplan-level CN removal for Bug #13"
 
 ### Deployment
-See `DEPLOY_COMFORT_NOISE_FIX.md` for deployment steps.
+See `DEPLOY_DIALPLAN_CN_FIX.md` for deployment steps (dialplan reload only, NO restart needed).
 
 ### Result
-- ✅ Asterisk no longer generates CN packets at all
-- ✅ RTPengine sees only negotiated payload types (0=PCMU, 8=PCMA, 101=telephone-event)
-- ✅ DTLS session stays active beyond 30 seconds
-- ✅ Audio continues working past 60 seconds
+**Expected (Pending Test):**
+- ✅ Asterisk should no longer generate CN packets at channel level
+- ✅ RTPengine should only see negotiated payload types (0=PCMU, 8=PCMA, 101=telephone-event)
+- ✅ DTLS session should stay active beyond 30 seconds
+- ✅ Audio should continue working past 60 seconds
 - ✅ No more "unknown payload type 13" warnings
+
+**Status:** ⏳ Awaiting deployment and testing (dialplan changes committed, not yet deployed)
 
 ### Lessons Learned
 1. **SDP negotiation ≠ Actual media generation**
