@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     git \
     pkg-config \
+    gperf \
     # RTPengine dependencies
     libcurl4-openssl-dev \
     libpcre3-dev \
