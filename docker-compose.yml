@@ -5,6 +5,8 @@ services:
     hostname: asterisk
     network_mode: host
     restart: unless-stopped
+    extra_hosts:
+      - "asterisk:192.168.210.54"
     volumes:
       - ./asterisk/etc:/etc/asterisk
       - ./asterisk/sounds:/var/lib/asterisk/sounds
