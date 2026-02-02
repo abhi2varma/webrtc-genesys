@@ -431,7 +431,11 @@
                                 // Answer the call
                                 this.currentSession.answer({
                                     mediaConstraints: {
-                                        audio: true,
+                                        audio: {
+                                            echoCancellation: true,
+                                            noiseSuppression: true,
+                                            autoGainControl: true
+                                        },
                                         video: false
                                     }
                                 });
@@ -505,7 +509,14 @@
                 
                 const options = {
                     mediaConstraints: {
-                        audio: true,
+                        audio: {
+                            echoCancellation: true,
+                            noiseSuppression: true,
+                            autoGainControl: true,
+                            googEchoCancellation: true,
+                            googNoiseSuppression: true,
+                            googAutoGainControl: true
+                        },
                         video: false
                     },
                     pcConfig: {
@@ -519,7 +530,8 @@
                         ],
                         iceTransportPolicy: 'all',  // Allow all candidates (RTPengine provides relay)
                         rtcpMuxPolicy: 'require',
-                        iceCandidatePoolSize: 0
+                        iceCandidatePoolSize: 0,
+                        sdpSemantics: 'unified-plan'
                     },
                     // Send INVITE after 5 seconds or when first candidate is ready
                     rtcOfferConstraints: {
@@ -541,7 +553,11 @@
                 try {
                     this.log('🎤 Acquiring microphone access early for fast auto-answer...', 'info');
                     this.localStream = await navigator.mediaDevices.getUserMedia({
-                        audio: true,
+                        audio: {
+                            echoCancellation: true,
+                            noiseSuppression: true,
+                            autoGainControl: true
+                        },
                         video: false
                     });
                     this.log('✅ Microphone access granted and ready', 'success');
@@ -560,7 +576,11 @@
                 
                 const options = {
                     mediaConstraints: {
-                        audio: true,
+                        audio: {
+                            echoCancellation: true,
+                            noiseSuppression: true,
+                            autoGainControl: true
+                        },
                         video: false
                     },
                     mediaStream: this.localStream,  // Use pre-acquired media stream
@@ -584,7 +604,8 @@
                         ],
                         iceTransportPolicy: 'all',  // Allow all connection types
                         rtcpMuxPolicy: 'require',
-                        iceCandidatePoolSize: 0
+                        iceCandidatePoolSize: 0,
+                        sdpSemantics: 'unified-plan'
                     },
                     // Wait up to 3 seconds for ICE gathering to complete
                     // If it doesn't complete, send 200 OK anyway with available candidates
@@ -654,7 +675,11 @@
                             
                             const options = {
                                 mediaConstraints: {
-                                    audio: true,
+                                    audio: {
+                                        echoCancellation: true,
+                                        noiseSuppression: true,
+                                        autoGainControl: true
+                                    },
                                     video: false
                                 },
                                 mediaStream: this.localStream,  // Explicitly pass the stream
@@ -669,7 +694,8 @@
                                     ],
                                     iceTransportPolicy: 'all',  // Allow all candidates (RTPengine provides relay)
                                     rtcpMuxPolicy: 'require',
-                                    iceCandidatePoolSize: 0
+                                    iceCandidatePoolSize: 0,
+                                    sdpSemantics: 'unified-plan'
                                 },
                                 // Send 200 OK immediately and trickle ICE candidates
                                 iceGatheringTimeout: 0,
@@ -719,15 +745,75 @@
                     this.log('🟢 PHASE 9 - PeerConnection created', 'info');
                     const pc = e.peerconnection;
                     
-                    // Hook into setLocalDescription to detect when answer is set
+                    // Function to remove Comfort Noise (CN) from SDP
+                    const removeComfortNoise = (sdp) => {
+                        if (!sdp) return sdp;
+                        
+                        // Remove CN codec (payload type 13)
+                        let lines = sdp.split('\r\n');
+                        let filteredLines = [];
+                        let removedPT = [];
+                        
+                        for (let line of lines) {
+                            // Find and remove CN rtpmap lines
+                            if (line.includes('rtpmap') && line.toLowerCase().includes('cn/')) {
+                                const match = line.match(/a=rtpmap:(\d+)/);
+                                if (match) {
+                                    removedPT.push(match[1]);
+                                    this.log(`🗑️ Removing CN codec: ${line}`, 'info');
+                                    continue; // Skip this line
+                                }
+                            }
+                            // Remove fmtp lines for removed payload types
+                            if (line.includes('a=fmtp:')) {
+                                const match = line.match(/a=fmtp:(\d+)/);
+                                if (match && removedPT.includes(match[1])) {
+                                    this.log(`🗑️ Removing fmtp for CN: ${line}`, 'info');
+                                    continue; // Skip this line
+                                }
+                            }
+                            filteredLines.push(line);
+                        }
+                        
+                        // Remove CN payload types from m= lines
+                        filteredLines = filteredLines.map(line => {
+                            if (line.startsWith('m=audio')) {
+                                for (let pt of removedPT) {
+                                    line = line.replace(new RegExp(` ${pt}(?=\\s|$)`, 'g'), '');
+                                }
+                            }
+                            return line;
+                        });
+                        
+                        return filteredLines.join('\r\n');
+                    };
+                    
+                    // Hook into setLocalDescription to filter SDP
                     const originalSetLocal = pc.setLocalDescription.bind(pc);
                     pc.setLocalDescription = async (description) => {
                         this.log(`🔧 setLocalDescription called: type=${description?.type}`, 'info');
-                        if (description && description.type === 'answer') {
-                            this.log('🎯 ANSWER SDP being set locally!', 'success');
-                            this.log(description.sdp.substring(0, 500), 'info');
+                        if (description && description.sdp) {
+                            // Remove Comfort Noise from SDP
+                            description.sdp = removeComfortNoise(description.sdp);
+                            
+                            if (description.type === 'answer') {
+                                this.log('🎯 ANSWER SDP being set locally (CN removed)!', 'success');
+                                this.log(description.sdp.substring(0, 500), 'info');
+                            }
                         }
                         return originalSetLocal(description);
+                    };
+                    
+                    // Hook into setRemoteDescription to filter incoming SDP
+                    const originalSetRemote = pc.setRemoteDescription.bind(pc);
+                    pc.setRemoteDescription = async (description) => {
+                        this.log(`🔧 setRemoteDescription called: type=${description?.type}`, 'info');
+                        if (description && description.sdp) {
+                            // Remove Comfort Noise from incoming SDP
+                            description.sdp = removeComfortNoise(description.sdp);
+                            this.log('🎯 Remote SDP filtered (CN removed)', 'info');
+                        }
+                        return originalSetRemote(description);
                     };
                     
                     // Log local/remote descriptions when set
