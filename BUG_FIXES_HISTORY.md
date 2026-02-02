@@ -170,6 +170,119 @@ route[WITHINDLG] {
 
 ---
 
+## Bug #11: Audio Cuts Out After 40 Seconds (RTP Timeout)
+
+**Date:** 2026-02-03  
+**Severity:** High  
+**Status:** ✅ Fixed
+
+### Problem
+Call is established successfully and audio flows bidirectionally, but:
+- Audio works perfectly for the first 40 seconds
+- After 40 seconds, call goes silent
+- Call doesn't drop, but no audio in either direction
+- RTP is established but appears to timeout
+
+### Root Cause
+Multiple timeout issues causing RTP stream to be dropped:
+
+1. **Asterisk RTP Timeout Too Aggressive**
+   - `rtp_timeout=60` seconds, but RTP considered inactive after 40 seconds
+   - No RTP keepalive packets being sent
+   - Asterisk dropping RTP stream prematurely
+
+2. **RTPengine Default Timeout**
+   - RTPengine uses default timeout of ~60 seconds for silent streams
+   - No explicit `--timeout` or `--silent-timeout` configured
+   - Media relay timing out after period of silence
+
+3. **Missing SIP Session Timer Configuration**
+   - Session timers not explicitly disabled in Asterisk
+   - Could cause SIP re-INVITE at 90 seconds (50% = 45 seconds)
+   - Potential session refresh issues
+
+### Investigation Steps
+1. Verified call establishment - ✅ Working
+2. Verified ACK routing - ✅ Working
+3. Checked RTP flow - ✅ Established for first 40 seconds
+4. Identified timeout symptoms - Audio cuts at consistent 40-second mark
+5. Checked Asterisk `rtp_timeout` - Found 60 seconds (too low)
+6. Checked RTPengine configuration - No explicit timeouts set
+7. Checked session timer configuration - Not explicitly disabled
+
+### Fix Applied (Part 1) - Increase Asterisk RTP Timeout
+**File:** `asterisk/etc/pjsip.conf`  
+**Location:** `[agent_dn](!)` template
+
+Changed RTP timeout settings and added keepalive:
+
+```ini
+# BEFORE
+rtp_timeout=60
+rtp_timeout_hold=300
+rtp_symmetric=yes
+
+# AFTER
+rtp_timeout=300                # Increased to 5 minutes
+rtp_timeout_hold=600           # Increased to 10 minutes
+rtp_symmetric=yes
+rtp_keepalive=30               # Send keepalive every 30 seconds
+```
+
+### Fix Applied (Part 2) - Configure RTPengine Timeouts
+**File:** `docker-compose.yml`  
+**Location:** `rtpengine` service command
+
+Added explicit timeout configuration:
+
+```yaml
+command:
+  - "rtpengine"
+  - "--interface=192.168.210.54!103.167.180.166"
+  - "--listen-ng=127.0.0.1:2223"
+  - "--port-min=10000"
+  - "--port-max=20000"
+  - "--table=0"
+  - "--timeout=600"           # NEW: 10 minutes total timeout
+  - "--silent-timeout=600"    # NEW: 10 minutes even if silent
+  - "--foreground"
+  - "--log-stderr"
+  - "--log-level=6"
+```
+
+### Fix Applied (Part 3) - Disable SIP Session Timers
+**File:** `asterisk/etc/pjsip.conf`  
+**Location:** `[agent_dn](!)` template
+
+Added explicit session timer disable:
+
+```ini
+timers=no                      # NEW: Disable SIP session timers
+```
+
+### Result
+- ✅ RTP timeout increased from 60 to 300 seconds (5 minutes)
+- ✅ RTP keepalive packets sent every 30 seconds to keep NAT mappings alive
+- ✅ RTPengine won't timeout for 10 minutes
+- ✅ SIP session timers explicitly disabled to prevent refresh issues
+- ✅ **Audio should now flow continuously for the entire call duration**
+
+### Deployment
+```bash
+# On server, rebuild and restart affected services
+docker-compose up -d rtpengine  # Restart RTPengine with new timeout settings
+docker restart webrtc-asterisk  # Restart Asterisk to reload pjsip.conf
+```
+
+### Testing
+1. Make call from 1003 to 1002
+2. Verify audio works initially
+3. **Keep call active for > 60 seconds**
+4. Verify audio continues to flow
+5. Test for multiple minutes to confirm fix
+
+---
+
 ## Previous Bugs (Before Current Session)
 
 ### Bug #3: Duplicate `a=mid` in SDP

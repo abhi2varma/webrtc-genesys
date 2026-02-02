@@ -208,6 +208,8 @@ services:
       - "--port-min=10000"
       - "--port-max=20000"
       - "--table=0"
+      - "--timeout=600"
+      - "--silent-timeout=600"
       - "--foreground"
       - "--log-stderr"
       - "--log-level=6"
