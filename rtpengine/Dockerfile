@@ -48,8 +48,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Clone and build RTPengine from source
 RUN git clone https://github.com/sipwise/rtpengine.git /tmp/rtpengine \
     && cd /tmp/rtpengine/daemon \
-    && make \
-    && make install \
+    && make rtpengine \
+    && cp rtpengine /usr/local/bin/ \
+    && chmod +x /usr/local/bin/rtpengine \
     && cd / \
     && rm -rf /tmp/rtpengine \
     # Clean up build dependencies to reduce image size
