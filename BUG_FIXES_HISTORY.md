@@ -59,7 +59,7 @@ if (is_method("INVITE|UPDATE") && has_body("application/sdp")) {
 
 **Date:** 2026-02-02  
 **Severity:** Critical  
-**Status:** ✅ Fixed
+**Status:** ✅ Fixed (Required 2 fixes)
 
 ### Problem
 After Bug #1 was fixed:
@@ -73,8 +73,19 @@ After Bug #1 was fixed:
   ❌ t_relay() FAILED for ACK!
   ```
 
-### Root Cause
-The `WITHINDLG` route (which handles in-dialog requests like ACK) was not handling the WebSocket alias parameter:
+### Root Cause (Part 1)
+The Contact header in the 200 OK from the WebSocket client **did NOT have the alias parameter**:
+
+1. WebSocket client sent 200 OK with Contact: `sip:user@fake.invalid;transport=ws`
+2. **NO alias parameter** in the Contact header
+3. Asterisk used this Contact as the ACK Request-URI
+4. Kamailio received ACK with Request-URI: `sip:user@fake.invalid;transport=ws` (no alias)
+5. Kamailio tried to resolve `fake.invalid` and failed
+
+**WHY NO ALIAS?** In `onreply_route[MANAGE_REPLY]`, there was a comment about managing the alias but **no actual call to `fix_nated_contact()`**!
+
+### Root Cause (Part 2)
+Even if the alias was present, the `WITHINDLG` route (which handles in-dialog requests like ACK) was not handling the WebSocket alias parameter:
 
 1. `loose_route()` was called, which sets `$du` to the Contact URI
 2. Contact URI contained fake domain: `sip:user@567akiqa14to.invalid;transport=ws;alias=192.168.210.54~43766~5`
@@ -86,8 +97,29 @@ The `WITHINDLG` route (which handles in-dialog requests like ACK) was not handli
 2. Checked RTPengine logs - confirmed media negotiation was successful ✅
 3. Checked Kamailio logs - found DNS resolution error for `.invalid` domain
 4. Identified that `WITHINDLG` route was missing WebSocket alias handling
+5. **Deeper investigation:** Examined the ACK from Asterisk - found NO alias in Request-URI!
+6. **Root cause:** 200 OK Contact header didn't have alias because `fix_nated_contact()` wasn't called
+7. Identified that `onreply_route[MANAGE_REPLY]` had a comment but no actual function call
 
-### Fix Applied
+### Fix Applied (Part 1) - Add fix_nated_contact() to Add Alias
+**File:** `kamailio/kamailio-proxy.cfg`  
+**Location:** `onreply_route[MANAGE_REPLY]`
+
+Added `fix_nated_contact()` to add alias parameter to Contact header in replies:
+
+```cfg
+if (status =~ "^[12][0-9][0-9]") {
+    if (isbflagset(8) && $pr =~ "ws") {
+        xlog("L_WARN", "📞 WebSocket reply - fixing Contact with alias\n");
+        fix_nated_contact();
+        xlog("L_WARN", "✅ Contact alias added for ACK routing!\n");
+    }
+}
+```
+
+**Commit:** `664f0d6` - "Fix: Add fix_nated_contact() to MANAGE_REPLY for WebSocket ACK routing"
+
+### Fix Applied (Part 2) - Handle Alias in WITHINDLG Route
 **File:** `kamailio/kamailio-proxy.cfg`  
 **Location:** `route[WITHINDLG]`
 
