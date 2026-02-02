@@ -24,11 +24,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libncurses-dev \
     libncursesw6 \
     libopus-dev \
+    libjwt-dev \
     libiptc-dev \
     libmnl-dev \
     libnetfilter-conntrack-dev \
     libnftnl-dev \
     libmariadb-dev \
+    libsystemd-dev \
+    libbcg729-dev \
     iptables \
     nftables \
     # Codec support (optional but recommended)
@@ -64,11 +67,14 @@ RUN git clone https://github.com/sipwise/rtpengine.git /tmp/rtpengine \
         libwebsockets-dev \
         libncurses-dev \
         libopus-dev \
+        libjwt-dev \
         libiptc-dev \
         libmnl-dev \
         libnetfilter-conntrack-dev \
         libnftnl-dev \
         libmariadb-dev \
+        libsystemd-dev \
+        libbcg729-dev \
         libavcodec-dev \
         libavfilter-dev \
         libavformat-dev \
