@@ -203,8 +203,7 @@ services:
       - NET_RAW
     command:
       - "rtpengine"
-      - "--interface=192.168.210.54"
-      - "--advertised-address=103.167.180.166"
+      - "--interface=192.168.210.54!103.167.180.166"
       - "--listen-ng=127.0.0.1:2223"
       - "--port-min=10000"
       - "--port-max=20000"
