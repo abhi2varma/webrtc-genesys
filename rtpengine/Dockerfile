@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     ca-certificates \
     git \
+    pkg-config \
     # RTPengine dependencies
     libcurl4-openssl-dev \
     libpcre3-dev \
@@ -20,6 +21,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libevent-dev \
     libpcre3 \
     libwebsockets-dev \
+    libncurses-dev \
+    libncursesw6 \
     iptables \
     # Codec support (optional but recommended)
     libavcodec-dev \
@@ -41,6 +44,7 @@ RUN git clone https://github.com/sipwise/rtpengine.git /tmp/rtpengine \
     && apt-get purge -y --auto-remove \
         build-essential \
         git \
+        pkg-config \
         libcurl4-openssl-dev \
         libpcre3-dev \
         libssl-dev \
@@ -51,6 +55,7 @@ RUN git clone https://github.com/sipwise/rtpengine.git /tmp/rtpengine \
         libglib2.0-dev \
         libevent-dev \
         libwebsockets-dev \
+        libncurses-dev \
         libavcodec-dev \
         libavfilter-dev \
         libavformat-dev \
