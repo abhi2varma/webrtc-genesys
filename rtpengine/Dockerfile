@@ -31,6 +31,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libnetfilter-conntrack-dev \
     libnftnl-dev \
     libmariadb-dev \
+    default-libmysqlclient-dev \
     libsystemd-dev \
     libbcg729-dev \
     iptables \
@@ -74,6 +75,7 @@ RUN git clone https://github.com/sipwise/rtpengine.git /tmp/rtpengine \
         libnetfilter-conntrack-dev \
         libnftnl-dev \
         libmariadb-dev \
+        default-libmysqlclient-dev \
         libsystemd-dev \
         libbcg729-dev \
         libavcodec-dev \
